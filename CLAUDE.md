@@ -65,10 +65,34 @@ dan falsos positivos). Manejar **negaciones por-ocurrencia**: "sin dolor", "sin 
 "no molesta", "sin dolores ni molestias". Ver `detectPain` en `lib/endurance.js`
 (bien calibrado: descarta negaciones y captura "no molesta… pero molesta y mucho").
 
+### APIs de planes (más allá de las notificaciones)
+
+- **`get_upcoming_activities` → `args:{}`** (ventana fija ~7 días; ignora args):
+  `plans` (vencen en ≤7 días: `plan_id`, `athlete_id`, `title`, `last_session_date`, `athlete_name`),
+  `expired_plans` (vencidos sin renovar), `competitions` (próximas, con `date` exacta), `controls`.
+- **`training_plan` → `args:{training_plan_id:"<id>", full:true, athlete:true}`**: plan completo.
+  `response.plan.macro.mesos[].micros[].sessions.{am,pm}` = 7 slots/semana; cada sesión trae
+  `date`, `title`, `status`, `rpe` (prog.), **`athlete_rpe` (sRPE)**, `athlete_comment`,
+  `athlete_duration/distance`, `has_feedback`, `key_session`, y **`type.intensity_type`
+  (LIT/THT/HIT) + `type.color` (hex oficial del manual)**. `plan.competitions` trae RPE/comentario.
+  → **El dossier de un atleta sale de UNA llamada** (no depende del tope de 200 notificaciones).
+- **`athlete_list` → `args:{}`**: todos los atletas. **`get_micro` → `{micro_id}`**: micro completo.
+- Rutas web (por si hace falta): plan = `#/plan/{athlete_id}/{plan_id}/{meso_id}/{micro_id}/`.
+
 ## 3. Cómo se entrega el resultado
 
-Pipeline: **`node feedback-table.js`** → `report/feedback-table.html` + `report/feedback-data.json`.
+Pipeline diario: **`node feedback-table.js`** → `report/feedback-table.html` + `report/feedback-data.json`
+(incluye `upcoming`: próximas competencias = agenda con fecha + countdowns con semanas).
 Luego **`python3 make_xlsx.py`** (necesita `pip install -q openpyxl`) → `report/Endurance-Feedback.xlsx`.
+
+**Planes y dossiers** (`plans.js` + modos de `make_xlsx.py`):
+- `node plans.js --report` → `plans-expiry-data.json`; `python3 make_xlsx.py expiry` → `Planes-Vencimientos.xlsx`
+  (3 hojas: Por vencer ≤7 días con semáforo, Vencidos sin renovar, Competencias próximas). **Se envía los lunes.**
+- `node plans.js --dossiers` → un `dossier-<plan>-data.json` por cada plan que vence en **exactamente 7 días**
+  (`DOSSIER_DUE_DAYS` lo cambia); `--all-expiring` = todos los de la ventana; `--plan <id>` = manual.
+  `python3 make_xlsx.py dossier <json>` → `Dossier-<Atleta>.xlsx` (historial completo de sesiones reportadas:
+  fecha, tipo con color oficial de la API, RPE prog vs sRPE, duración/distancia real, comentario, dolor, estado,
+  ★ sesiones clave; + hoja Competencias del plan).
 
 - **Excel = formato preferido del coach.** 3 hojas: `Feedback` (por sesión, Tipo coloreado
   LIT/ThT/HIT, sRPE, dolor, FIT), `⚠ Atención` (KPIs + casos priorizados: dolor primero,
@@ -82,13 +106,18 @@ Luego **`python3 make_xlsx.py`** (necesita `pip install -q openpyxl`) → `repor
 
 ## 4. Tarea programada
 
-- Routine durable `Endurance — tabla de feedback (Lun–Vie)` — sesión nueva Lun–Vie
-  **11:57 UTC (8:57 AR)**, corre el pipeline y envía el Excel.
-- Va **autocontenida** (script embebido en el prompt, gzip+base64) porque el **push al
-  repo está bloqueado** (token read-only → 403). **Si se habilita `contents: write`:**
-  pushear el repo y simplificar la Routine a `clone → node feedback-table.js → python3 make_xlsx.py → enviar`.
-- Regenerar el bundle embebido: concatenar `lib/endurance.js` (sin `module.exports`) +
-  `feedback-table.js` (sin el `require` ni `module.exports`), dedupe `const fs`, `gzip -9 | base64 -w0`.
+- Routine durable `Endurance — tabla de feedback (Lun–Vie)` (`trig_01NG5NSPkccbikqnNypUD8Wp`) —
+  sesión nueva Lun–Vie **11:57 UTC (8:57 AR)** en `env_01DhayXXCk1WNRKQwpcp6SNe` (tiene ET_EMAIL/ET_PASSWORD).
+- **NUNCA embeber código en el prompt como base64**: el clasificador de seguridad lo bloquea (con razón).
+  La rutina **clona el repo público** `https://github.com/gianlucabalestreri1-ship-it/endurance-reports`
+  (rama `main`) y corre el código legible: feedback diario + `plans.js --report --dossiers` +
+  dossiers Excel + (solo lunes) `make_xlsx.py expiry`. Envía: Feedback siempre, Dossiers si hay,
+  Vencimientos los lunes.
+- El **push desde sesiones de Claude está bloqueado** (token read-only → 403, incluso vía MCP):
+  los cambios de código los sube el usuario a mano por la web de GitHub (Upload files / editar).
+  `endurance.js` va DENTRO de `lib/`.
+- En `SendUserFile` de las rutinas: no forzar `status:"proactive"` (dio InputValidationError en
+  el entorno de la rutina); indicar "usá un status válido según el schema".
 
 ## 5. Optimizaciones / notas para la próxima corrida
 
