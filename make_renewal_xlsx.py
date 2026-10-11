@@ -77,6 +77,32 @@ def val_laps(s):
     return "–"
 def val_coment(s): return (s.get("comment") or "")
 
+# --- estado "Realizada": verde=hecha como programada · amarillo=hecha pero distinto · rojo=no hecha ---
+DEVIA = re.compile(r"en\s+(lugar|vez)\s+de|cambi[eé]|modifiqu|no\s+pude|no\s+lo\s+hice|no\s+complet|"
+                   r"cort[eé]|fren[eé]|camin[eé]|suspend|abandon|enferm|descompuest|me\s+sent[ií]\s+mal|"
+                   r"rodaje\s+suave|m[aá]s\s+suave|reduje|menos\s+(series|vueltas|repet)|la\s+mitad|"
+                   r"baj[eé]\s+(la|el)|no\s+como\s+estaba|distinto\s+a\s+lo", re.I)
+def is_deviation(s):
+    if not s.get("executed"): return False
+    if s.get("pain"): return True
+    if DEVIA.search(s.get("comment") or ""): return True
+    a=s.get("progRpe"); b=s.get("sRPE")
+    if a is not None and b is not None and (a-b) >= 3: return True
+    return False
+def day_status(sessions):
+    due=[s for s in sessions if s.get("due",True)]
+    if not due:
+        return "future" if sessions else None          # futura (gris) o descanso (sin programación)
+    executed=[s for s in due if s.get("executed")]
+    if not executed: return "rojo"                      # programada y no realizada
+    if any(is_deviation(s) for s in executed) or len(executed) < len(due): return "amarillo"
+    return "verde"
+STATUS_FILL={"verde":PatternFill("solid",fgColor="C6EFCE"),"amarillo":PatternFill("solid",fgColor="FFEB9C"),
+             "rojo":PatternFill("solid",fgColor="FFC7CE"),"future":PatternFill("solid",fgColor="EDEFF2")}
+STATUS_FONT={"verde":Font(bold=True,size=9,color="006100"),"amarillo":Font(bold=True,size=9,color="9C6500"),
+             "rojo":Font(bold=True,size=9,color="9C0006"),"future":Font(size=9,color="5B6472")}
+STATUS_TXT={"verde":"Realizada ✓","amarillo":"Modificada ~","rojo":"No realizada ✗","future":"Futura"}
+
 ROWS=[("Sesión",val_sesion),("RPE p · sRPE",val_rpe),("Duración p→r",val_dur),("Distancia",val_dist),
       ("Ritmo objetivo",val_obj),("Ritmo real",val_real),("Laps / detalle",val_laps),("Comentario",val_coment)]
 
@@ -137,14 +163,23 @@ for d in plans:
                 byday[min(week, key=lambda w: abs((w-sd).days))].append(s)
         # fila título combinada
         ws.merge_cells(start_row=r,start_column=1,end_row=r,end_column=NCOL)
-        tc=ws.cell(r,1,f'Microciclo {m["number"]}   ·   {fmt(monday)} al {fmt(week[-1])}   ·   Adherencia {m["adherence"]}%   ({m["doneSessions"]}/{m["progSessions"]})')
-        tc.fill=HEADER; tc.font=HEADERF; tc.alignment=Alignment(horizontal="center",vertical="center")
+        tc=ws.cell(r,1,f'Microciclo {m["number"]}   ·   {fmt(monday)} al {fmt(week[-1])}   ·   {m["doneSessions"]} sesiones ejecutadas vs {m["progSessions"]} programadas   ({m["adherence"]}%)')
+        tc.fill=HEADER; tc.font=HEADERF; tc.alignment=Alignment(horizontal="center",vertical="center",wrap_text=True)
         for c in range(1,NCOL+1): ws.cell(r,c).border=BORD
         r+=1
         # encabezado de días
         hc=ws.cell(r,1,""); hc.fill=LABF; hc.border=BORD
         for i,w in enumerate(week):
             c=ws.cell(r,2+i,f'{DAYS[i]}\n{w.strftime("%d/%m")}'); c.fill=DAYF; c.font=HEADERF; c.alignment=CEN; c.border=BORD
+        r+=1
+        # fila "Realizada" (semáforo por día)
+        lc=ws.cell(r,1,"Realizada"); lc.fill=LABF; lc.font=Font(bold=True,size=9,color="1F3A5F"); lc.alignment=CEN; lc.border=BORD
+        for i,w in enumerate(week):
+            st=day_status(byday[w])
+            c=ws.cell(r,2+i,STATUS_TXT.get(st,"") if st else "")
+            if st: c.fill=STATUS_FILL[st]; c.font=STATUS_FONT[st]
+            else: c.fill=REST
+            c.alignment=CEN; c.border=BORD
         r+=1
         # filas de atributos
         for label, fn in ROWS:
@@ -157,8 +192,6 @@ for d in plans:
                 c.font=Font(size=9)
                 if label=="Laps / detalle": c.font=Font(size=8)
                 if not sess: c.fill=REST
-                elif any(x.get("pain") for x in sess): c.fill=PAINF
-                elif any(x.get("executed") for x in sess): c.fill=DONEF
                 if label=="Sesión":
                     cat = sess[0].get("cat") if sess else None
                     if cat in CATFONT: c.font=CATFONT[cat]
