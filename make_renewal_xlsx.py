@@ -29,7 +29,7 @@ thin=Side(style="thin",color="D8DEE8"); BORD=Border(left=thin,right=thin,top=thi
 CATFONT={"LIT":Font(bold=True,size=9,color="1C4E8A"),"ThT":Font(bold=True,size=9,color="9A7400"),"HIT":Font(bold=True,size=9,color="B02A2A")}
 PAINF=PatternFill("solid",fgColor="FBE3E3")
 CEN=Alignment(horizontal="center",vertical="center",wrap_text=True)
-LEFT=Alignment(horizontal="left",vertical="top",wrap_text=True)
+LEFT=CEN   # requisito: todo el archivo centrado, alineado al medio y texto ajustado
 DAYS=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"]
 
 def adh_fill(p): return OKC if p>=70 else (WARN if p>=50 else GAP)
@@ -114,9 +114,12 @@ NCOL=8   # 1 etiqueta + 7 días
 for d in plans:
     ws=wb.create_sheet(safe_title(d["athlete"], used))
     p=d["plan"]
-    ws["A1"]=d["athlete"]; ws["A1"].font=TITLEF; ws["A1"].alignment=LEFT
-    ws["A2"]=f'{p["title"]} · {p["start"]} → {p["end"]} · {p["status"]} · período: {" + ".join(str(x) for x in d["periodMesos"])}'; ws["A2"].font=SUBF; ws["A2"].alignment=LEFT
-    W(ws,[15,21,21,21,21,21,21,21]); r=4
+    # nombre de atleta y nombre del plan: celdas combinadas al ancho de la tabla (A..H)
+    ws.merge_cells(start_row=1,start_column=1,end_row=1,end_column=NCOL)
+    ws.merge_cells(start_row=2,start_column=1,end_row=2,end_column=NCOL)
+    ws["A1"]=d["athlete"]; ws["A1"].font=TITLEF; ws["A1"].alignment=CEN
+    ws["A2"]=f'{p["title"]} · {p["start"]} → {p["end"]} · {p["status"]} · período: {" + ".join(str(x) for x in d["periodMesos"])}'; ws["A2"].font=SUBF; ws["A2"].alignment=CEN
+    W(ws,[15]+[30.86]*7); r=4
     for m in d["micros"]:
         # lunes..domingo de la semana del micro
         base = d2(m.get("start"))
@@ -145,12 +148,12 @@ for d in plans:
         r+=1
         # filas de atributos
         for label, fn in ROWS:
-            lc=ws.cell(r,1,label); lc.fill=LABF; lc.font=Font(bold=True,size=9,color="1F3A5F"); lc.alignment=Alignment(horizontal="right",vertical="top",wrap_text=True); lc.border=BORD
+            lc=ws.cell(r,1,label); lc.fill=LABF; lc.font=Font(bold=True,size=9,color="1F3A5F"); lc.alignment=CEN; lc.border=BORD
             for i,w in enumerate(week):
                 sess=byday[w]
                 txt = cell_join(sess, fn) if sess else ""
                 c=ws.cell(r,2+i,txt)
-                c.alignment = CEN if label in ("RPE p · sRPE","Distancia") else LEFT
+                c.alignment = CEN
                 c.font=Font(size=9)
                 if label=="Laps / detalle": c.font=Font(size=8)
                 if not sess: c.fill=REST
