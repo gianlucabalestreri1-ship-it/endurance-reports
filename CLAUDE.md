@@ -104,6 +104,17 @@ dan falsos positivos). Manejar **negaciones por-ocurrencia**: "sin dolor", "sin 
     (`{timestamp, distance, altitude, speed, heart_rate, cadence, power, position:[lat,lng]}`, ~1000+ puntos) para curvas finas.
     Para el reporte alcanza con `laps` (ya resueltos); los `records` son opcionales.
   - Arg correcto es `resume_id` (no `id`/`pk`); con nombre equivocado el back responde "ResumeSession doesn't exist".
+- **`session` → `args:{session_id}`** = detalle COMPLETO de una sesión en UNA llamada: lo **programado** en
+  `activities[].sections[].work` (cada bloque: `series`, `repetitions`, `micro_pause`, `distance`, `duration`,
+  `zone_number`, `coach_unit`, y **`details` con el ritmo objetivo ya formateado**, p.ej. `6'35" / km [Zona 2: Endurance…]`),
+  las **zonas del atleta** `training_zones` (`MAS` = min/km por zona, `HR`, `FTP`, `RPE`, `SW`), el **`resume`** embebido
+  (laps del dispositivo) y las `metrics` del día. Bloques con `text_only:true` o strength no son de carrera (descontar).
+- **Ritmo real — regla de fuentes (prioridad):**
+  1. **FIT** (`resume.laps`): ritmo por lap ya formateado.
+  2. **Sin FIT pero con feedback manual:** `session.athlete_distance` + `session.athlete_duration` → ritmo medio;
+     y **parsear el `athlete_comment`** por ritmos que el atleta dejó a mano (formatos AR: `7.37/km`, `7'37"/km`,
+     `5:10`, `a 6.00 el km`, `ritmo 6'10`). Muchos atletas NO tienen dispositivo vinculado y cargan el ritmo en el comentario.
+  3. **Sin nada:** informar "sin datos de ritmo".
 - Rutas web (por si hace falta): plan = `#/plan/{athlete_id}/{plan_id}/{meso_id}/{micro_id}/`.
 
 ### Pendientes del "Asistente de informes" (guía 2026-10-11) — estado
