@@ -95,9 +95,14 @@ dan falsos positivos). Manejar **negaciones por-ocurrencia**: "sin dolor", "sin 
 - **Datos de dispositivo (FIT / ritmo real) — verificado 2026-10-11:**
   - En `training_plan`, cada micro trae `micros[].fits[]` (actividades de dispositivo): `{id, session_date, time_str, sport_code, downloadable, session:{...}}`. Ese **`fits[].id` es el `resume_id`**.
   - **`session_resume` → `args:{resume_id}`**: objeto `resume` (sesión + datos del dispositivo).
+  - **`session_resume.resume.laps[]`** es lo mejor para ritmo real: ET ya entrega **`avg_speed`
+    como objeto `{magnitude, unit:"min / km", format:"6'44\" / km"}`** (ritmo medio ya formateado) + `max_speed`,
+    `total_elapsed_time` (seg), `total_distance` (**km**), `avg_heart_rate`/`max_heart_rate`, cadencia, potencia, TSS/IF por lap.
+    El `resume` también trae agregados: `total_distance` (m), `num_laps`, `sport_lit_time`/`sport_tht_time`/`sport_hit_time`
+    (tiempo en fase), `normalized_power`, `training_stress_score`, `intensity_factor`.
   - **`get_resume_recods` → `args:{resume_id}`**: `response.records[]` = stream punto a punto
-    (`{timestamp, distance, altitude, speed (m/s), heart_rate, cadence, power, position:[lat,lng]}`, ~1000+ puntos).
-    → **ritmo real** = 60 / (speed·3.6) min/km; se puede reconstruir Laps o comparar por bloque. Más fino que la tabla de Laps de la UI.
+    (`{timestamp, distance, altitude, speed, heart_rate, cadence, power, position:[lat,lng]}`, ~1000+ puntos) para curvas finas.
+    Para el reporte alcanza con `laps` (ya resueltos); los `records` son opcionales.
   - Arg correcto es `resume_id` (no `id`/`pk`); con nombre equivocado el back responde "ResumeSession doesn't exist".
 - Rutas web (por si hace falta): plan = `#/plan/{athlete_id}/{plan_id}/{meso_id}/{micro_id}/`.
 
