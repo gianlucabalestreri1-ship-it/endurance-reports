@@ -90,9 +90,10 @@ def is_deviation(s):
     if a is not None and b is not None and (a-b) >= 3: return True
     return False
 def day_status(sessions):
+    sessions=[s for s in sessions if not s.get("strength")]   # solo runs definen el estado
     due=[s for s in sessions if s.get("due",True)]
     if not due:
-        return "future" if sessions else None          # futura (gris) o descanso (sin programación)
+        return "future" if sessions else None          # futura (gris) o descanso (sin run programado)
     executed=[s for s in due if s.get("executed")]
     if not executed: return "rojo"                      # programada y no realizada
     if any(is_deviation(s) for s in executed) or len(executed) < len(due): return "amarillo"
@@ -144,7 +145,7 @@ for d in plans:
     ws.merge_cells(start_row=1,start_column=1,end_row=1,end_column=NCOL)
     ws.merge_cells(start_row=2,start_column=1,end_row=2,end_column=NCOL)
     ws["A1"]=d["athlete"]; ws["A1"].font=TITLEF; ws["A1"].alignment=CEN
-    ws["A2"]=f'{p["title"]} · {p["start"]} → {p["end"]} · {p["status"]} · período: {" + ".join(str(x) for x in d["periodMesos"])}'; ws["A2"].font=SUBF; ws["A2"].alignment=CEN
+    ws["A2"]=f'{p["title"]} · {p["start"]} → {p["end"]} · {p["status"]} · período: {" + ".join(str(x) for x in d["periodMesos"])}   —   (la adherencia considera solo los runs; no se reportan feedbacks de fuerza)'; ws["A2"].font=SUBF; ws["A2"].alignment=CEN
     W(ws,[15]+[30.86]*7); r=4
     for m in d["micros"]:
         # lunes..domingo de la semana del micro

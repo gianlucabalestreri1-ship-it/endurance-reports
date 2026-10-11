@@ -174,16 +174,20 @@ async function renewalForPlan(session, planId) {
       for (const mom of ['am', 'pm']) for (const s of (slots[mom] || [])) {
         if (!s || !s.id) continue;
         const due = !s.date || s.date <= TODAY;
+        // Fuerza/gimnasio: no se reportan feedbacks, así que NO cuenta para adherencia
+        // ni para el estado del día (la ejecución se mide solo sobre los runs).
+        const typeName = s.type_name || (s.type && s.type.name) || '';
+        const strength = /fuerza|gym|gimnas|core|pesas|\bstrength\b/i.test(`${s.title || ''} ${typeName}`);
         // Detalle completo (bloques programados + laps del dispositivo) solo para
         // sesiones vencidas; las futuras se listan livianas (no se analizan aún).
         let full = null;
-        if (due) { try { full = await call('session', { session_id: s.id }, session); } catch (_) {} }
+        if (due && !strength) { try { full = await call('session', { session_id: s.id }, session); } catch (_) {} }
         const rz = full && full.resume;
         // Una sesión con FIT (actividad de dispositivo vinculada) cuenta como realizada
         // aunque no tenga feedback manual (ver manual: sesión roja con FIT = realizada).
         const hasFit = !!(rz && (rz.id || (Array.isArray(rz.laps) && rz.laps.length)));
         const executed = s.status === 'finished' || s.athlete_rpe != null || s.has_feedback || hasFit;
-        if (due) { prog++; if (executed) done++; } else future++;
+        if (due && !strength) { prog++; if (executed) done++; } else if (!due && !strength) future++;
         const targets = full ? programmedTargets(full) : [];
         const mainTarget = targets.filter((t) => t.target).sort((a, b) => (b.zone || 0) - (a.zone || 0))[0];
         // real pace by source
@@ -223,7 +227,7 @@ async function renewalForPlan(session, planId) {
         sessions.push({
           date: s.date, moment: mom.toUpperCase(), title: s.title, due, future: !due,
           cat: it === 'THT' ? 'ThT' : it === 'LIT' ? 'LIT' : it === 'HIT' ? 'HIT' : (it || ''),
-          key: !!s.key_session, status: !due ? 'Futura' : (s.get_status_display || s.status), executed, hasFit,
+          key: !!s.key_session, status: !due ? 'Futura' : (s.get_status_display || s.status), executed, hasFit, strength,
           progRpe: s.rpe != null ? s.rpe : null, sRPE: s.athlete_rpe != null ? s.athlete_rpe : null,
           progDist: fmtMag(s.distance), progDur: fmtMag(s.duration),
           targetPace: mainTarget ? mainTarget.target : '', targets,
