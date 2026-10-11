@@ -99,6 +99,51 @@ function mesoExecuted(m) { return (m.micros || []).reduce((a, mi) => a + microEx
 // previous mesociclo if the chosen one lasts <=2 microciclos. Extension: if the chosen
 // period has no executed sessions yet (e.g. a just-started or interrupted block), also
 // pull in the previous mesociclo so the renewal isn't blank.
+// --- name -> athlete -> vigente plan resolver -----------------------------
+function norm(s) {
+  return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function lev(a, b) {
+  const m = a.length, n = b.length; const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]);
+  for (let j = 0; j <= n; j++) d[0][j] = j;
+  for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++)
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[m][n];
+}
+function matchAthlete(name, roster) {
+  const q = norm(name), qt = q.split(' ').filter(Boolean);
+  const tokenHit = (t, ft) => ft.some((f) => f === t || (t.length >= 4 && (f.startsWith(t) || lev(f, t) <= 1)));
+  let best = null, bestScore = -1;
+  for (const a of roster) {
+    const full = norm(a.full_name), ft = full.split(' ').filter(Boolean);
+    let score = 0;
+    const hits = qt.filter((t) => tokenHit(t, ft)).length;
+    if (full === q) score = 100;
+    else if (qt.length && qt.every((t) => ft.includes(t))) score = 85;        // every query token present exactly
+    else if (hits >= 2) score = 60 + hits;                                     // >=2 name parts align (first+last) → safe
+    else if (qt.length === 1 && hits === 1) score = 70;                        // single distinctive name, exact/typo/prefix
+    else if (qt.length >= 2 && hits === 1 && lev(full, q) <= 2) score = 55;    // multi-word but very close overall
+    // a lone first-name hit in a multi-word query is NOT enough (avoids false positives)
+    if (score > bestScore) { bestScore = score; best = a; }
+  }
+  return bestScore >= 55 ? { athlete: best, score: bestScore } : { athlete: null, score: bestScore };
+}
+async function resolveNames(session, names) {
+  const al = await call('athlete_list', {}, session);
+  const r = al.athletes || al.athlete_list || (Array.isArray(al) ? al : Object.values(al));
+  const roster = Array.isArray(r) ? r : Object.values(r);
+  const resolved = [], unmatched = [];
+  for (const name of names) {
+    const { athlete, score } = matchAthlete(name, roster);
+    if (!athlete) { unmatched.push({ name, reason: 'sin coincidencia' }); continue; }
+    const planId = athlete.active_plan || athlete.current_plan_id;
+    if (!planId) { unmatched.push({ name, reason: `"${athlete.full_name}" sin plan vigente` }); continue; }
+    resolved.push({ input: name, athlete: athlete.full_name, athlete_id: athlete.id, planId, score });
+  }
+  return { resolved, unmatched };
+}
+
 function selectPeriod(mesos) {
   if (!mesos.length) return [];
   const today = todayAR();
@@ -186,11 +231,35 @@ async function renewalForPlan(session, planId) {
   return data;
 }
 
+// Split a pasted list into names: by newlines or commas; drop numbering/bullets.
+function parseNameList(raw) {
+  return String(raw || '').split(/[\n,;]+/).map((s) => s.replace(/^\s*(?:\d+[.)]\s*|[-*•]\s*)/, '').trim())
+    .filter((s) => s && !/^\d+$/.test(s));
+}
+
 async function main() {
   const email = process.env.ET_EMAIL, password = process.env.ET_PASSWORD;
   const { session } = await ET.login(email, password);
   const argv = process.argv.slice(2);
+
   const ids = argv.filter((a) => /^\d+$/.test(a));
-  for (const id of ids) await renewalForPlan(session, parseInt(id, 10));
+  let names = [];
+  const fileIdx = argv.indexOf('--file');
+  if (fileIdx >= 0 && argv[fileIdx + 1]) names = names.concat(parseNameList(fs.readFileSync(argv[fileIdx + 1], 'utf8')));
+  const namesIdx = argv.indexOf('--names');
+  if (namesIdx >= 0) names = names.concat(argv.slice(namesIdx + 1).filter((a) => a !== '--file' && !/^\d+$/.test(a)));
+
+  const planIds = ids.map((x) => parseInt(x, 10));
+  if (names.length) {
+    const { resolved, unmatched } = await resolveNames(session, names);
+    console.log(`Resueltos ${resolved.length}/${names.length} nombres:`);
+    resolved.forEach((r) => console.log(`  "${r.input}" → ${r.athlete} (plan ${r.planId})${r.score < 85 ? '  ⚠ revisar (coincidencia aproximada)' : ''}`));
+    if (unmatched.length) { console.log('NO resueltos (revisar a mano):'); unmatched.forEach((u) => console.log(`  "${u.name}" — ${u.reason}`)); }
+    for (const r of resolved) if (!planIds.includes(r.planId)) planIds.push(r.planId);
+    if (argv.includes('--dry')) { console.log('\n(--dry: solo resolución, no se genera informe)'); return; }
+  }
+
+  if (!planIds.length) { console.error('Nada para procesar. Pasá IDs de plan o --names "Nombre" ... / --file lista.txt'); process.exit(1); }
+  for (const id of planIds) await renewalForPlan(session, id);
 }
 main().catch((e) => { console.error('ERROR:', e.message); process.exit(1); });
