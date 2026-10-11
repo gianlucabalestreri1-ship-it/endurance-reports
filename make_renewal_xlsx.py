@@ -12,6 +12,10 @@ files = sys.argv[1:]
 if not files:
     print("uso: make_renewal_xlsx.py report/renewal-<id>-data.json ..."); sys.exit(1)
 plans = [json.load(open(f)) for f in files]
+def _adh(d):
+    tot=sum(m["progSessions"] for m in d["micros"]); done=sum(m["doneSessions"] for m in d["micros"])
+    return (done/tot) if tot else 0
+plans.sort(key=_adh)   # peor adherencia primero (los que más atención piden)
 
 INK="1A1F2B"; MUT="5B6472"
 HEADER=PatternFill("solid",fgColor="1F3A5F"); HEADERF=Font(color="FFFFFF",bold=True,size=11)

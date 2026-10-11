@@ -163,21 +163,23 @@ async function renewalForPlan(session, planId) {
   const plan = tp.plan || {};
   const athlete = tp.athlete ? (tp.athlete.full_name || `${tp.athlete.first_name || ''} ${tp.athlete.last_name || ''}`.trim()) : '';
   const mesos = (plan.macro && plan.macro.mesos) || [];
+  const TODAY = todayAR();
   const period = selectPeriod(mesos);
   const micros = [];
   for (const meso of period) {
     for (const mi of (meso.micros || [])) {
       const sessions = [];
-      let prog = 0, done = 0;
+      let prog = 0, done = 0, future = 0;        // adherencia = solo sesiones vencidas (fecha <= hoy)
       const slots = mi.sessions || {};
       for (const mom of ['am', 'pm']) for (const s of (slots[mom] || [])) {
         if (!s || !s.id) continue;
-        prog++;
+        const due = !s.date || s.date <= TODAY;
         const executed = s.status === 'finished' || s.athlete_rpe != null || s.has_feedback;
-        if (executed) done++;
-        // full detail per session (programmed blocks + device laps)
+        if (due) { prog++; if (executed) done++; } else future++;
+        // Detalle completo (bloques programados + laps del dispositivo) solo para
+        // sesiones vencidas; las futuras se listan livianas (no se analizan aún).
         let full = null;
-        try { full = await call('session', { session_id: s.id }, session); } catch (_) {}
+        if (due) { try { full = await call('session', { session_id: s.id }, session); } catch (_) {} }
         const targets = full ? programmedTargets(full) : [];
         const mainTarget = targets.filter((t) => t.target).sort((a, b) => (b.zone || 0) - (a.zone || 0))[0];
         // real pace by source
@@ -204,18 +206,18 @@ async function renewalForPlan(session, planId) {
         }
         const it = (s.type && s.type.intensity_type) || '';
         sessions.push({
-          date: s.date, moment: mom.toUpperCase(), title: s.title,
+          date: s.date, moment: mom.toUpperCase(), title: s.title, due, future: !due,
           cat: it === 'THT' ? 'ThT' : it === 'LIT' ? 'LIT' : it === 'HIT' ? 'HIT' : (it || ''),
-          key: !!s.key_session, status: s.get_status_display || s.status, executed,
+          key: !!s.key_session, status: !due ? 'Futura' : (s.get_status_display || s.status), executed,
           progRpe: s.rpe != null ? s.rpe : null, sRPE: s.athlete_rpe != null ? s.athlete_rpe : null,
           progDist: fmtMag(s.distance), progDur: fmtMag(s.duration),
           targetPace: mainTarget ? mainTarget.target : '', targets,
-          realDist, realDur, realPace, source,
+          realDist, realDur, realPace, source: due ? source : '',
           pain: ET.detectPain ? ET.detectPain((s.athlete_comment || '').trim()) : false,
           comment: (s.athlete_comment || '').replace(/\s+/g, ' ').trim().slice(0, 300),
         });
       }
-      micros.push({ meso: meso.name || `Meso ${meso.number || ''}`, number: mi.number, start: mi.start_date, end: mi.end_date,
+      micros.push({ meso: meso.name || `Meso ${meso.number || ''}`, number: mi.number, start: mi.start_date, end: mi.end_date, future,
         progVol: fmtMag(mi.prog_distance), realVol: fmtMag(mi.real_distance),
         progSessions: prog, doneSessions: done, adherence: prog ? Math.round(100 * done / prog) : 0, sessions });
     }
