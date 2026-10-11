@@ -183,13 +183,25 @@ async function renewalForPlan(session, planId) {
         const targets = full ? programmedTargets(full) : [];
         const mainTarget = targets.filter((t) => t.target).sort((a, b) => (b.zone || 0) - (a.zone || 0))[0];
         // real pace by source
-        let realPace = '', realDist = '', realDur = '', source = 'sin datos';
+        let realPace = '', realDist = '', realDur = '', source = 'sin datos', laps = [];
         const rz = full && full.resume;
         if (rz && Array.isArray(rz.laps) && rz.laps.length) {
           const km = (rz.total_distance || 0) / 1000;
           const durMin = (rz.total_timer_time || rz.total_elapsed_time || 0) / 60;
           realDist = km ? km.toFixed(2) + ' km' : ''; realDur = durMin ? `${Math.floor(durMin)}'${String(Math.round((durMin % 1) * 60)).padStart(2, '0')}"` : '';
           realPace = paceFrom(km, durMin); source = 'FIT';
+          // Lap-by-lap detail (lo que da el contexto real de la sesión: tramos, ritmos, cortes).
+          laps = rz.laps.map((l, i) => {
+            const t = l.total_elapsed_time || l.total_timer_time || 0;
+            const d = l.total_distance || 0; // km
+            return {
+              n: i + 1,
+              time: `${Math.floor(t / 60)}'${String(Math.round(t % 60)).padStart(2, '0')}"`,
+              timeSec: t, distKm: +d.toFixed(2),
+              pace: (l.avg_speed && l.avg_speed.format) || paceFrom(d, t / 60),
+              hrA: l.avg_heart_rate || '', hrM: l.max_heart_rate || '',
+            };
+          }).filter((l) => l.timeSec > 0 || l.distKm > 0);
         } else {
           const km = magKm(s.athlete_distance), min = magMin(s.athlete_duration);
           if (km || min) { realDist = fmtMag(s.athlete_distance); realDur = fmtMag(s.athlete_duration); realPace = paceFrom(km, min); source = 'manual'; }
@@ -212,7 +224,7 @@ async function renewalForPlan(session, planId) {
           progRpe: s.rpe != null ? s.rpe : null, sRPE: s.athlete_rpe != null ? s.athlete_rpe : null,
           progDist: fmtMag(s.distance), progDur: fmtMag(s.duration),
           targetPace: mainTarget ? mainTarget.target : '', targets,
-          realDist, realDur, realPace, source: due ? source : '',
+          realDist, realDur, realPace, source: due ? source : '', laps,
           pain: ET.detectPain ? ET.detectPain((s.athlete_comment || '').trim()) : false,
           comment: (s.athlete_comment || '').replace(/\s+/g, ' ').trim().slice(0, 300),
         });
