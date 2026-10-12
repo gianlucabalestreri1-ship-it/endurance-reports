@@ -70,11 +70,17 @@ Un mismo `session_id` puede tener `key_session_feedback` (subjetivo) + `key_sess
 - 🔴 **HIT** (rojo): HIIT (largo/corto), Neuromuscular/Velocidad, VO2, series/intervalos.
 - Otros: Fuerza, Test/Valoración.
 
-### Dolor / molestia
-Detectar **solo en el `Comentario`** (no en el body completo: planes tipo "post lesión"
-dan falsos positivos). Manejar **negaciones por-ocurrencia**: "sin dolor", "sin molestias",
-"no molesta", "sin dolores ni molestias". Ver `detectPain` en `lib/endurance.js`
-(bien calibrado: descarta negaciones y captura "no molesta… pero molesta y mucho").
+### Dolor / molestia — 3 estados (`classifyPain` en `lib/endurance.js`)
+Detectar **solo en el `Comentario`**. Negación evaluada **por cláusula** (se mira hasta el
+último separador `. , ; pero aunque` antes de la palabra, no una ventana fija de 14 chars →
+capta "No presento molestias en mi pie", "no me molestó", "sin dolor", y NO tapa un dolor real
+en otra cláusula). `classifyPain` devuelve:
+- **`active`** = dolor real (mención no negada) → en el Excel **"SÍ"** (rojo).
+- **`improving`** = mención **negada + con contexto** (parte del cuerpo o palabra de recuperación:
+  pie/rodilla/tobillo/…, "mejor", "recuper", "menos") = **progresión buena** en un dolor/lesión →
+  **"Mejora 🟣"** (lila, color diferenciado). Ej.: "No presento molestias en mi pie derecho".
+- **`none`** = sin mención relevante → **"NO"**.
+`detectPain` = `classifyPain === 'active'` (los conteos de dolor cuentan solo activos; "Mejora" no suma).
 
 ### APIs de planes (más allá de las notificaciones)
 
@@ -165,11 +171,23 @@ carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPU
   fecha, tipo con color oficial de la API, RPE prog vs sRPE, duración/distancia real, comentario, dolor, estado,
   ★ sesiones clave; + hoja Competencias del plan).
 
-- **Excel = formato preferido del coach.** 3 hojas: `Feedback` (por sesión, Tipo coloreado
-  LIT/ThT/HIT, sRPE, dolor, FIT), `⚠ Atención` (KPIs + casos priorizados: dolor primero,
-  luego sRPE↓, + competencias), `Competencias` (completadas + countdown A).
+- **Excel = formato preferido del coach.** 3 hojas: `Feedback`, `⚠ Atención` (KPIs + casos
+  priorizados: dolor primero, luego sRPE↓, + competencias; incluye "Mejora ↓" en lila),
+  `Competencias` (completadas + countdown A).
+- **Hoja `Feedback` (layout):** ordenada **alfabéticamente por atleta** (sin acentos/mayúsc.);
+  cada atleta abre con una **fila-separador combinada a lo ancho** con el nombre centrado (tamaño 12,
+  fondo celeste) y cierra con una **fila vacía de respiro**. **Sin columna Atleta ni punto de leído.**
+  Columnas: Fecha · Mom · Sesión · Deporte · Tipo (coloreado LIT/ThT/HIT) · sRPE · Feedback/comentario ·
+  **Dolor/molestia** (SÍ rojo / NO / Mejora 🟣 lila) · **FIT (laps + métrica)**. Todo el contenido
+  **centrado + al medio + ajustado**; encabezados centrados.
+- **Columna FIT = métrica real del dispositivo** (no solo la notificación `key_session_fit`, que solo
+  existe para sesiones clave): `feedback-table.js` enriquece cada fila leyendo `session`→`resume`
+  (`ET.getSession`/`ET.fitMetric`) y muestra **resumen (km · duración · FC) + cada lap** (vuelta ·
+  tiempo · dist · ritmo · FC), igual que renovación. Cuesta 1 llamada por sesión (en `--all` son muchas).
 - **Resaltar siempre:** `sRPE ≥ 6`, competencias completadas, dolor/molestia.
-- **MIT/HIIT/LIT:** métricas de dispositivo (distancia/duración) **solo si hay FIT** asociado.
+- **Gotcha openpyxl:** `freeze_panes` por **string** (`"A2"`), no `ws.cell(...)` (materializa una fila
+  fantasma). **No usar `drop_ghost_row`/`delete_rows` en hojas con celdas combinadas** (los separadores):
+  `delete_rows` corrompe/borra los datos. El freeze por string ya evita la fila fantasma.
 - Por defecto solo **sin leer** (`status=pending`); `feedback-table.js --all` incluye leídas.
 - El Excel es export estático: **sin fórmulas**, no requiere recalc de LibreOffice.
 - **Datos sensibles** (salud de atletas): entregar como **archivo** (`SendUserFile`), no
