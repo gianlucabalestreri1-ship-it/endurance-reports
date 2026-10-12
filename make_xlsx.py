@@ -84,13 +84,12 @@ def build_daily():
     #                       combinada a lo ancho con el nombre centrado, y cierra con una
     #                       fila vacía de respiro; sin columna "Atleta")
     ws = wb.active; ws.title = "Feedback"
-    H = ["", "Fecha", "Mom.", "Sesión", "Deporte", "Tipo", "sRPE", "Feedback / comentario", "Dolor", "FIT (laps + métrica)"]
+    H = ["Fecha", "Mom.", "Sesión", "Deporte", "Tipo", "sRPE", "Feedback / comentario", "Dolor/molestia", "FIT (laps + métrica)"]
     NC = len(H)
-    ws.append(H); header(ws, NC); widths(ws, [4, 12, 6, 24, 11, 18, 7, 52, 10, 30])
+    ws.append(H); header(ws, NC); widths(ws, [12, 7, 24, 11, 18, 7.43, 52, 12, 30])
     SEP_FILL = PatternFill("solid", fgColor="C9D6E5")
-    SEP_FONT = Font(name=A, bold=True, size=11, color="1F3A5F")
-    LMID = Alignment(horizontal="left", vertical="center", wrap_text=True)   # todo: izq + medio + ajustado
-    CMID = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    SEP_FONT = Font(name=A, bold=True, size=12, color="1F3A5F")
+    CMID = Alignment(horizontal="center", vertical="center", wrap_text=True)   # contenido: centrado + medio + ajustado
     cur = None
     for r in rows:
         ath = (r.get("athlete") or "—").strip()
@@ -118,20 +117,19 @@ def build_daily():
                 fit_lines.append("L%s %s %.2fkm %s %s/%s" % (L.get("n"), L.get("time", ""), L.get("distKm", 0),
                                                              L.get("pace", ""), L.get("hrA", ""), L.get("hrM", "")))
         fitv = "\n".join(fit_lines) if fit_lines else "—"
-        dolor_val = "Sí" if pain else ("Mejora 🟣" if improving else "—")
-        ws.append(["●" if r.get("unread") else "", r.get("date", ""), r.get("moment", ""),
-                   r.get("session", ""), r.get("sport", ""), tipo, r.get("rpe"), (r.get("comment") or "").strip(),
-                   dolor_val, fitv])
+        dolor_val = "SÍ" if pain else ("Mejora 🟣" if improving else "NO")
+        ws.append([r.get("date", ""), r.get("moment", ""), r.get("session", ""), r.get("sport", ""), tipo,
+                   r.get("rpe"), (r.get("comment") or "").strip(), dolor_val, fitv])
         i = ws.max_row
         rf = F_PAIN if pain else (F_IMPROVE if improving else (F_HOT if hot else (F_UNREAD if r.get("unread") else None)))
         for c in range(1, NC + 1):
-            cell = ws.cell(row=i, column=c); cell.font = CELL if c != 10 else Font(name=A, size=8)
-            cell.border = BORDER; cell.alignment = CMID if c in (1, 3, 7, 9) else LMID
-            if rf and c != 6: cell.fill = rf
-        tipo_cell(ws.cell(row=i, column=6), inten)
-        ws.cell(row=i, column=7).font = HOT if hot else BOLD                      # sRPE
-        if pain: ws.cell(row=i, column=9).font = Font(name=A, size=10, bold=True, color="C00000")      # Dolor
-        elif improving: ws.cell(row=i, column=9).font = Font(name=A, size=10, bold=True, color="6B3FA0")  # Mejora (lila)
+            cell = ws.cell(row=i, column=c); cell.font = CELL if c != 9 else Font(name=A, size=8)
+            cell.border = BORDER; cell.alignment = CMID
+            if rf and c != 5: cell.fill = rf
+        tipo_cell(ws.cell(row=i, column=5), inten)                                # Tipo
+        ws.cell(row=i, column=6).font = HOT if hot else BOLD                      # sRPE
+        if pain: ws.cell(row=i, column=8).font = Font(name=A, size=10, bold=True, color="C00000")      # Dolor
+        elif improving: ws.cell(row=i, column=8).font = Font(name=A, size=10, bold=True, color="6B3FA0")  # Mejora (lila)
 
     # ---- ⚠ Atención ----
     wa = wb.create_sheet("⚠ Atención")
