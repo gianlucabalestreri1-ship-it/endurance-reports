@@ -36,8 +36,9 @@ rows_sorted = sorted(rows, key=lambda r: (ORDER.get(r["status"],9),
 
 wb=Workbook(); ws=wb.active; ws.title="Alerta adherencia"
 ws["A1"]="Alerta de adherencia semanal"; ws["A1"].font=TITLEF; ws["A1"].alignment=Alignment(horizontal="left",vertical="center")
-ws["A2"]=(f'Corte {D["today"]} · umbral {D["thresholdDays"]} días sin reportar · {D["total"]} atletas activos · '
-          f'ALERTA {c["alerta"]} · por comenzar {c.get("por_comenzar",0)} · standby {c.get("standby",0)} · ok {c["ok"]} · off {c.get("off",0)}'
+_conplan = D["total"] - c.get("off",0)
+ws["A2"]=(f'Corte {D["today"]} · umbral {D["thresholdDays"]} días sin reportar · {D["total"]} atletas ({_conplan} con plan) · '
+          f'ALERTA {c["alerta"]} · por comenzar {c.get("por_comenzar",0)} · ok {c["ok"]} · off sin plan {c.get("off",0)}'
           f'{" · sin dato "+str(c["sin_dato"]) if c.get("sin_dato") else ""}')
 ws["A2"].font=SUBF; ws["A2"].alignment=Alignment(horizontal="left",vertical="center")
 W=[26,13,11,16,18,34,26]

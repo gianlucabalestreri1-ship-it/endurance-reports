@@ -71,23 +71,26 @@ async function main() {
   const onlyNames = namesIdx >= 0 ? argv.slice(namesIdx + 1).filter((a) => !/^--/.test(a)).map((s) => s.toLowerCase()) : null;
   const today = todayAR();
 
-  // Config de estados (standby / off) — atletas activos en el equipo pero sin entrenar.
-  let cfg = { standby: [], off: [] };
+  // Notas opcionales (motivo) para atletas sin plan. El estado "off" se detecta solo:
+  // es todo atleta del equipo que NO tiene plan activo con última sesión programada.
+  let cfg = { notes: {} };
   try { cfg = JSON.parse(fs.readFileSync(path.join(__dirname, 'config-standby.json'), 'utf8')); } catch (_) {}
   const norm = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
-  const matchCfg = (name, list) => (list || []).find((e) => { const en = norm(e.name || e); const nn = norm(name); return en === nn || nn.includes(en) || en.includes(nn); });
+  const noteFor = (name) => { const nn = norm(name); for (const [k, v] of Object.entries(cfg.notes || {})) { const kn = norm(k); if (kn === nn || nn.includes(kn) || kn.includes(nn)) return v; } return ''; };
 
   const al = await call('athlete_list', {}, session);
   const roster = (Array.isArray(al) ? al : (al.athletes || al.athlete_list || Object.values(al)));
-  // Activo = tiene plan activo y figura la fecha de su última sesión programada.
-  let active = roster.filter((a) => (a.active_plan || a.current_plan_id) && a.last_programmed_session);
-  if (onlyNames) active = active.filter((a) => onlyNames.some((n) => (a.full_name || '').toLowerCase().includes(n)));
+  const hasPlan = (a) => (a.active_plan || a.current_plan_id) && a.last_programmed_session;
+  let active = roster.filter(hasPlan);
+  let offRoster = roster.filter((a) => !hasPlan(a));          // off = sin plan activo
+  if (onlyNames) {
+    const match = (a) => onlyNames.some((n) => (a.full_name || '').toLowerCase().includes(n));
+    active = active.filter(match); offRoster = offRoster.filter(match);
+  }
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const rows = [];
   for (const a of active) {
-    const off = matchCfg(a.full_name, cfg.off);
-    const sb = matchCfg(a.full_name, cfg.standby);
     const planId = a.active_plan || a.current_plan_id;
     // fetch con reintentos: un plan largo puede dar timeout y NO debe convertirse en falsa alerta.
     let tp = null, err = null;
@@ -95,29 +98,33 @@ async function main() {
     const info = tp ? lastActivityOfPlan(tp, today)
       : { lastActivity: null, lastFeedback: null, lastFit: null, nPast: null, notStarted: false, planTitle: '', planEnd: '', planExpired: false };
     const days = info.lastActivity ? daysBetween(info.lastActivity, today) : null;
-    let status, motivo = '';
-    if (!tp) { status = 'sin_dato'; motivo = (err && err.message) || 'no se pudo leer el plan'; }
-    else if (off) { status = 'off'; motivo = off.motivo || ''; }
-    else if (sb) { status = 'standby'; motivo = sb.motivo || ''; }
+    let status;
+    if (!tp) status = 'sin_dato';
     else if (info.notStarted) status = 'por_comenzar';            // plan futuro, aún no arrancó
     else if (days == null || days > thr) status = 'alerta';       // plan vencido reciente aplica igual
     else status = 'ok';
     rows.push({ athlete: a.full_name, athlete_id: a.id, planId, lastProgrammed: a.last_programmed_session,
-      ...info, daysSince: days, status, motivo });
+      ...info, daysSince: days, status, motivo: status === 'sin_dato' ? ((err && err.message) || 'no se pudo leer el plan') : '' });
+  }
+  // atletas sin plan = off (no requieren lectura de plan)
+  for (const a of offRoster) {
+    rows.push({ athlete: a.full_name, athlete_id: a.id, planId: null, lastProgrammed: a.last_programmed_session || null,
+      lastActivity: null, lastFeedback: null, lastFit: null, nPast: null, notStarted: false, planTitle: '', planEnd: '', planExpired: false,
+      daysSince: null, status: 'off', motivo: noteFor(a.full_name) || 'sin plan activo' });
   }
   rows.sort((x, y) => (y.daysSince == null ? 1e9 : y.daysSince) - (x.daysSince == null ? 1e9 : x.daysSince));
 
   const by = (st) => rows.filter((r) => r.status === st);
   const data = { generatedAt: new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }),
     today, thresholdDays: thr, total: rows.length,
-    counts: { alerta: by('alerta').length, standby: by('standby').length, off: by('off').length, por_comenzar: by('por_comenzar').length, ok: by('ok').length, sin_dato: by('sin_dato').length },
+    counts: { alerta: by('alerta').length, off: by('off').length, por_comenzar: by('por_comenzar').length, ok: by('ok').length, sin_dato: by('sin_dato').length },
     rows };
   fs.mkdirSync(OUT, { recursive: true });
   fs.writeFileSync(path.join(OUT, 'alert-data.json'), JSON.stringify(data, null, 2));
-  console.log(`Activos: ${rows.length} · ALERTA (>${thr}d sin reportar): ${data.counts.alerta} · standby: ${data.counts.standby} · off: ${data.counts.off} · por comenzar: ${data.counts.por_comenzar} · ok: ${data.counts.ok} · sin dato: ${data.counts.sin_dato}`);
+  console.log(`Total ${rows.length} · ALERTA (>${thr}d sin reportar): ${data.counts.alerta} · por comenzar: ${data.counts.por_comenzar} · ok: ${data.counts.ok} · off (sin plan): ${data.counts.off}${data.counts.sin_dato ? ' · sin dato: ' + data.counts.sin_dato : ''}`);
   console.log('\n— ALERTA (escribirles): —');
   for (const r of by('alerta')) console.log(`  ⚠ ${r.athlete} — ${r.daysSince == null ? 'SIN actividad registrada' : r.daysSince + ' días'} (último: ${r.lastActivity || '—'})${r.planExpired ? ' · plan vencido' : ''}`);
-  for (const [st, lbl] of [['standby', 'Standby (no se alertan)'], ['por_comenzar', 'Plan por comenzar'], ['sin_dato', 'Sin dato (reintentar)'], ['off', 'Off']]) {
+  for (const [st, lbl] of [['por_comenzar', 'Plan por comenzar'], ['sin_dato', 'Sin dato (reintentar)'], ['off', 'Off (sin plan activo)']]) {
     if (by(st).length) { console.log(`\n— ${lbl}: —`); for (const r of by(st)) console.log(`  · ${r.athlete}${r.motivo ? ' — ' + r.motivo : ''}`); }
   }
 }

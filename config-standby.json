@@ -1,10 +1,9 @@
 {
-  "_comment": "Estado de atletas para la alerta de adherencia. 'standby' = activos en el equipo pero sin entrenar ahora (no se alertan; se muestran aparte con motivo). 'off' = no son alumnos activos por el momento (se excluyen de la alerta). Actualizar cuando cambie la situación.",
+  "_comment": "off = atletas sin plan activo. Se detectan solos (no tienen active_plan / last_programmed_session), no hace falta listarlos. Acá van SOLO notas/motivos opcionales para algunos, que aparecen al lado del atleta en la alerta.",
   "updatedAt": "2026-10-12",
-  "standby": [
-    { "name": "Valentina Massi", "motivo": "Plan de inicio por armar" },
-    { "name": "Martín Oliva", "motivo": "Stop post 42K" },
-    { "name": "Damián Troncoso", "motivo": "Retomaría esta semana" }
-  ],
-  "off": []
+  "notes": {
+    "Valentina Massi": "Plan de inicio por armar",
+    "Martín Oliva": "Stop post 42K",
+    "Damián Troncoso": "Retomaría esta semana"
+  }
 }
