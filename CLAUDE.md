@@ -117,18 +117,44 @@ dan falsos positivos). Manejar **negaciones por-ocurrencia**: "sin dolor", "sin 
   3. **Sin nada:** informar "sin datos de ritmo".
 - Rutas web (por si hace falta): plan = `#/plan/{athlete_id}/{plan_id}/{meso_id}/{micro_id}/`.
 
-### Pendientes del "Asistente de informes" (guía 2026-10-11) — estado
-- **Marcar leído**: método existe (`web_notifications_readed`); **falta desplegarlo en el repo** (no está en `endurance.js` subido).
-- **Ritmo real vs objetivo**: datos alcanzables (arriba); **falta implementar** el parser de `records` → ritmo por bloque en el dossier.
-- **Informe de renovación**: falta Excel único con **una pestaña por atleta**, a demanda desde la lista que pasa el coach (no por fecha), recortado al **último mesociclo** (+ anterior si dura ≤2 semanas).
-- **Alerta de adherencia**: atletas activos sin feedback > 1 semana — **no implementado**.
-- **Modelo de activación**: la guía lo quiere **a demanda** (hoy hay Routine programada) — decisión pendiente.
+### "Asistente de informes" (guía 2026-10-11) — estado 2026-10-12: TODO DESPLEGADO
+- **Marcar leído** ✅ `markNotificationsRead` en el cliente + `mark-read.js` (ver §3). Probado: marcó 83 → 0 sin leer.
+- **Informe de renovación** ✅ `renewal.js` + `make_renewal_xlsx.py` (ver §3).
+- **Alerta de adherencia** ✅ `alert.js` + `make_alert_xlsx.py` (ver §3).
+- **Ritmo real vs objetivo** ✅ resuelto a nivel sesión (ritmo objetivo del bloque vs laps del FIT / ritmos del comentario).
+  Pendiente opcional: alinear lap↔bloque para un "real por bloque" quirúrgico (hoy es aproximado + tabla de laps completa).
+- **Modelo de activación**: la guía lo quiere **a demanda** (el coach pega la lista). La Routine diaria de feedback sigue programada.
 
 ## 3. Cómo se entrega el resultado
 
 Pipeline diario: **`node feedback-table.js`** → `report/feedback-table.html` + `report/feedback-data.json`
 (incluye `upcoming`: próximas competencias = agenda con fecha + countdowns con semanas).
 Luego **`python3 make_xlsx.py`** (necesita `pip install -q openpyxl`) → `report/Endurance-Feedback.xlsx`.
+Y para cerrar el ciclo: **`node mark-read.js`** marca como leídas las notificaciones sin leer (feedbacks +
+carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPUÉS de entregar el reporte**.
+`--dry` previsualiza; `node mark-read.js <id> <id>` marca puntuales.
+
+**Informe de renovación a demanda** (`renewal.js` + `make_renewal_xlsx.py`):
+- `node renewal.js --names "Nombre Apellido" ...` | `--file lista.txt` | `--dry` (previsualiza el match) | `<plan_id>`.
+  Resuelve nombre→atleta→plan vigente con `athlete_list` (fuzzy: acentos + tokens + Levenshtein; match flojo se
+  marca "⚠ revisar", nombre-de-pila solo en consulta multi-palabra NO matchea). → `report/renewal-<plan>-data.json`.
+- `python3 make_renewal_xlsx.py report/renewal-*-data.json` → **`report/Renovacion.xlsx`** (se regenera; 1 pestaña/atleta).
+  - Período = mesociclo que contiene HOY (+ el anterior si es corto ≤2 micros o si el actual aún no tiene ejecución).
+  - **Vista semanal**: 1 tabla por microciclo, columnas Lunes→Domingo, filas = atributos; banner combinado con el
+    rango de fechas y "X sesiones ejecutadas vs Y programadas". Fila **"Realizada"** (semáforo): verde=hecha como
+    programada · amarillo=hecha pero distinta (dolor / desvío en el comentario / sRPE ≤ prog−3 / parcial) · rojo=no hecha.
+  - **Adherencia = solo runs** (la fuerza no se reporta → no cuenta; se muestra pero no penaliza; nota al pie).
+  - **Ejecutada** = feedback manual **o FIT** (`resume_fit`). Ritmo real: FIT→laps; sin FIT→ritmos del comentario.
+  - Formato: columnas B–H ancho 30,86; nombre de atleta y plan en celdas combinadas; todo centrado/medio/ajustado.
+
+**Alerta de adherencia semanal** (`alert.js` + `make_alert_xlsx.py`):
+- `node alert.js` (todos) | `--days N` (umbral, def. 7) | `--names ...`. → `report/alert-data.json`;
+  `python3 make_alert_xlsx.py` → **`report/Alerta-Adherencia.xlsx`**.
+- **Activo** = tiene plan activo con `last_programmed_session`. **Off** = sin plan (se detecta solo = roster − activos);
+  notas/motivos opcionales en `config-standby.json` (`notes`: nombre→motivo). **Por comenzar** = plan futuro.
+- Última actividad por atleta = max fecha con feedback manual **o** `resume_fit` (el `fits[]` del plan trae
+  `session_date` vacío → NO usar). **Reintentos** por plan (3×): un plan grande puede dar timeout y no debe
+  volverse falsa alerta (si falla → estado `sin_dato`, no `alerta`). Plan vencido reciente **aplica igual** (debía reportar esta semana).
 
 **Planes y dossiers** (`plans.js` + modos de `make_xlsx.py`):
 - `node plans.js --report` → `plans-expiry-data.json`; `python3 make_xlsx.py expiry` → `Planes-Vencimientos.xlsx`
@@ -158,9 +184,10 @@ Luego **`python3 make_xlsx.py`** (necesita `pip install -q openpyxl`) → `repor
   (rama `main`) y corre el código legible: feedback diario + `plans.js --report --dossiers` +
   dossiers Excel + (solo lunes) `make_xlsx.py expiry`. Envía: Feedback siempre, Dossiers si hay,
   Vencimientos los lunes.
-- El **push desde sesiones de Claude está bloqueado** (token read-only → 403, incluso vía MCP):
-  los cambios de código los sube el usuario a mano por la web de GitHub (Upload files / editar).
-  `endurance.js` va DENTRO de `lib/`.
+- **Push: DESBLOQUEADO (2026-10-12)** tras instalar/reconectar la Claude GitHub App. Rama de trabajo
+  `claude/endurance-tool-feedback-table-1gybwt`. `git push -u origin <rama>` funciona desde la sesión.
+  (Histórico: antes daba 403 read-only y el usuario subía a mano.) `report/` está en `.gitignore` (datos sensibles).
+  `endurance.js` va DENTRO de `lib/`; se mantienen en sync `lib/endurance.js` y `endurance.js` raíz.
 - En `SendUserFile` de las rutinas: no forzar `status:"proactive"` (dio InputValidationError en
   el entorno de la rutina); indicar "usá un status válido según el schema".
 
