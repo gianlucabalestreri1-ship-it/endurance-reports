@@ -30,10 +30,10 @@ TIPO_LABEL = {"HIT": "HIT", "ThT": "ThT", "LIT": "LIT", "FZA": "Fuerza", "TEST":
 def header(ws, ncols, r=1, freeze=True):
     for c in range(1, ncols + 1):
         cell = ws.cell(row=r, column=c); cell.fill = HEAD_FILL; cell.font = HEAD_FONT
-        cell.border = BORDER; cell.alignment = Alignment(vertical="center", wrap_text=True)
+        cell.border = BORDER; cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
     ws.row_dimensions[r].height = 26
     if freeze:
-        ws.freeze_panes = ws.cell(row=r + 1, column=1)
+        ws.freeze_panes = "A" + str(r + 1)   # string, no materializa fila fantasma
 
 
 def widths(ws, ws_widths):
@@ -81,50 +81,57 @@ def build_daily():
     wb = Workbook()
 
     # ---- Feedback ----  (agrupado por atleta; cada tanda abre con una fila-separador
-    #                       combinada a lo ancho, con el nombre centrado; sin columna "Atleta")
+    #                       combinada a lo ancho con el nombre centrado, y cierra con una
+    #                       fila vacía de respiro; sin columna "Atleta")
     ws = wb.active; ws.title = "Feedback"
-    H = ["", "Fecha", "Mom.", "Sesión", "Deporte", "Tipo", "sRPE", "Feedback / comentario", "Dolor", "FIT (métrica)"]
+    H = ["", "Fecha", "Mom.", "Sesión", "Deporte", "Tipo", "sRPE", "Feedback / comentario", "Dolor", "FIT (laps + métrica)"]
     NC = len(H)
-    ws.append(H); header(ws, NC); widths(ws, [4, 12, 6, 26, 11, 20, 7, 58, 9, 24])
+    ws.append(H); header(ws, NC); widths(ws, [4, 12, 6, 24, 11, 18, 7, 52, 10, 30])
     SEP_FILL = PatternFill("solid", fgColor="C9D6E5")
     SEP_FONT = Font(name=A, bold=True, size=11, color="1F3A5F")
+    LMID = Alignment(horizontal="left", vertical="center", wrap_text=True)   # todo: izq + medio + ajustado
+    CMID = Alignment(horizontal="center", vertical="center", wrap_text=True)
     cur = None
     for r in rows:
         ath = (r.get("athlete") or "—").strip()
-        if ath != cur:                       # fila-separador con el nombre del atleta
+        if ath != cur:
+            if cur is not None:                     # fila vacía de respiro entre atletas
+                ws.append([""] * NC)
             cur = ath
-            ws.append([ath] + [""] * (NC - 1)); br = ws.max_row
+            ws.append([ath] + [""] * (NC - 1)); br = ws.max_row   # fila-separador con el nombre
             ws.merge_cells(start_row=br, start_column=1, end_row=br, end_column=NC)
-            for c in range(1, NC + 1):
-                sc = ws.cell(row=br, column=c); sc.fill = SEP_FILL; sc.border = BORDER
-            sc0 = ws.cell(row=br, column=1); sc0.value = ath; sc0.font = SEP_FONT
-            sc0.alignment = Alignment(horizontal="center", vertical="center")
+            sc0 = ws.cell(row=br, column=1); sc0.value = ath; sc0.fill = SEP_FILL; sc0.font = SEP_FONT
+            sc0.alignment = CMID; sc0.border = BORDER
         hot = (r.get("rpe") or 0) >= 6
         pc = r.get("painClass") or ("active" if r.get("pain") else "none")
         pain = (pc == "active"); improving = (pc == "improving")
         inten = r.get("intensity", {}) or {}; cat = inten.get("cat", "OTRO")
         tipo = TIPO_LABEL.get(cat, cat) + ((" · " + r["sessionType"]) if r.get("sessionType") else "")
-        fitv = ""
+        # FIT: resumen (km · dur · FC) + laps/vueltas
+        fit_lines = []
         if r.get("hasFit"):
-            parts = [r.get("fitDistance") or "", r.get("fitDuration") or ""]
-            if r.get("fitHr"): parts.append("FC" + str(r.get("fitHr")))
-            fitv = " · ".join(p for p in parts if p)
+            summ = [r.get("fitDistance") or "", r.get("fitDuration") or ""]
+            if r.get("fitHr"): summ.append("FC" + str(r.get("fitHr")))
+            summ = " · ".join(p for p in summ if p)
+            if summ: fit_lines.append(summ)
+            for L in (r.get("fitLaps") or []):
+                fit_lines.append("L%s %s %.2fkm %s %s/%s" % (L.get("n"), L.get("time", ""), L.get("distKm", 0),
+                                                             L.get("pace", ""), L.get("hrA", ""), L.get("hrM", "")))
+        fitv = "\n".join(fit_lines) if fit_lines else "—"
         dolor_val = "Sí" if pain else ("Mejora 🟣" if improving else "—")
         ws.append(["●" if r.get("unread") else "", r.get("date", ""), r.get("moment", ""),
                    r.get("session", ""), r.get("sport", ""), tipo, r.get("rpe"), (r.get("comment") or "").strip(),
-                   dolor_val, fitv or "—"])
+                   dolor_val, fitv])
         i = ws.max_row
         rf = F_PAIN if pain else (F_IMPROVE if improving else (F_HOT if hot else (F_UNREAD if r.get("unread") else None)))
         for c in range(1, NC + 1):
-            cell = ws.cell(row=i, column=c); cell.font = CELL; cell.border = BORDER
-            cell.alignment = WRAP if c in (4, 8) else TOP
+            cell = ws.cell(row=i, column=c); cell.font = CELL if c != 10 else Font(name=A, size=8)
+            cell.border = BORDER; cell.alignment = CMID if c in (1, 3, 7, 9) else LMID
             if rf and c != 6: cell.fill = rf
-        ws.cell(row=i, column=1).alignment = CTR
-        if r.get("unread"): d.font = Font(name=A, size=10, color="2E9E5B", bold=True)
-        tipo_cell(ws.cell(row=i, column=7), inten)
-        s = ws.cell(row=i, column=8); s.alignment = CTR; s.font = HOT if hot else BOLD
-        dl = ws.cell(row=i, column=10); dl.alignment = CTR
-        if pain: dl.font = Font(name=A, size=10, bold=True, color="C00000")
+        tipo_cell(ws.cell(row=i, column=6), inten)
+        ws.cell(row=i, column=7).font = HOT if hot else BOLD                      # sRPE
+        if pain: ws.cell(row=i, column=9).font = Font(name=A, size=10, bold=True, color="C00000")      # Dolor
+        elif improving: ws.cell(row=i, column=9).font = Font(name=A, size=10, bold=True, color="6B3FA0")  # Mejora (lila)
 
     # ---- ⚠ Atención ----
     wa = wb.create_sheet("⚠ Atención")
@@ -227,7 +234,7 @@ def build_daily():
         if (u.get("priority") or "") == "A": pcell.font = Font(name=A, size=10, bold=True, color="C00000")
         rr += 1
 
-    wb.save(OUT); drop_ghost_row(OUT, "Feedback")
+    wb.save(OUT)   # sin drop_ghost_row: el freeze por string ya evita la fila fantasma, y delete_rows corrompe celdas combinadas
     print(f"saved {OUT} | feedback {len(rows)} | atención {len(att)} | competencias {len(comps)} | próximas {len(rows_up)}")
 
 
