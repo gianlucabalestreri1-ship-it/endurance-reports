@@ -21,6 +21,7 @@ HOT = Font(name=A, size=11, bold=True, color="C00000")
 thin = Side(style="thin", color="D9D9D9"); BORDER = Border(left=thin, right=thin, top=thin, bottom=thin)
 WRAP = Alignment(wrap_text=True, vertical="top"); CTR = Alignment(horizontal="center", vertical="top"); TOP = Alignment(vertical="top")
 F_UNREAD = PatternFill("solid", fgColor="E7F7EE"); F_HOT = PatternFill("solid", fgColor="FDE7E7"); F_PAIN = PatternFill("solid", fgColor="FFF1DD")
+F_IMPROVE = PatternFill("solid", fgColor="EBE0F7")   # lila: progresión (buena) en un dolor/molestia
 TIPO_FILL = {"red": PatternFill("solid", fgColor="E5484D"), "yellow": PatternFill("solid", fgColor="D9A400"),
              "blue": PatternFill("solid", fgColor="3B82F6"), "gray": PatternFill("solid", fgColor="9AA0AA")}
 TIPO_LABEL = {"HIT": "HIT", "ThT": "ThT", "LIT": "LIT", "FZA": "Fuerza", "TEST": "Test", "OTRO": "—"}
@@ -84,15 +85,18 @@ def build_daily():
     H = ["", "Atleta", "Fecha", "Mom.", "Sesión", "Deporte", "Tipo", "sRPE", "Feedback / comentario", "Dolor", "FIT (métrica)"]
     ws.append(H); header(ws, len(H)); widths(ws, [4, 20, 12, 6, 26, 11, 20, 7, 60, 8, 20])
     for r in rows:
-        hot = (r.get("rpe") or 0) >= 6; pain = r.get("pain")
+        hot = (r.get("rpe") or 0) >= 6
+        pc = r.get("painClass") or ("active" if r.get("pain") else "none")
+        pain = (pc == "active"); improving = (pc == "improving")
         inten = r.get("intensity", {}) or {}; cat = inten.get("cat", "OTRO")
         tipo = TIPO_LABEL.get(cat, cat) + ((" · " + r["sessionType"]) if r.get("sessionType") else "")
         fitv = ((r.get("fitDistance") or "") + ((" · " + r["fitDuration"]) if r.get("fitDuration") else "")) if r.get("hasFit") else ""
+        dolor_val = "Sí" if pain else ("Mejora 🟣" if improving else "—")
         ws.append(["●" if r.get("unread") else "", r.get("athlete", ""), r.get("date", ""), r.get("moment", ""),
                    r.get("session", ""), r.get("sport", ""), tipo, r.get("rpe"), (r.get("comment") or "").strip(),
-                   "Sí" if pain else "—", fitv or "—"])
+                   dolor_val, fitv or "—"])
         i = ws.max_row
-        rf = F_PAIN if pain else (F_HOT if hot else (F_UNREAD if r.get("unread") else None))
+        rf = F_PAIN if pain else (F_IMPROVE if improving else (F_HOT if hot else (F_UNREAD if r.get("unread") else None)))
         for c in range(1, len(H) + 1):
             cell = ws.cell(row=i, column=c); cell.font = CELL; cell.border = BORDER
             cell.alignment = WRAP if c in (5, 9) else TOP
@@ -135,27 +139,30 @@ def build_daily():
     wa.freeze_panes = wa.cell(row=start + 1, column=1)
     widths(wa, [16, 20, 12, 26, 10, 7, 60])
     att = []
+    def _pc(x): return x.get("painClass") or ("active" if x.get("pain") else "none")
     for r in rows:
-        reasons = []
+        pc = _pc(r); reasons = []
         if (r.get("rpe") or 0) >= 6: reasons.append("sRPE≥6")
-        if r.get("pain"): reasons.append("Dolor")
+        if pc == "active": reasons.append("Dolor")
+        elif pc == "improving": reasons.append("Molestia ↓ (mejora)")
         if reasons:
             att.append(("+".join(reasons), r.get("athlete", ""), r.get("date", ""), r.get("session", ""),
                         TIPO_LABEL.get((r.get("intensity") or {}).get("cat", "OTRO")), r.get("rpe"),
-                        (r.get("comment") or "").strip()[:200], bool(r.get("pain"))))
+                        (r.get("comment") or "").strip()[:200], pc))
     for c in comps:
         att.append(("Competencia ✓", c.get("athlete", ""), c.get("date", ""), c.get("competition") or c.get("session", ""),
-                    "Comp " + (c.get("priority") or ""), c.get("rpe"), (c.get("comment") or "").strip()[:200], bool(c.get("pain"))))
-    att = sorted(att, key=lambda x: (0 if "Dolor" in x[0] else 1, -(x[5] or 0)))
+                    "Comp " + (c.get("priority") or ""), c.get("rpe"), (c.get("comment") or "").strip()[:200], _pc(c)))
+    att = sorted(att, key=lambda x: (0 if "Dolor" in x[0] else (2 if "mejora" in x[0] else 1), -(x[5] or 0)))
     rr = start + 1
-    for motivo, ath, fecha, sess, tipo, rpe, det, pain in att:
+    for motivo, ath, fecha, sess, tipo, rpe, det, pc in att:
         for i, v in enumerate([motivo, ath, fecha, sess, tipo, rpe, det], 1):
             cell = wa.cell(row=rr, column=i, value=v); cell.font = CELL; cell.border = BORDER
             cell.alignment = WRAP if i == 7 else (CTR if i in (3, 5, 6) else TOP)
-        fill = F_PAIN if pain else F_HOT
+        fill = F_PAIN if pc == "active" else (F_IMPROVE if pc == "improving" else F_HOT)
         for i in range(1, 8):
             if i != 5: wa.cell(row=rr, column=i).fill = fill
-        wa.cell(row=rr, column=1).font = Font(name=A, size=9, bold=True, color="C00000")
+        motivo_color = "6B3FA0" if pc == "improving" else "C00000"
+        wa.cell(row=rr, column=1).font = Font(name=A, size=9, bold=True, color=motivo_color)
         wa.cell(row=rr, column=6).font = HOT if (rpe or 0) >= 6 else BOLD
         rr += 1
 
