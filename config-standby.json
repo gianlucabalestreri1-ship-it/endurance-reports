@@ -1,0 +1,10 @@
+{
+  "_comment": "Estado de atletas para la alerta de adherencia. 'standby' = activos en el equipo pero sin entrenar ahora (no se alertan; se muestran aparte con motivo). 'off' = no son alumnos activos por el momento (se excluyen de la alerta). Actualizar cuando cambie la situación.",
+  "updatedAt": "2026-10-12",
+  "standby": [
+    { "name": "Valentina Massi", "motivo": "Plan de inicio por armar" },
+    { "name": "Martín Oliva", "motivo": "Stop post 42K" },
+    { "name": "Damián Troncoso", "motivo": "Retomaría esta semana" }
+  ],
+  "off": []
+}
