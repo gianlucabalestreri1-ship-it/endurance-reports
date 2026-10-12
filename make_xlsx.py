@@ -80,28 +80,46 @@ def build_daily():
     OUT = "report/Endurance-Feedback.xlsx"
     wb = Workbook()
 
-    # ---- Feedback ----
+    # ---- Feedback ----  (agrupado por atleta; cada tanda abre con una fila-separador
+    #                       combinada a lo ancho, con el nombre centrado; sin columna "Atleta")
     ws = wb.active; ws.title = "Feedback"
-    H = ["", "Atleta", "Fecha", "Mom.", "Sesión", "Deporte", "Tipo", "sRPE", "Feedback / comentario", "Dolor", "FIT (métrica)"]
-    ws.append(H); header(ws, len(H)); widths(ws, [4, 20, 12, 6, 26, 11, 20, 7, 60, 8, 20])
+    H = ["", "Fecha", "Mom.", "Sesión", "Deporte", "Tipo", "sRPE", "Feedback / comentario", "Dolor", "FIT (métrica)"]
+    NC = len(H)
+    ws.append(H); header(ws, NC); widths(ws, [4, 12, 6, 26, 11, 20, 7, 58, 9, 24])
+    SEP_FILL = PatternFill("solid", fgColor="C9D6E5")
+    SEP_FONT = Font(name=A, bold=True, size=11, color="1F3A5F")
+    cur = None
     for r in rows:
+        ath = (r.get("athlete") or "—").strip()
+        if ath != cur:                       # fila-separador con el nombre del atleta
+            cur = ath
+            ws.append([ath] + [""] * (NC - 1)); br = ws.max_row
+            ws.merge_cells(start_row=br, start_column=1, end_row=br, end_column=NC)
+            for c in range(1, NC + 1):
+                sc = ws.cell(row=br, column=c); sc.fill = SEP_FILL; sc.border = BORDER
+            sc0 = ws.cell(row=br, column=1); sc0.value = ath; sc0.font = SEP_FONT
+            sc0.alignment = Alignment(horizontal="center", vertical="center")
         hot = (r.get("rpe") or 0) >= 6
         pc = r.get("painClass") or ("active" if r.get("pain") else "none")
         pain = (pc == "active"); improving = (pc == "improving")
         inten = r.get("intensity", {}) or {}; cat = inten.get("cat", "OTRO")
         tipo = TIPO_LABEL.get(cat, cat) + ((" · " + r["sessionType"]) if r.get("sessionType") else "")
-        fitv = ((r.get("fitDistance") or "") + ((" · " + r["fitDuration"]) if r.get("fitDuration") else "")) if r.get("hasFit") else ""
+        fitv = ""
+        if r.get("hasFit"):
+            parts = [r.get("fitDistance") or "", r.get("fitDuration") or ""]
+            if r.get("fitHr"): parts.append("FC" + str(r.get("fitHr")))
+            fitv = " · ".join(p for p in parts if p)
         dolor_val = "Sí" if pain else ("Mejora 🟣" if improving else "—")
-        ws.append(["●" if r.get("unread") else "", r.get("athlete", ""), r.get("date", ""), r.get("moment", ""),
+        ws.append(["●" if r.get("unread") else "", r.get("date", ""), r.get("moment", ""),
                    r.get("session", ""), r.get("sport", ""), tipo, r.get("rpe"), (r.get("comment") or "").strip(),
                    dolor_val, fitv or "—"])
         i = ws.max_row
         rf = F_PAIN if pain else (F_IMPROVE if improving else (F_HOT if hot else (F_UNREAD if r.get("unread") else None)))
-        for c in range(1, len(H) + 1):
+        for c in range(1, NC + 1):
             cell = ws.cell(row=i, column=c); cell.font = CELL; cell.border = BORDER
-            cell.alignment = WRAP if c in (5, 9) else TOP
-            if rf and c != 7: cell.fill = rf
-        d = ws.cell(row=i, column=1); d.alignment = CTR
+            cell.alignment = WRAP if c in (4, 8) else TOP
+            if rf and c != 6: cell.fill = rf
+        ws.cell(row=i, column=1).alignment = CTR
         if r.get("unread"): d.font = Font(name=A, size=10, color="2E9E5B", bold=True)
         tipo_cell(ws.cell(row=i, column=7), inten)
         s = ws.cell(row=i, column=8); s.alignment = CTR; s.font = HOT if hot else BOLD

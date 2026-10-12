@@ -217,6 +217,20 @@ async function main() {
   const sessionRows = ET.groupBySession(atletas.concat(fit))
     .sort((a, b) => (b.unread - a.unread) || (b.pain - a.pain) || ((b.rpe || 0) - (a.rpe || 0)));
 
+  // Enriquecer cada fila con la MÉTRICA REAL DEL DISPOSITIVO (FIT): la notificación
+  // key_session_fit solo existe para sesiones clave, así que para el resto leemos el
+  // detalle de la sesión (`session` → resume) igual que renovación/adherencia.
+  async function enrichFit(r) {
+    if (!r.sessionId) return;
+    try {
+      const fm = ET.fitMetric(await ET.getSession(session, r.sessionId));
+      if (fm) { r.hasFit = true; r.fitDistance = fm.distance || r.fitDistance; r.fitDuration = fm.duration || r.fitDuration; r.fitHr = fm.hr; r.fitLaps = fm.laps; }
+    } catch (_) { /* sesión sin detalle accesible */ }
+  }
+  for (let i = 0; i < sessionRows.length; i += 6) {
+    await Promise.all(sessionRows.slice(i, i + 6).map(enrichFit));
+  }
+
   // "Atletas" is the notification SECTION (panel tab), not a headcount. Track the
   // distinct-athlete count separately so the numbers are never misread.
   const athletes = new Set(atletas.concat(fit).map((r) => (r.athlete || '').trim()).filter(Boolean)).size;
