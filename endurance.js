@@ -68,6 +68,14 @@ function listNotifications(session) {
   return call('list_web_notification', {}, session).then((r) => r.web_notifications || []);
 }
 
+// Mark notifications as read (status pending -> read) so the next run doesn't
+// re-report them. `ids` is an array of web-notification ids. Única escritura
+// permitida del flujo. Devuelve {} en caso de éxito.
+function markNotificationsRead(session, ids) {
+  if (!ids || !ids.length) return Promise.resolve({ skipped: true });
+  return call('web_notifications_readed', { notifications_ids: ids }, session);
+}
+
 // Control-panel agenda: plans whose last session falls within the next ~7 days,
 // recently expired plans, and upcoming competitions with exact dates.
 // Response: { plans:[{plan_id,athlete_id,title,last_session_date,athlete_name}],
@@ -310,7 +318,7 @@ function groupBySession(records) {
 }
 
 module.exports = {
-  login, listNotifications, parseNotification, groupBySession,
+  login, listNotifications, markNotificationsRead, parseNotification, groupBySession,
   classifyType, detectPain, decode, field, tailField, sectionOf,
   getUpcomingActivities, getTrainingPlan, flattenPlanSessions,
 };
