@@ -68,7 +68,14 @@ def build_daily():
     data = json.load(open("report/feedback-data.json"))
     rows = data["sessionRows"]; fit = data["fit"]; comps = data["competitions"]; cds = data["countdowns"]
     upcoming = data.get("upcoming") or []
-    rows = sorted(rows, key=lambda r: (0 if r.get("unread") else 1, 0 if r.get("pain") else 1, -(r.get("rpe") or 0)))
+    # Hoja Feedback: agrupar por atleta (alfabético, sin acentos/mayúsc.) y por fecha,
+    # para no saltar de un atleta a otro y mantener contexto. La priorización por
+    # dolor/sRPE vive en la hoja "⚠ Atención".
+    def _akey(r):
+        n = unicodedata.normalize("NFD", r.get("athlete", "") or "")
+        n = "".join(c for c in n if unicodedata.category(c) != "Mn").lower().strip()
+        return (n, r.get("date", "") or "", r.get("moment", "") or "")
+    rows = sorted(rows, key=_akey)
     OUT = "report/Endurance-Feedback.xlsx"
     wb = Workbook()
 
@@ -156,6 +163,7 @@ def build_daily():
     wc = wb.create_sheet("Competencias")
     H3 = ["", "Atleta", "Fecha", "Competición", "Prio", "sRPE", "Feedback", "Estado"]
     wc.append(H3); header(wc, len(H3)); widths(wc, [4, 20, 12, 30, 6, 7, 50, 14])
+    comps = sorted(comps, key=lambda c: (_akey({"athlete": c.get("athlete", "")})[0], c.get("date", "") or ""))
     for c in comps:
         wc.append(["●" if c.get("unread") else "", c.get("athlete", ""), c.get("date", ""),
                    c.get("competition") or c.get("session", ""), c.get("priority", ""), c.get("rpe"),
@@ -178,6 +186,7 @@ def build_daily():
     rows_up = upcoming if upcoming else [
         {"athlete": c.get("athlete", ""), "competition": c.get("competition", ""), "date": c.get("date", ""),
          "aviso": c.get("title", ""), "priority": c.get("priority", "A")} for c in cds]
+    rows_up = sorted(rows_up, key=lambda u: (_akey({"athlete": u.get("athlete", "")})[0], u.get("date", "") or ""))
     for u in rows_up:
         aviso = u.get("aviso", "") or ("esta semana" if u.get("source") == "agenda" else "")
         if u.get("avisadoEl"):
