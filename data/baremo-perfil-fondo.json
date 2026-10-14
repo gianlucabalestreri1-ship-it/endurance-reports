@@ -1,0 +1,45 @@
+{
+  "id": "baremo_perfil_fisiologico_fondo",
+  "titulo": "Baremo de referencia de Perfil Fisiológico para Corredores/as de Fondo",
+  "fuente": "Tabla 2.1.7",
+  "nota": "AIYM = nivel de perfil fisiológico (0 = muy bajo … 10 = excelente). Valores H = hombres, M = mujeres. Econó­mico: menor es mejor. Índice de resistencia = nivel mínimo (valores negativos). Cargado 2026-10-14.",
+  "clasificacion_por_aiym": {
+    "10": "EXCELENTE", "9": "EXCELENTE",
+    "8": "MUY BUENO", "7": "MUY BUENO",
+    "6": "BUENO", "5": "BUENO",
+    "4": "MEDIO", "3": "MEDIO",
+    "2": "BAJO", "1": "BAJO",
+    "0": "MUY BAJO"
+  },
+  "columnas": {
+    "aiym": "Perfil fisiológico AIYM (0-10)",
+    "vo2max_h": "VO2 máx hombres (ml/kg/min)",
+    "vo2max_m": "VO2 máx mujeres (ml/kg/min)",
+    "economia_ml_kg_km": "Economía (ml/kg/km)",
+    "economia_kcal_kg_km": "Economía (kcal/kg/km)",
+    "vvo2max_h": "vVO2 máx hombres (km/h)",
+    "vvo2max_m": "vVO2 máx mujeres (km/h)",
+    "v_2do_umbral_h": "Velocidad 2do umbral hombres (km/h)",
+    "v_2do_umbral_m": "Velocidad 2do umbral mujeres (km/h)",
+    "v_1er_umbral_h": "Velocidad 1er umbral hombres (km/h)",
+    "v_1er_umbral_m": "Velocidad 1er umbral mujeres (km/h)",
+    "dmda_ml_kg": "DMDA (ml/kg)",
+    "capacidad_anaerobica_cal_kg": "Capacidad anaeróbica (cal/kg)",
+    "umbral2_pct_vo2max": "2do umbral (% VO2 máx)",
+    "indice_resistencia_nivel_minimo": "Índice de resistencia (nivel mínimo)",
+    "rva": "RVA"
+  },
+  "rows": [
+    {"clasificacion": "EXCELENTE", "aiym": 10, "vo2max_h": 85, "vo2max_m": 75, "economia_ml_kg_km": 160, "economia_kcal_kg_km": 0.840, "vvo2max_h": 24.0, "vvo2max_m": 21.8, "v_2do_umbral_h": 21.6, "v_2do_umbral_m": 19.6, "v_1er_umbral_h": 18.5, "v_1er_umbral_m": 16.8, "dmda_ml_kg": 75, "capacidad_anaerobica_cal_kg": 390, "umbral2_pct_vo2max": 95, "indice_resistencia_nivel_minimo": -3.0, "rva": 10.0},
+    {"clasificacion": "EXCELENTE", "aiym": 9, "vo2max_h": 80, "vo2max_m": 70, "economia_ml_kg_km": 171, "economia_kcal_kg_km": 0.906, "vvo2max_h": 22.2, "vvo2max_m": 20.0, "v_2do_umbral_h": 20.0, "v_2do_umbral_m": 18.0, "v_1er_umbral_h": 17.1, "v_1er_umbral_m": 15.4, "dmda_ml_kg": 70, "capacidad_anaerobica_cal_kg": 374, "umbral2_pct_vo2max": 93, "indice_resistencia_nivel_minimo": -3.5, "rva": 9.3},
+    {"clasificacion": "MUY BUENO", "aiym": 8, "vo2max_h": 75, "vo2max_m": 65, "economia_ml_kg_km": 182, "economia_kcal_kg_km": 0.972, "vvo2max_h": 21.8, "vvo2max_m": 19.0, "v_2do_umbral_h": 19.6, "v_2do_umbral_m": 17.1, "v_1er_umbral_h": 16.7, "v_1er_umbral_m": 14.5, "dmda_ml_kg": 65, "capacidad_anaerobica_cal_kg": 358, "umbral2_pct_vo2max": 90, "indice_resistencia_nivel_minimo": -4.0, "rva": 8.6},
+    {"clasificacion": "MUY BUENO", "aiym": 7, "vo2max_h": 70, "vo2max_m": 60, "economia_ml_kg_km": 193, "economia_kcal_kg_km": 1.038, "vvo2max_h": 20.0, "vvo2max_m": 17.5, "v_2do_umbral_h": 18.0, "v_2do_umbral_m": 15.8, "v_1er_umbral_h": 15.2, "v_1er_umbral_m": 13.8, "dmda_ml_kg": 60, "capacidad_anaerobica_cal_kg": 342, "umbral2_pct_vo2max": 85, "indice_resistencia_nivel_minimo": -4.5, "rva": 7.9},
+    {"clasificacion": "BUENO", "aiym": 6, "vo2max_h": 65, "vo2max_m": 55, "economia_ml_kg_km": 204, "economia_kcal_kg_km": 1.104, "vvo2max_h": 19.0, "vvo2max_m": 16.5, "v_2do_umbral_h": 17.1, "v_2do_umbral_m": 14.9, "v_1er_umbral_h": 14.3, "v_1er_umbral_m": 12.5, "dmda_ml_kg": 55, "capacidad_anaerobica_cal_kg": 326, "umbral2_pct_vo2max": 83, "indice_resistencia_nivel_minimo": -5.0, "rva": 7.2},
+    {"clasificacion": "BUENO", "aiym": 5, "vo2max_h": 60, "vo2max_m": 50, "economia_ml_kg_km": 215, "economia_kcal_kg_km": 1.170, "vvo2max_h": 17.5, "vvo2max_m": 14.8, "v_2do_umbral_h": 15.8, "v_2do_umbral_m": 13.3, "v_1er_umbral_h": 13.1, "v_1er_umbral_m": 11.1, "dmda_ml_kg": 50, "capacidad_anaerobica_cal_kg": 310, "umbral2_pct_vo2max": 80, "indice_resistencia_nivel_minimo": -6.0, "rva": 6.5},
+    {"clasificacion": "MEDIO", "aiym": 4, "vo2max_h": 55, "vo2max_m": 45, "economia_ml_kg_km": 226, "economia_kcal_kg_km": 1.236, "vvo2max_h": 16.0, "vvo2max_m": 13.2, "v_2do_umbral_h": 14.4, "v_2do_umbral_m": 11.9, "v_1er_umbral_h": 11.8, "v_1er_umbral_m": 9.8, "dmda_ml_kg": 45, "capacidad_anaerobica_cal_kg": 293, "umbral2_pct_vo2max": 78, "indice_resistencia_nivel_minimo": -7.0, "rva": 5.8},
+    {"clasificacion": "MEDIO", "aiym": 3, "vo2max_h": 50, "vo2max_m": 40, "economia_ml_kg_km": 237, "economia_kcal_kg_km": 1.302, "vvo2max_h": 14.6, "vvo2max_m": 11.7, "v_2do_umbral_h": 13.1, "v_2do_umbral_m": 10.6, "v_1er_umbral_h": 10.7, "v_1er_umbral_m": 8.6, "dmda_ml_kg": 40, "capacidad_anaerobica_cal_kg": 276, "umbral2_pct_vo2max": 75, "indice_resistencia_nivel_minimo": -8.0, "rva": 5.1},
+    {"clasificacion": "BAJO", "aiym": 2, "vo2max_h": 45, "vo2max_m": 35, "economia_ml_kg_km": 248, "economia_kcal_kg_km": 1.368, "vvo2max_h": 13.2, "vvo2max_m": 10.2, "v_2do_umbral_h": 11.9, "v_2do_umbral_m": 9.2, "v_1er_umbral_h": 9.5, "v_1er_umbral_m": 7.4, "dmda_ml_kg": 35, "capacidad_anaerobica_cal_kg": 259, "umbral2_pct_vo2max": 70, "indice_resistencia_nivel_minimo": -9.0, "rva": 4.4},
+    {"clasificacion": "BAJO", "aiym": 1, "vo2max_h": 40, "vo2max_m": 30, "economia_ml_kg_km": 259, "economia_kcal_kg_km": 1.434, "vvo2max_h": 11.7, "vvo2max_m": 8.7, "v_2do_umbral_h": 10.5, "v_2do_umbral_m": 7.8, "v_1er_umbral_h": 8.3, "v_1er_umbral_m": 6.1, "dmda_ml_kg": 30, "capacidad_anaerobica_cal_kg": 242, "umbral2_pct_vo2max": 65, "indice_resistencia_nivel_minimo": -11.0, "rva": 3.7},
+    {"clasificacion": "MUY BAJO", "aiym": 0, "vo2max_h": 35, "vo2max_m": 25, "economia_ml_kg_km": 270, "economia_kcal_kg_km": 1.500, "vvo2max_h": 10.2, "vvo2max_m": 7.1, "v_2do_umbral_h": 9.2, "v_2do_umbral_m": 6.4, "v_1er_umbral_h": 7.1, "v_1er_umbral_m": 4.9, "dmda_ml_kg": 25, "capacidad_anaerobica_cal_kg": 225, "umbral2_pct_vo2max": 60, "indice_resistencia_nivel_minimo": -13.0, "rva": 3.0}
+  ]
+}
