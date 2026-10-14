@@ -1,0 +1,126 @@
+{
+  "id": "sesiones_microciclos_juan_del_campo",
+  "titulo": "Microciclos y progresiones de sesiones — Maratón y Media Maratón",
+  "fuente": "Juan del Campo — Curso avanzado (Módulo 1: Maratón / Media Maratón)",
+  "nota": "Ejemplos de referencia (mayormente atleta aficionado de ~3h en maratón). Modelo de zonas propio (Z0-Z7). Para refrescar tipo de sesión y progresión por período; decide el entrenador.",
+  "zonas_vam": {
+    "referencia": "Velocidades para VAM de 4'/km (ajustar a la VAM real del atleta)",
+    "zonas": [
+      {"zona": "Z0", "pct_vam": "50-55%", "trabajo": "Regenerativo", "ritmo_vam4": "6'00-5'44"},
+      {"zona": "Z1", "pct_vam": "56-65%", "trabajo": "Umbral aeróbico", "ritmo_vam4": "5'43-5'20"},
+      {"zona": "Z1+", "pct_vam": "66-73%", "trabajo": "Supra umbral aeróbico", "ritmo_vam4": "5'21-4'45"},
+      {"zona": "Z2", "pct_vam": "74-80%", "trabajo": "MLSS", "ritmo_vam4": "5'03-4'44"},
+      {"zona": "Z3", "pct_vam": "81-86%", "trabajo": "Umbral anaeróbico", "ritmo_vam4": "4'45-4'30"},
+      {"zona": "Z3+", "pct_vam": "87-96%", "trabajo": "Supra umbral anaeróbico", "ritmo_vam4": "4'31-4'06"},
+      {"zona": "Z4", "pct_vam": "97-100%", "trabajo": "VO2máx", "ritmo_vam4": "4'07-4'00"},
+      {"zona": "Z5", "pct_vam": "101-120%", "trabajo": "Capacidad anaeróbica", "ritmo_vam4": "3'59-3'40"},
+      {"zona": "Z6", "pct_vam": "121-140%", "trabajo": "Supra capacidad / potencia anaeróbica", "ritmo_vam4": "3'41-2'24"},
+      {"zona": "Z7", "pct_vam": "+140%", "trabajo": "Potencia anaeróbica aláctica", "ritmo_vam4": "-2'24"}
+    ]
+  },
+  "ajuste_ritmos_vs_maraton": {
+    "nota": "Offsets de ritmo relativos al ritmo de maratón objetivo",
+    "Z4_500m": "-15 a -18 s/km vs ritmo maratón",
+    "Z4_1000m": "-10 a -12 s/km",
+    "Z3_2000m": "-8 a -10 s/km",
+    "Z3_3000_4000m": "-5 s/km",
+    "Z3_ritmo_maraton": "2×6000 / 2×7000 a ritmo maratón",
+    "Z2_rodar_10_16km": "+35 a +45 s/km",
+    "Z1_rodar_17_22km": "+50 a +60 s/km"
+  },
+  "periodos": {
+    "introduccion": {
+      "microciclo_ejemplo_km": 40,
+      "sesiones": [
+        "Fuerza + 8 km Z1",
+        "6 km Z1 + 3000 Z2 + 6×400 Z3+ (R 1')",
+        "Fuerza + 8 km Z1",
+        "Fuerza y estabilización lumbopélvica + 12 km Z1 + musculatura de pies"
+      ],
+      "distribucion_zonas": {"Z1": "85%", "Z2": "7,5%", "Z3/Z3+": "6%"}
+    },
+    "especifico_I": {
+      "objetivos": ["Incrementar fuerza", "Iniciar velocidad umbral (interválico medio/corto 300-400m, Z3)", "Desarrollar capacidad aeróbica (Z1)", "Micro series media maratón: Z2 y Z3+"],
+      "microciclo_ejemplo_km": 59,
+      "distribucion_zonas": {"Z1": "79,6%", "Z2": "6,7%", "Z3/Z3+": "10,1%", "Z4": "4%"},
+      "sesiones_ejemplo_amateur_3h": [
+        "3000 Z3 + 4×1000 Z4 + 3000 Z3 (R 2' y 1'30)",
+        "4000 Z2 + 2×(4×500) Z3+ (R 3', 1'15, 2'30)",
+        "8×400 Z4 + 5000 Z2 (R 1'15 y 3')",
+        "10×500 Z3+ + 5000 Z2 (R 1'15 y 3')"
+      ],
+      "semana_ejemplo_km": 69,
+      "semana_ejemplo": {
+        "Lunes": "Descanso",
+        "Martes": "5 km Z1 + técnica · 2000 Z2 – 3000 Z2 – 2000 Z3 (R 2') · 1 km Z0  [13 km]",
+        "Miércoles": "12 km Z1 + Fuerza [12 km]",
+        "Jueves": "5 km Z1 + técnica · 4 km Z2 + 2000 Z2 + 2×1000 Z3 (R 2'-1') · 1 km Z0 [14 km]",
+        "Viernes": "Descanso",
+        "Sábado": "10 km Z1 + 2 km Z1+ + Fuerza [12 km]",
+        "Domingo": "Fortalecimiento pie + lumbopélvico + 18 km Z1 [18 km]"
+      }
+    },
+    "especifico_II": {
+      "objetivos": ["Desarrollar velocidad en el umbral (macro series media maratón Z3 y Z3+)", "Tiradas largas progresivas Z1→Z2→Z3", "Aumento del volumen en Z2/Z3/Z3+", "Tirada larga progresiva finalizando a ritmo de media maratón"],
+      "microciclo_ejemplo_km": 71,
+      "distribucion_zonas": {"Z1": "67%", "Z2": "15,4%", "Z3/Z3+": "18,3%"},
+      "sesiones_ejemplo_amateur_3h": [
+        "3×5000 Z2 (R 2'30)",
+        "2×6000 Z2 (R 2')",
+        "8000 + 4000 Z2 (R 2')",
+        "4×3000 Z2 (R 2'30)",
+        "16 km (12 km Z2 + 4 km Z3)",
+        "3×7000 m (R 1'30) [elite/avanzado]"
+      ],
+      "semana_ejemplo_km": 79,
+      "semana_ejemplo": {
+        "Lunes": "Descanso",
+        "Martes": "5 km Z1 + técnica · 2×6000 Z2 (R 2') · 0,5 km Z0 [17,5 km]",
+        "Miércoles": "12 km Z1 + Fuerza [12 km]",
+        "Jueves": "5 km Z1 + técnica · 5000 Z2 + 5×1000 Z3 · 0,5 km Z0 [14,5 km]",
+        "Viernes": "10 km Z1 + 2 km Z1+ + Fuerza [12 km]",
+        "Sábado": "Descanso",
+        "Domingo": "Fortalecimiento pie + lumbopélvico · 18 km Z1 + 4 km Z2 [22 km]"
+      }
+    },
+    "afinamiento": {
+      "nota": "Tapering: reducción del volumen. Ritmos de menos a más, finalizando ligeramente por debajo del ritmo de carrera; recuperaciones en aumento.",
+      "microciclo_ejemplo_km": 48,
+      "sesiones_ejemplo_amateur_3h": [
+        "3000 – 2000 – 1000 Z2/Z3 (R 1'30)",
+        "2×(2000 – 1000) Z3/Z4 (R 1' y 2')",
+        "8×500 Z4 (R 1')"
+      ],
+      "semana_ejemplo": {
+        "Lunes": "Descanso",
+        "Martes": "6 km Z1 + técnica · 3000–2000–1000 Z2 (R 1'30) · 0,5 km Z0 [11,5 km]",
+        "Miércoles": "10 km Z1 + Fuerza [8 km]",
+        "Jueves": "Descanso",
+        "Viernes": "6 km Z1 + técnica · 3×1000 Z3 + 3×500 Z3+ [10,5 km]",
+        "Sábado": "Descanso",
+        "Domingo": "Fortalecimiento pie + lumbopélvico · 15 km Z1 [15 km]"
+      }
+    },
+    "entre_maratones": {
+      "duracion": "7-9 semanas",
+      "objetivos": ["Potencia aeróbica", "Capacidad láctica", "Fuerza", "Trabajar puntos débiles musculares/tendinosos"],
+      "contenidos": ["Series 200-400 a ≥VAM", "Cuestas 100-150m ≥VAM", "Fuerza 6-12 rep 40-60 RM", "Series 800-1000 = VAM", "Lipolítico cada 15-20 días (medios alternativos o mixtos)"],
+      "microciclo_ejemplo_km": 42,
+      "semana_ejemplo": {
+        "Lunes": "Descanso",
+        "Martes": "6 km Z1 + técnica · 12×cuestas de 200 (3%) Z4 (R 1'30) · 0,5 km Z0 [9 km]",
+        "Miércoles": "12 km Z1 + Fuerza [12 km]",
+        "Jueves": "6 km Z1 + técnica · 3×500 Z3+ + 3×400 Z4 + 3×200 Z5 [9,3 km]",
+        "Viernes": "30' elíptica + 30' bici + Fuerza",
+        "Sábado": "Descanso",
+        "Domingo": "Fuerza + 30' bici + 12 km Z1 [12 km]"
+      }
+    }
+  },
+  "fuerza_progresion": {
+    "nota": "Carácter del esfuerzo en fuerza por período",
+    "entre_maratones": {"pct_rm": "40-50%", "series_ejercicios": "4-5 series · 4-5 ejercicios", "sesiones_aficionado": 2, "sesiones_profesional": 3},
+    "especifico": {"pct_rm": "50-65%", "series_ejercicios": "3-4 series · 3-4 ejercicios", "sesiones_aficionado": 2, "sesiones_profesional": "2-3"},
+    "afinamiento": {"pct_rm": "20-50%", "series_ejercicios": "2-3 series · 2-3 ejercicios", "sesiones_aficionado": "1-2", "sesiones_profesional": "1-2"}
+  }
+}
