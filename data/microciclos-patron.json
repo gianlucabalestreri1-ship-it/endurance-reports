@@ -1,0 +1,28 @@
+{
+  "id": "microciclos_patron_por_periodo",
+  "titulo": "Patrón de distribución semanal de la carga por período (ejemplo microciclo)",
+  "fuente": "Prof. César Roces — Conceptos y pasos para diseñar un plan",
+  "nota": "Esquema de referencia de cómo ubicar las cargas en la semana según el período (días x nivel de carga). El ejemplo asume atleta avanzado/profesional (10-11 sesiones); en principiantes alcanzan 5-7 sesiones. No es fórmula fija: responde al nivel y a la distancia.",
+  "niveles_carga": ["Submáxima (máxima/competitiva)", "Alta", "Media", "Baja"],
+  "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+  "patrones": {
+    "preparacion_general": {
+      "Submáxima": ["-", "-", "-", "-", "-", "-", "-"],
+      "Alta":      ["-", "-", "-", "-", "-", "-", "-"],
+      "Media":     ["X", "X", "X", "X", "X", "X", "-"],
+      "Baja":      ["X", "X", "-", "X", "X", "-", "X"]
+    },
+    "preparacion_especial": {
+      "Submáxima": ["-", "-", "-", "-", "-", "-", "-"],
+      "Alta":      ["X", "-", "X", "-", "-", "X", "-"],
+      "Media":     ["-", "X", "-", "X", "X", "-", "-"],
+      "Baja":      ["X", "X", "-", "X", "X", "-", "X"]
+    },
+    "competencia": {
+      "Submáxima": ["X", "-", "X", "-", "-", "X", "-"],
+      "Alta":      ["-", "-", "-", "-", "X", "-", "-"],
+      "Media":     ["-", "X", "-", "X", "-", "-", "-"],
+      "Baja":      ["X", "X", "-", "X", "X", "-", "X"]
+    }
+  }
+}

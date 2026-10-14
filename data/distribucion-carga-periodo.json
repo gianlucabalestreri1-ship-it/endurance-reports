@@ -1,0 +1,60 @@
+{
+  "id": "distribucion_carga_por_periodo",
+  "titulo": "Distribución de la carga por período (% del volumen semanal, por método)",
+  "fuente": "Prof. César Roces — Manejo anual de las cargas / Manual de trabajo",
+  "unidad": "porcentaje del volumen semanal total",
+  "nota": "REFERENCIAS, no reglas. Aplicar el % al km/semana ACTUAL del corredor para obtener los km sugeridos por método. La distribución responde al nivel y a la distancia objetivo (ver fondo_vs_maraton).",
+  "fondo_vs_maraton": "Diferenciación clave: en Período Competitivo, para pruebas de FONDO/GRAN FONDO (media-maratón/maratón) se sustituye el Tempo Training por Intervalado Extensivo (estímulo más aeróbico, menos láctico). En fondo se prioriza volumen aeróbico (CC lenta/media y fondos largos); en pruebas más cortas (5-10k) sube el peso de intervalado intensivo/tempo.",
+  "periodos": {
+    "preparacion_general": {
+      "orden": 1,
+      "metodos": {
+        "carrera_continua_lenta": {"pct": [55, 65], "fc": "135-150", "intensidad": "70%", "lactato": "1-2"},
+        "carrera_continua_media": {"pct": [15, 20], "fc": "150-165", "intensidad": "70-80%", "lactato": "2-3"},
+        "carrera_continua_rapida": {"pct": [8, 15], "fc": "165-180", "intensidad": "80-90%", "lactato": "4-5"},
+        "fartlek": {"pct": [5, 10], "fc": "150-180", "intensidad": "60-100%", "lactato": "3-5"},
+        "cuestas": {"pct": [5, 10], "fc": "150-170", "intensidad": "80-90%", "lactato": "3-6"}
+      },
+      "sin_pct": ["estimulacion_velocidad (12-20 rectas/progresiones)", "circuito_fuerza_resistencia (3-4 de 6-12 estaciones)"]
+    },
+    "preparacion_especial": {
+      "orden": 2,
+      "metodos": {
+        "carrera_continua_lenta": {"pct": [55, 60], "fc": "135-150", "intensidad": "70-75%", "lactato": "1-2"},
+        "carrera_continua_media": {"pct": [15, 25], "fc": "145-160", "intensidad": "75-85%", "lactato": "2-3"},
+        "carrera_continua_rapida_con_cambios": {"pct": [10, 15], "fc": "160-180", "intensidad": "85-95%", "lactato": "4-5"},
+        "cuestas": {"pct": [2, 4], "fc": "155-175", "intensidad": "85-90%", "lactato": "3-6"},
+        "intervalado_extensivo": {"pct": [5, 15], "fc": "175-180", "intensidad": "100-105%", "lactato": "6-8"}
+      },
+      "sin_pct": ["estimulacion_velocidad (6-15 repeticiones progresivas)", "circuito_fuerza_resistencia (2-3 de 6-9 estaciones)"]
+    },
+    "precompetencia": {
+      "orden": 3,
+      "metodos": {
+        "carrera_continua_lenta": {"pct": null, "nota": "~5-10% menos que preparación especial"},
+        "carrera_continua_media": {"pct": [10, 15], "fc": "145-160", "intensidad": "75-85%", "lactato": "2-3"},
+        "carrera_continua_rapida_progresiva": {"pct": null, "nota": "ídem preparación especial"},
+        "fartlek_programado_int_ext_intensivo": {"pct": [5, 10], "fc": "150-175", "intensidad": "60-105%", "lactato": "5-7"},
+        "intervalado_extensivo_e_intensivo": {"pct": [5, 12], "fc": "180-185", "intensidad": "103-108%", "lactato": "6-12"}
+      }
+    },
+    "competencia": {
+      "orden": 4,
+      "metodos": {
+        "carrera_continua_lenta": {"pct": [55, 60]},
+        "carrera_continua_media": {"pct": [10, 15]},
+        "carrera_continua_rapida_progresiva": {"pct": [5, 10]},
+        "intervalado_intensivo": {"pct": [3, 10], "intensidad": "108-110%", "lactato": "8-12"},
+        "tempo_training": {"pct": [2, 5], "intensidad": "+110%", "lactato": "10-14", "nota": "en fondo/gran fondo sustituir por intervalado extensivo"}
+      }
+    },
+    "transicion": {
+      "orden": 5,
+      "metodos": {
+        "carrera_continua_lenta": {"pct": [70, 75], "fc": "130-150", "intensidad": "60-65%", "lactato": "1-2"},
+        "carrera_continua_media": {"pct": [25, 30], "fc": "145-160", "intensidad": "70-80%", "lactato": "2-3"}
+      },
+      "sin_pct": ["complementos: gimnasia, coordinación, rectas, progresiones"]
+    }
+  }
+}

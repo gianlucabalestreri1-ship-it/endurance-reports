@@ -1,0 +1,30 @@
+{
+  "id": "metodos_entrenamiento_resistencia",
+  "titulo": "Métodos de entrenamiento de la resistencia + zonas metabólicas + adaptación objetivo por período",
+  "fuente": "Prof. César Roces — Manual de trabajo",
+  "nota": "Tabla explicativa de cada método (objetivo/adaptación buscada, intensidad, lactato, metabolismo, volumen, forma, pausa). Referencia para refrescar qué desarrolla cada método y período. Decide el entrenador.",
+  "metodos": [
+    {"metodo": "Carrera continua lenta", "objetivo": "Resistencia aeróbica de base / umbral aeróbico", "intensidad": "≈70%", "lactato_mmol": "≈2", "metabolismo": "95-85% aeróbico / 5-15% anaeróbico", "volumen": "5-20 km (o más)", "forma": "velocidad constante", "pausa": "-"},
+    {"metodo": "Carrera continua media", "objetivo": "Resistencia aeróbica de base / umbral aeróbico", "intensidad": "70-80%", "lactato_mmol": "2-3", "metabolismo": "95-90% aeróbico / 5-10% anaeróbico", "volumen": "≤20 km (o más)", "forma": "velocidad constante", "pausa": "-"},
+    {"metodo": "Carrera continua rápida", "objetivo": "Resistencia aeróbica en zona del umbral aeróbico-anaeróbico", "intensidad": "80-90%", "lactato_mmol": "3-6", "metabolismo": "85-80% aeróbico / 15-20% anaeróbico", "volumen": "4-10 km", "forma": "velocidad constante", "pausa": "-"},
+    {"metodo": "Fartlek (cambios de ritmo)", "objetivo": "Resistencia aeróbica de base / zona del umbral aeróbico-anaeróbico", "intensidad": "60-100%", "lactato_mmol": "3-8", "metabolismo": "90-80% aeróbico / 10-20% anaeróbico", "volumen": "5-15 km (o más)", "forma": "cambios de ritmo constantes", "pausa": "-"},
+    {"metodo": "Intervalado extensivo", "objetivo": "Resistencia zona umbral aeróbico/anaeróbico y umbral anaeróbico", "intensidad": "100-105%", "lactato_mmol": "5-8", "metabolismo": "80-75% aeróbico / 30-25% anaeróbico", "volumen": "5-14 km", "forma": "velocidad constante", "pausa": "1-2' (pre-activa)"},
+    {"metodo": "Intervalado intensivo", "objetivo": "Resistencia zona umbral anaeróbico", "intensidad": "100-110%", "lactato_mmol": "8-11", "metabolismo": "70-65% aeróbico / 30-45% anaeróbico", "volumen": "3-7 km", "forma": "velocidad constante", "pausa": "1-3' pasiva"},
+    {"metodo": "Tempo largo", "objetivo": "Resistencia zona umbral anaeróbico / zona de tolerancia", "intensidad": ">110%", "lactato_mmol": "≥12", "metabolismo": "60-55% aeróbico / 45-40% anaeróbico", "volumen": "≤3 km", "forma": "velocidad constante", "pausa": "total (pre pasiva)"}
+  ],
+  "zonas_metabolicas": [
+    {"zona": "Regenerativa / de Base", "lactato_mmol": "1.5-2.0", "fc": "130-150"},
+    {"zona": "Aeróbica Media", "lactato_mmol": "2.0-3.5", "fc": "150-165"},
+    {"zona": "Aeróbica Alta", "lactato_mmol": "3.5-4.5", "fc": "165-180"},
+    {"zona": "VO2máx", "lactato_mmol": "5.0-8.0", "fc": "175-185"},
+    {"zona": "Resistencia Láctica", "lactato_mmol": "9.0-12.0", "fc": "180-190"},
+    {"zona": "Tolerancia Láctica", "lactato_mmol": "+12.0", "fc": "+185"}
+  ],
+  "adaptacion_objetivo_por_periodo": {
+    "preparacion_general": "Base aeróbica amplia: capilarización, eficiencia/economía aeróbica, umbral aeróbico, fuerza-resistencia general. Mucho volumen a baja intensidad.",
+    "preparacion_especial": "Desarrollo del umbral (aeróbico → anaeróbico) y potencia aeróbica vía intervalado extensivo; comienza el trabajo específico de ritmo.",
+    "precompetencia": "Afinar umbral anaeróbico y VO2máx; ritmo de competencia (modelación); intervalado extensivo + intensivo.",
+    "competencia": "Puesta a punto: ritmo específico de la prueba, tolerancia (en pruebas cortas), mantenimiento de la base; reducción del volumen.",
+    "transicion": "Recuperación activa y mantenimiento de la base aeróbica; descarga."
+  }
+}
