@@ -193,6 +193,33 @@ carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPU
 - **Datos sensibles** (salud de atletas): entregar como **archivo** (`SendUserFile`), no
   publicar como Artifact. `report/` está en `.gitignore`.
 
+### Planilla MASTER por atleta (`generator/`)
+- `node generator/extract.js --name "X" | --id N` → `report/master-<id>-data.json` (TODO el historial
+  del atleta en 1 estructura). `python3 generator/make_master_xlsx.py report/master-<id>-data.json`
+  → `report/Master-<Atleta>.xlsx`. Hojas: **PANEL** (capa de decisión), DASHBOARD, PLANIFICACIÓN ACTUAL,
+  HISTORIAL, PERFILADO Y COMPETENCIAS, RECOMENDACIÓN. Base = `plantilla.xlsx` (DASHBOARD/PERFILADO).
+- **PANEL:** FUNDAMENTOS (quién/dónde/adónde — "a dónde va" SIEMPRE vacío, lo carga el coach: NO inventar
+  objetivos), KPIs (volumen programado · adherencia · sRPE · molestias), **PLANIFICACIÓN MENSUAL** (meses
+  en filas, atributos en columnas), último análisis + alertas. **Sin feedback ≠ entrenó 0:** si hubo
+  sesiones programadas pero cero ejecución registrada → KPIs en `s/d` + alerta "no cargó feedback".
+- **RECOMENDACIÓN** (referencias, NO programa): adaptación objetivo del período, volumen Roces vs actual,
+  distribución sugerida → km, sesiones Juan del Campo (sólo 21-42k), y **DE TU LIBRERÍA ET** (sugiere
+  plantillas por nombre EXACTO, filtradas por disciplina + período + banda de volumen; excluye
+  trail/ciclismo/natación e iniciación salvo principiante real). Todo en el **modelo base Z1-Z8**.
+- **Formato (decisión coach):** sin emojis; fuentes chicas (≤9)→10 y 10→12 (contraste); **todo centrado**;
+  títulos concretos. Se aplica en un post-proceso global antes de `wb.save` (no tocar a mano celda por celda).
+- **Datos que ET no tiene** (resultado de carrera sin FIT ni feedback): `config-races.json` (`by_name`:
+  nombre normalizado → carreras {date,name,km,pace,time,hr,comment}); el builder los inyecta en PERFILADO
+  (PR + track por distancia + tabla de competencias). **Está en `.gitignore`** (datos de rendimiento de
+  atletas con nombre → NO al repo público); es un override local por sesión.
+- **data/ (referencias de metodología, base de asesoramiento):** `baremo-perfil-fondo`, `progresion-volumen-anual`,
+  `distribucion-carga-periodo`, `metodos-entrenamiento`, `microciclos-patron`, `sesiones-microciclos-jdc`
+  (Juan del Campo), `modelo-zonas-base` (Z1-Z8 canónico — TRADUCIR zonas de otros autores a este),
+  `libreria-et` (catálogo de plantillas del coach), **`magness-sistema`** (Steve Magness — periodización
+  base/precomp/competición/pico, tabla de tipos, ejemplos de sesiones con progresión, semanas de descarga).
+  Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces, expresado SIEMPRE
+  en el modelo base. (Pendiente: el coach sumará guías específicas de YouTube de Magness.)
+
 ## 4. Tarea programada
 
 - Routine durable `Endurance — tabla de feedback (Lun–Vie)` (`trig_01NG5NSPkccbikqnNypUD8Wp`) —

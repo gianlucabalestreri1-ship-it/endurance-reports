@@ -2,3 +2,4 @@ report/
 node_modules/
 *.xlsx
 __pycache__/
+config-races.json

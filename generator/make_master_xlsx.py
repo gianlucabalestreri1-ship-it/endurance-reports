@@ -81,6 +81,13 @@ def synth(m):
     return f"{n} feedbacks{extra}{pain}. Ej.: " + " / ".join(x[:70] for x in sal) + "  (auto — editar)"
 
 # ---------- carreras reales (con FIT) ----------
+# overrides manuales de carreras (datos que el coach aporta y ET no tiene cargados)
+def _nrm(s): return re.sub(r"[̀-ͯ]", "", str(s or "").lower()).strip()
+import os as _os
+if _os.path.exists(ROOT + "config-races.json"):
+    _ov = json.load(open(ROOT + "config-races.json")).get("by_name", {}).get(_nrm(D.get("athlete", "")), [])
+    if _ov:
+        D["races"] = [r for r in D.get("races", []) if not any(r.get("date") == o.get("date") for o in _ov)] + _ov
 RACES = [r for r in D.get("races", []) if r.get("pace") and r.get("km")]
 def race_dist(name):
     n = name or ""
@@ -426,7 +433,7 @@ if nb: donde = f'Nivel ≈ {nb[0]["clasificacion"]} (AIYM {nb[0]["aiym"]}) · vV
 else: donde = f'Adherencia {_adh_txt} · (sin zonas para estimar nivel)'
 adonde = 'Objetivos corto/medio/largo: (a cargar por el entrenador)   |   Próx. competencia: ' + (f'{prox["name"]} {fdm(prox["date"])}' if prox else 'sin agendar en ET')
 r = 3
-mcell(wsP, r, 1, LAST, "📌 FUNDAMENTOS DEL PLAN  —  quién · dónde está · a dónde va", PatternFill("solid", fgColor="34495E"), Font(bold=True, size=11, color="FFFFFF"), L); r += 1
+mcell(wsP, r, 1, LAST, "FUNDAMENTOS DEL PLAN", PatternFill("solid", fgColor="34495E"), Font(bold=True, size=11, color="FFFFFF"), L); r += 1
 _B = [(1, 3), (4, 6), (7, 9)]
 _labs = ["👤 QUIÉN (perfil ET)", "📍 DÓNDE ESTÁ (diagnóstico)", "🎯 A DÓNDE VA (lo cargás vos)"]
 _txts = [quien, donde, adonde]; _lf = ["D6E0EA", "D6E0EA", "FBEFD3"]; _cf = ["F4F8FB", "F4F8FB", "FFFBF0"]
@@ -460,7 +467,7 @@ wsP.row_dimensions[r].height = 15; wsP.row_dimensions[r + 1].height = 32; wsP.ro
 r += 4
 # (El volumen programado vs realizado se analiza directamente en ET.)
 # FOCO MENSUAL  (meses en FILAS, atributos en COLUMNAS: más datos por mes, menos largo)
-mcell(wsP, r, 1, LAST, "🗓️ FOCO MENSUAL  —  el QUÉ: contexto secuencial (cada mes una fila; incluye próximos)", PatternFill("solid", fgColor="34495E"), Font(bold=True, size=11, color="FFFFFF"), L); r += 1
+mcell(wsP, r, 1, LAST, "PLANIFICACIÓN MENSUAL", PatternFill("solid", fgColor="34495E"), Font(bold=True, size=11, color="FFFFFF"), L); r += 1
 _curk = mk(_cy, _cm)
 def comps_month(y, mo):
     k = mk(y, mo); return " / ".join(f'{fdm(c["date"])} {c["name"]}' for c in D["allComps"] if (c["date"] or "")[:7] == k)
@@ -531,7 +538,7 @@ pk = D.get("currentPeriodKey", "preparacion_especial")
 disc = D.get("disciplina", "")
 vol = D.get("volAvg", 0)
 rr = 1
-mcell(wsR, rr, 1, NC, f'RECOMENDACIÓN DE REFERENCIA — {D["athlete"]}', None, TITF, L); rr += 1
+mcell(wsR, rr, 1, NC, f'RECOMENDACIÓN DE REFERENCIA — {D["athlete"]}', None, TITF, L); wsR.row_dimensions[1].height = 26.25; rr += 1
 mcell(wsR, rr, 1, NC, f'⚠ Período INFERIDO ({D.get("currentPhase","")}) y disciplina DETECTADA de competencias ({disc}). Confirmá vos. Todo en tu modelo base de zonas. Son referencias, decidís vos.', None, SUBF, L); wsR.row_dimensions[rr].height = 26; rr += 2
 mcell(wsR, rr, 1, NC, "🎯 ADAPTACIÓN OBJETIVO DEL PERÍODO", HEAD, HF, L); rr += 1
 mcell(wsR, rr, 1, NC, ADV.get(pk, ""), None, Font(size=10), L); wsR.row_dimensions[rr].height = 32; rr += 2
@@ -564,7 +571,7 @@ if disc == "21.1-42.2km":
     jd = JDC["periodos"].get(jp) if jp else None
     jsess = ((jd.get("sesiones_ejemplo_amateur_3h") or jd.get("sesiones")) if jd else None) or []
     if jsess:
-        mcell(wsR, rr, 1, NC, f'🧰 SESIONES DE REFERENCIA (Juan del Campo · {_JPNICE.get(jp, jp)}) — zonas traducidas a tu modelo base', HEAD, HF, L); rr += 1
+        mcell(wsR, rr, 1, NC, f'SESIONES DE REFERENCIA (Juan del Campo · {_JPNICE.get(jp, jp)})', HEAD, HF, L); rr += 1
         for s in jsess[:8]:
             mcell(wsR, rr, 1, NC, "· " + tr_jdc(s), None, CF, L); rr += 1
         rr += 1
@@ -619,7 +626,7 @@ def _libmatch(tp, limit):
         out.append((sc, it, dh, ph, bfit))
     out.sort(key=lambda x: -x[0])
     return out[:limit]
-mcell(wsR, rr, 1, NC, "📚 DE TU LIBRERÍA ET (buscá por el nombre EXACTO en tu biblioteca)", HEAD, HF, L); rr += 1
+mcell(wsR, rr, 1, NC, "DE TU LIBRERÍA ET", HEAD, HF, L); rr += 1
 mcell(wsR, rr, 1, NC, f'Filtradas por disciplina ({disc or "s/d"}), período ({_PNICE.get(pk, pk)}) y volumen (~{vol} km/sem). Excluye trail/ciclismo/natación y, por tu nivel, contenido de iniciación. Candidatas para inspirarte; vos elegís y adaptás.', None, SUBF, L); wsR.row_dimensions[rr].height = 26; rr += 1
 # encabezado: Tipo(1) · Nombre(2-4) · Carpeta(5) · Por qué(6)
 for c1, c2, h in [(1, 1, "Tipo"), (2, 4, "Nombre a buscar en tu librería"), (5, 5, "Carpeta"), (6, 6, "Por qué")]:
@@ -644,6 +651,30 @@ if not _any:
     mcell(wsR, rr, 1, NC, "· Sin coincidencias claras en la librería para esta combinación; revisá tus carpetas por disciplina/período manualmente.", None, CF, L); rr += 1
 rr += 1
 mcell(wsR, rr, 1, NC, "Nota: las zonas y ritmos se expresan SIEMPRE en el modelo base (Z1 Recuperación … Z8 Neuromuscular). Los min/km reales salen de las zonas del atleta en ET.", None, SUBF, L)
+
+# =================== post-proceso global: fuentes, sin emojis, todo centrado ===================
+_EMO = re.compile("[\U0001F000-\U0001FAFF\U00002600-\U000027BF\U00002B00-\U00002BFF\U0001F1E6-\U0001F1FF️⁩⁦]")
+def _clean(s):
+    s2 = _EMO.sub("", s)
+    if s2 != s: s2 = re.sub(r"\s{2,}", " ", s2).strip()
+    return s2
+for ws in wb.worksheets:
+    for row in ws.iter_rows():
+        for c in row:
+            if c.value is None: continue
+            # sin emojis
+            if isinstance(c.value, str):
+                nv = _clean(c.value)
+                if nv != c.value: c.value = nv
+            # tamaños: <=9 -> 10 ; ==10 -> 12 (contraste título/texto)
+            f = c.font
+            if f is not None and f.size:
+                ns = 10 if f.size <= 9 else (12 if f.size == 10 else f.size)
+                if ns != f.size:
+                    c.font = Font(name=f.name, size=ns, bold=f.bold, italic=f.italic, color=f.color, underline=f.underline)
+            # todo centrado + al medio + ajustado
+            a = c.alignment
+            c.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
 
 # =================== orden + guardar ===================
 order = ["PANEL", "DASHBOARD", "PLANIFICACIÓN ACTUAL", "HISTORIAL (planes previos)", "PERFILADO Y COMPETENCIAS", "RECOMENDACIÓN"]

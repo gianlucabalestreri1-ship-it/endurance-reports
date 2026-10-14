@@ -1,0 +1,116 @@
+{
+  "id": "magness_sistema_entrenamiento",
+  "titulo": "Sistema de entrenamiento — Steve Magness (base de asesoramiento)",
+  "fuente": "Steve Magness — 'Sistema de entrenamiento' (magstraining.tripod.com), guía completa 67 pp. Dos libros complementarios del autor.",
+  "uso": "Base conceptual para asesorar al coach en CADA situación (diagnóstico, qué estímulo toca, progresiones, semanas de descarga, afinamiento). NO reemplaza la decisión del coach: son fundamentos. Todo ritmo/zona se expresa al presentarlo en el modelo base del proyecto (Z1-Z8); los ritmos concretos salen de las zonas reales del atleta en ET.",
+  "filosofia": {
+    "principio_construccion_y_mantenimiento": "Construir una cualidad hasta un nivel y luego MANTENERLA con menos estímulo mientras se construye la siguiente. No se desarrolla todo a la vez: se prioriza por fase y lo ya ganado se sostiene. Entender el PORQUÉ de cada sesión antes de hacerla.",
+    "principios_operativos": [
+      "Adaptación a un estímulo: el cuerpo se adapta a lo que se le pide de forma repetida y progresiva; variar el estímulo cuando la adaptación se estanca.",
+      "Correr por sensaciones: el ritmo objetivo es una guía, no una cárcel; ajustar por fatiga/clima/terreno.",
+      "Individualización: ajustar volumen e intensidad a las capacidades del atleta y al evento; los %VO2máx y ritmos difieren mucho entre personas.",
+      "Evaluar debilidades y fortalezas y entrenar el punto débil sin perder el fuerte."
+    ]
+  },
+  "periodizacion": {
+    "nota": "Cuatro fases. Cada fase tiene un ÉNFASIS (lo que se desarrolla), APOYO (secundario, se trabaja poco) y MANTENIMIENTO (lo ya ganado que no se deja caer).",
+    "fases": [
+      {
+        "fase": "Base", "duracion": "~12 semanas (larga)",
+        "enfasis": ["Desarrollo aeróbico vía kilometraje", "Desarrollo del umbral de lactato (LT)"],
+        "apoyo": ["Velocidad pura (sprints en cuesta de 60 m) y cuestas", "Entrenamientos de ritmo", "Mejora/mantenimiento de capacidad anaeróbica (poco)"],
+        "poco_o_nada": "Trabajo anaeróbico de gama media a alta; en jóvenes, tampoco VO2 durante casi toda la base.",
+        "modelo_base": "Predomina Z1-Z2 (kilometraje) + Z3-Z4 (LT) · apoyo Z8 (velocidad pura/cuestas cortas)"
+      },
+      {
+        "fase": "Precompetición", "duracion": "~6 semanas",
+        "enfasis": ["Desarrollo de vVO2máx (capacidad aeróbica)", "Umbral de lactato"],
+        "apoyo": ["Velocidad pura / cuestas"],
+        "poco_o_nada": "Trabajo anaeróbico de alta gama.",
+        "modelo_base": "Entra Z6 (VO2máx) como estímulo principal + Z3-Z4 (LT) · apoyo Z8"
+      },
+      {
+        "fase": "Competición", "duracion": "~6 semanas",
+        "enfasis": ["Desarrollo anaeróbico: capacidad y tolerancia al lactato"],
+        "mantenimiento": ["Umbral de lactato", "VO2máx", "Resistencia a la velocidad (sprints más largos, descanso completo)"],
+        "modelo_base": "Entra Z7 (tolerancia láctica / glucolítico) como estímulo principal · se MANTIENE Z6 y Z3-Z4"
+      },
+      {
+        "fase": "Pico / Afinamiento", "duracion": "2-6 semanas",
+        "enfasis": ["Sentirse bien; mantener todo lo construido"],
+        "mantenimiento": ["Trabajo anaeróbico más relajado", "Umbral de lactato", "Capacidad aeróbica (VO2)", "Trabajo de ritmo"],
+        "modelo_base": "Reducción de volumen; se toca cada cualidad lo justo para mantenerla fresca."
+      }
+    ]
+  },
+  "tabla_tipos_entrenamiento": {
+    "nota": "Guía de referencia rápida de Magness (derivada de la guía USATF). Los %VO2máx/ritmos difieren por persona: usar siempre las zonas reales del atleta.",
+    "tipos": [
+      {"tipo": "Resistencia aeróbica", "distancia_rep": "carreras continuas 3-20 millas (5-32 km)", "tiempo": "20-120 min", "ritmo": "fácil, estabiliza por sensación", "recuperacion": "ninguna", "modelo_base": "Z1-Z2"},
+      {"tipo": "Umbral de lactato (LT)", "distancia_rep": "~4 millas (umbral aeróbico submáx: 6-12 millas)", "tiempo": "18-22 min (submáx 40-70 min)", "ritmo": "ritmo de ~10 millas (umbral aeróbico ≈ ritmo maratón)", "recuperacion": "ninguna, o recuperaciones cortas si se divide en reps", "modelo_base": "Z4 Umbral (submáx ≈ Z3 Tempo)"},
+      {"tipo": "VO2máx", "distancia_rep": "800-3000 m", "tiempo": "2-8 min", "ritmo": "ritmo de 3.000 a 10.000 m", "recuperacion": "relación trabajo:descanso 1:1 a 1:0,7", "modelo_base": "Z6 VO2Max"},
+      {"tipo": "Tolerancia al lactato", "distancia_rep": "200-800 m", "tiempo": "30 s - 2 min", "ritmo": "ritmo de 800 a 1 milla", "recuperacion": "relación 1:1 a 1:2", "modelo_base": "Z7 Glucolítico"},
+      {"tipo": "Tolerancia al lactato en reposo prolongado", "distancia_rep": "200-800 m", "tiempo": "30 s - 2 min", "ritmo": "ritmo de 400 a 1 milla", "recuperacion": "relación 1:5 o más", "modelo_base": "Z7-Z8"},
+      {"tipo": "Velocidad pura (ej. sprints en cuesta)", "distancia_rep": "20-100 m", "tiempo": "4-15 s", "ritmo": "a todo gas, máxima velocidad", "recuperacion": "completa", "modelo_base": "Z8 Neuromuscular"}
+    ]
+  },
+  "ejemplos_sesiones": {
+    "nota": "Progresiones de ejemplo (de menos a más). Los ritmos (5k/3k/10k/milla/maratón) son del atleta — convertir a su modelo base Z1-Z8.",
+    "vo2max": [
+      "8x800 (R 3') a ritmo 5k", "6x800 (R 3') a ritmo 3k", "6x1000 (R 3') a ritmo 3k",
+      "2x3000 (R 5') a ~ritmo 10k", "3x2000 (R 4') a ~2 s/milla más lento que 5k", "6x1000 (R 3') a ritmo VO2 (~3k)",
+      "5x1600 (R 5') a ritmo 8k", "4x1600 (R 5') a ritmo 5k", "4x1600 (R 3-4') a ritmo 5k",
+      "4x1600 alternando ritmo 3k/8k por vuelta (R 4')",
+      "cambio de ritmo: 4x2400 alternando 5k/10k por vuelta (R 6')",
+      "8x400 a ritmo 10k con recuperación de 200 a umbral aeróbico (ritmo maratón)",
+      "fartlek 3x(3,2,1,30'') rápido con trote lento igual",
+      "fartlek 1-2-3-4-5-4-3-2-1 min rápido con trote lento igual"
+    ],
+    "umbral_lactato": [
+      "5x5min a ritmo LT (R 1')", "3x7min a LT (R 90'')", "2x10min a LT (R 2')",
+      "15 min continuo a LT", "20 min continuo a LT",
+      "20min LT + (R 2') + 5min LT", "20min LT + (R 3') + 7min LT", "20min LT + (R 4') + 10min LT", "20min LT + (R 4') + 15min LT",
+      "4x1600 a ritmo LT (R 2')", "5x1600 a ritmo LT (R 2') (progresar hasta 8-9)",
+      "4x1600 a LT con crucero de 400 m algo más rápido que lo normal en el medio",
+      "fartlek LT: 5-2-4-1-3-0,75-2-0,5-2-1-4 min on/off"
+    ],
+    "tolerancia_lactato": [
+      "2x(5x400) a ritmo milla (R 1', 5' entre series)", "8x400 a ritmo milla (R 1')", "10x400 a ritmo milla (R 1')",
+      "12x300 con caminata 100 (60-75'') alternando ritmo milla/3k", "10x300 con trote 100 (45-60'') a ritmo milla", "9x300 con caminata 100 a ritmo entre 8k y milla",
+      "3x(500,400,300) a ritmo milla (igual descanso que carrera, 4-5' entre series)",
+      "descompuesto 600-500-400-300-300-200-200 a ritmo milla (descanso = carrera)",
+      "10x400 a 1-2 s/400 más rápido que milla (R 2')",
+      "5x(200,300) a ritmo 800 (R 1'-1:30 entre ellos)"
+    ],
+    "tolerancia_lactato_reposo_prolongado": [
+      "4x400 (R 5') recorriendo 300 a ritmo milla + 100 casi máx, alternando el tramo rápido",
+      "4x400 (R 5') al mejor promedio (ritmo 800 o más rápido)",
+      "800 (ritmo milla) R 5-7' + 2x400 (ritmo 800, R 4') + 4x200 (más rápido que 800, R 2')",
+      "2x800 a ritmo milla objetivo (R 2:30)",
+      "500-400-300-200-200 a ritmo 800+ (R 5',4',3',2')",
+      "2x(400,300,200) a ritmo 800+ (R 3' entre reps, 5-10' entre series)"
+    ]
+  },
+  "reglas_clave": {
+    "kilometraje": "Más kilometraje aeróbico = más beneficios y más resistencia a la lesión POR ADAPTACIÓN PROGRESIVA; subir de a poco. Debatible alto vs bajo: individualizar. La base construye el techo aeróbico.",
+    "deficit_de_recuperacion_y_semanas_de_descarga": "El trabajo sin recuperación completa crea un déficit que hay que compensar o lleva al sobreentrenamiento. Programar una fase/semana de descarga: reducir volumen ~20% y quitar casi toda la intensidad. Duración según el déficit: en BASE suele bastar ~3 días; tras ~6 semanas de trabajo anaeróbico intenso puede hacer falta una semana completa. La descarga es preventiva del sobreentrenamiento y dispara la supercompensación.",
+    "progresion_lt": "Progresar el LT de a poco y no abusar: aumentar duración total o acortar descansos antes que subir el ritmo. Combinar ritmo LT con ritmo maratón. En entrenados de élite, mejorar LT con reps más largas/menos descanso.",
+    "progresion_ano_a_ano": "Año a año se agregan estímulos organizados de a poco (ej.: de 1 a 2-3 sesiones de calidad/sem en base), sin pasarse: 7 entrenamientos/sem sin días de kilometraje es contraproducente. Alternar semanas (ej.: una con LT+cuestas, la siguiente solo cuestas+zancadas).",
+    "individualizacion_y_debilidades": "Evaluar fortalezas/debilidades y ajustar el entrenamiento al evento y al atleta. Entrenar la debilidad manteniendo la fortaleza.",
+    "corazon_FC": "El entrenamiento de resistencia baja la FC (sube el volumen sistólico): una FC de reposo más baja suele indicar mejor adaptación aeróbica."
+  },
+  "semana_base_ejemplo": {
+    "nota": "Corredor experimentado que tolera 3 sesiones organizadas/sem en base, dos de intensidad media (LT). NR=normal, RR=recuperación, LR=larga, LT=umbral.",
+    "patron": "Lun LT · Mar km · Mié cuestas cortas (60 m) · Jue km + LT · Vie zancadas largas (200 m) · Sáb LR · Dom RR (o trabajo de ritmo / cross)"
+  },
+  "mapeo_modelo_base": {
+    "nota": "Traducción de los tipos de Magness al modelo base del proyecto (Z1-Z8). Ritmos concretos = zonas reales del atleta en ET.",
+    "Resistencia aeróbica / carrera normal / recuperación / larga": "Z1-Z2",
+    "Trabajo de ritmo (tempo)": "Z3 Tempo",
+    "Umbral de lactato (LT)": "Z4 Umbral (submáx ≈ Z3)",
+    "VO2máx": "Z6 VO2Max",
+    "Tolerancia al lactato": "Z7 Glucolítico",
+    "Tolerancia al lactato en reposo prolongado": "Z7-Z8",
+    "Velocidad pura / sprints en cuesta": "Z8 Neuromuscular"
+  }
+}
