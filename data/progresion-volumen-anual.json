@@ -1,0 +1,36 @@
+{
+  "id": "progresion_volumen_anual_roces",
+  "titulo": "Volúmenes semanales y anuales — progresión por años de entrenamiento",
+  "fuente": "Prof. César Roces",
+  "unidad": "km/semana (rango)",
+  "nota": "REFERENCIAS, no reglas absolutas: la decisión final es SIEMPRE del entrenador. El volumen semanal objetivo depende de la disciplina (distancia objetivo) y de los años de entrenamiento del atleta. Cargado 2026-10-14.",
+  "disciplinas": [
+    {
+      "disciplina": "800-3000m",
+      "por_anio_km_sem": {"1": "30-40", "2": "45-50", "3": "50-60", "4": "60-70", "5": "80-90", "6": "90-100", "7": "100-120", "8": "120-130"},
+      "tope_tras_8_10_anios_km_sem": "150-180"
+    },
+    {
+      "disciplina": "5000-10000m",
+      "por_anio_km_sem": {"1": "40-50", "2": "50-60", "3": "60-70", "4": "80-90", "5": "90-100", "6": "100-120", "7": "120-130", "8": "130-140"},
+      "tope_tras_8_10_anios_km_sem": "160-190"
+    },
+    {
+      "disciplina": "21.1-42.2km",
+      "por_anio_km_sem": {"1": "55-65", "2": "70-80", "3": "85-95", "4": "95-110", "5": "110-125", "6": "125-140", "7": "140-150", "8": "155-165"},
+      "tope_tras_8_10_anios_km_sem": "170-220"
+    }
+  ],
+  "sedentarios_inicio": {
+    "nota": "Adicional del entrenador para personas que arrancan desde el sedentarismo.",
+    "fase_1": {"km_sem": "12-15", "duracion": "3-4 meses (o más según el caso)"},
+    "fase_2": {"km_sem": "15-30", "duracion": "hasta terminar el primer año"}
+  },
+  "incremento_anual_referencia_km_totales": [2400, 2900, 3600, 4300, 5000, 5500, 6500, 7100],
+  "deteccion_incremento_volumen": {
+    "objetivo": "Avisar al entrenador cuando un atleta esté en un plazo prudente para INCREMENTAR el volumen semanal. El asistente solo avisa; la decisión final es del entrenador.",
+    "entradas": "Disciplina objetivo del atleta + años de entrenamiento (desde primer plan / start_year en ET) + km reales recientes (historial de planificación y datos de ET) + adherencia (solo runs) + molestias.",
+    "heuristica": "Si el atleta sostuvo su banda de volumen actual durante ~4-8 semanas (1-2 mesociclos) con buena adherencia y sin molestias activas, y está en o por debajo del escalón de referencia para su (disciplina, año) → marcarlo como CANDIDATO A INCREMENTAR al siguiente escalón. Nunca aplicar automáticamente.",
+    "donde_se_muestra": "Alerta en el PANEL (sección ALERTAS) y, a futuro, en la alerta de adherencia/volumen."
+  }
+}
