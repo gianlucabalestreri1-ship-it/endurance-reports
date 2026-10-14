@@ -1,0 +1,48 @@
+{
+  "id": "modelo_zonas_base",
+  "titulo": "Modelo de zonas BASE del proyecto (canónico)",
+  "nota": "ESTE es el modelo de referencia ÚNICO. Toda sugerencia de zona o ritmo se expresa SIEMPRE en este modelo (Z1-Z8). Los valores de RITMO reales de cada atleta salen de sus zonas en ET (modelo MAS/IEG). Las zonas de otros autores se TRADUCEN a este modelo (ver mapping_externos) antes de sugerir nada, porque un mismo nombre/número de zona difiere sustancialmente entre modelos.",
+  "zonas": [
+    {"n": 1, "nombre": "Recuperación", "fase": "LIT"},
+    {"n": 2, "nombre": "Endurance", "fase": "LIT"},
+    {"n": 3, "nombre": "Tempo", "fase": "ThT"},
+    {"n": 4, "nombre": "Umbral", "fase": "ThT"},
+    {"n": 5, "nombre": "Supraumbral", "fase": "HIT"},
+    {"n": 6, "nombre": "VO2Max", "fase": "HIT"},
+    {"n": 7, "nombre": "Glucolítico", "fase": "HIT"},
+    {"n": 8, "nombre": "Neuromuscular", "fase": "HIT"}
+  ],
+  "fuente_valores_por_atleta": "ET — session.training_zones (modelo MAS/IEG): ritmo (min/km) por zona, FC, FTP, RPE. Siempre usar los valores REALES del atleta.",
+  "mapping_externos": {
+    "nota": "Traducción fisiológica APROXIMADA (son modelos distintos). Para ritmos concretos usar siempre las zonas reales del atleta en ET expresadas en el modelo base.",
+    "juan_del_campo_vam": {
+      "Z0 (regenerativo)": "Z1 Recuperación",
+      "Z1 (umbral aeróbico)": "Z2 Endurance",
+      "Z1+ (supra umbral aer.)": "Z2-Z3 (Endurance/Tempo)",
+      "Z2 (MLSS)": "Z4 Umbral",
+      "Z3 (umbral anaeróbico)": "Z4-Z5 (Umbral/Supraumbral)",
+      "Z3+ (supra umbral ana.)": "Z5 Supraumbral",
+      "Z4 (VO2máx)": "Z6 VO2Max",
+      "Z5 (capacidad anaeróbica)": "Z7 Glucolítico",
+      "Z6 (supra capacidad/potencia ana.)": "Z7-Z8",
+      "Z7 (potencia ana. aláctica)": "Z8 Neuromuscular"
+    },
+    "roces_lactato": {
+      "Regenerativa/Base (1.5-2.0 mmol)": "Z1-Z2",
+      "Aeróbica Media (2.0-3.5)": "Z2-Z3",
+      "Aeróbica Alta (3.5-4.5)": "Z3-Z4",
+      "VO2máx (5.0-8.0)": "Z6",
+      "Resistencia Láctica (9-12)": "Z7",
+      "Tolerancia Láctica (+12)": "Z7-Z8"
+    },
+    "roces_metodos": {
+      "Carrera continua lenta": "Z1-Z2",
+      "Carrera continua media": "Z2-Z3",
+      "Carrera continua rápida": "Z3-Z4",
+      "Intervalado extensivo": "Z4-Z5",
+      "Intervalado intensivo": "Z5-Z6",
+      "Tempo largo (Roces)": "Z6-Z7"
+    }
+  },
+  "regla": "Al presentar cualquier sesión o ritmo de referencia tomada de Juan del Campo o Roces, reconvertir sus zonas al modelo base (Z1-Z8) y, cuando se den ritmos, usar los min/km reales del atleta desde ET."
+}
