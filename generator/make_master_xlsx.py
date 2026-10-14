@@ -385,9 +385,10 @@ for nm in ["BIOMECÁNICA", "MOVILIDAD  FUERZA", "ANTROPOMETRÍAS", "ANALÍTICAS 
 wsP = wb.create_sheet("PANEL", 0)
 act = active[0] if active else (D["plans"][-1] if D["plans"] else None)
 weeks = act["weeks"] if act else []
-n = len(weeks); LAST = 1 + max(n, 6)
-wsP.column_dimensions["A"].width = 19
-for i in range(2, 2 + max(n, 18) + 1): wsP.column_dimensions[get_column_letter(i)].width = 7.3
+n = len(weeks); LAST = 9  # ancho fijo (A..I): más aire horizontal, menos largo vertical
+# columnas que sirven a FUNDAMENTOS, KPIs y al FOCO MENSUAL (meses en filas)
+_PW = {"A": 11, "B": 21, "C": 13, "D": 27, "E": 19, "F": 11, "G": 12, "H": 25, "I": 21}
+for col, wd in _PW.items(): wsP.column_dimensions[col].width = wd
 mbn = {m["number"]: m for m in act["mesos"]} if act else {}
 past = [w for w in weeks if w["start"] <= TODAY]
 cur = None
@@ -396,10 +397,14 @@ for i, w in enumerate(weeks):
 if cur is None and past: cur = (len(past) - 1, past[-1])
 ci, cw = cur if cur else (0, (weeks[0] if weeks else {"n": 0, "meso": 0, "start": TODAY, "end": TODAY}))
 cm = mbn.get(cw["meso"], {})
-vol_act = past[-1]["km"] if past else 0
+_pw = [w for w in past if w.get("km")]
+vol_act = _pw[-1]["km"] if _pw else (D.get("volAvg") or 0)  # km PROGRAMADO (no depende de feedback)
 closed = [w for w in weeks if w["end"] < TODAY]; l4 = closed[-4:]
 sp = sum(pe["p"] for w in l4 for k, pe in w["rows"].items() if k != "FUERZA"); se_ = sum(pe["e"] for w in l4 for k, pe in w["rows"].items() if k != "FUERZA")
 adh = round(100 * se_ / sp) if sp else 0
+# ¿había sesiones programadas pero CERO ejecución registrada? -> el atleta no cargó feedback (no es "entrenó 0")
+measurable = sp > 0
+no_fb = measurable and se_ == 0
 srpes = [m["srpeAvg"] for m in act["mesos"] if m["srpeAvg"]] if act else []
 srpe = srpes[-1] if srpes else "—"
 cut = (datetime.date.fromisoformat(TODAY) - datetime.timedelta(days=35)).isoformat()
@@ -416,66 +421,80 @@ wsP.row_dimensions[1].height = 26
 nb = nivel_baremo()
 _anios = f'{D["anios"]["months"]//12}a {D["anios"]["months"]%12}m'
 quien = f'{PROF.get("age","")} años · {PROF.get("gender","")} · {PROF.get("height","")} / {PROF.get("weight","")} · {_anios} entrenando'.replace("  ", " ")
-if nb: donde = f'Nivel ≈ {nb[0]["clasificacion"]} (AIYM {nb[0]["aiym"]}) · vVO₂máx {D.get("vVO2maxZone","")} (~{nb[1]:.1f} km/h) · Adherencia {adh}%'
-else: donde = f'Adherencia {adh}% · (sin zonas para estimar nivel)'
+_adh_txt = ("s/d (sin feedback)" if no_fb else (f"{adh}%" if measurable else "s/d"))
+if nb: donde = f'Nivel ≈ {nb[0]["clasificacion"]} (AIYM {nb[0]["aiym"]}) · vVO₂máx {D.get("vVO2maxZone","")} (~{nb[1]:.1f} km/h) · Adherencia {_adh_txt}'
+else: donde = f'Adherencia {_adh_txt} · (sin zonas para estimar nivel)'
 adonde = 'Objetivos corto/medio/largo: (a cargar por el entrenador)   |   Próx. competencia: ' + (f'{prox["name"]} {fdm(prox["date"])}' if prox else 'sin agendar en ET')
 r = 3
 mcell(wsP, r, 1, LAST, "📌 FUNDAMENTOS DEL PLAN  —  quién · dónde está · a dónde va", PatternFill("solid", fgColor="34495E"), Font(bold=True, size=11, color="FFFFFF"), L); r += 1
-_t = (LAST - 1) // 3; _B = [(1, 1 + _t), (2 + _t, 1 + 2 * _t), (2 + 2 * _t, LAST)]
+_B = [(1, 3), (4, 6), (7, 9)]
 _labs = ["👤 QUIÉN (perfil ET)", "📍 DÓNDE ESTÁ (diagnóstico)", "🎯 A DÓNDE VA (lo cargás vos)"]
 _txts = [quien, donde, adonde]; _lf = ["D6E0EA", "D6E0EA", "FBEFD3"]; _cf = ["F4F8FB", "F4F8FB", "FFFBF0"]
 for i in range(3): mcell(wsP, r, _B[i][0], _B[i][1], _labs[i], PatternFill("solid", fgColor=_lf[i]), Font(bold=True, size=9, color="1F3A5F"), C)
 for i in range(3): mcell(wsP, r + 1, _B[i][0], _B[i][1], _txts[i], PatternFill("solid", fgColor=_cf[i]), Font(size=9), L)
-wsP.row_dimensions[r + 1].height = 50
+wsP.row_dimensions[r + 1].height = 58
 r += 3
 # KPIs
-def box_cols(k):
-    w = max(n, 8) // 4; s = 2 + k * w; e = (2 + (k + 1) * w - 1) if k < 3 else LAST; return s, e
-KPIS = [("VOLUMEN SEMANAL", f'{vol_act} km', f'máx hist {D["volMax"]["km"] if D.get("volMax") else "—"} km', "D6E4F0"),
-        ("ADHERENCIA (mes)", f'{adh}%', "solo runs · ver gráfico ET", "D9EAD3" if adh >= 80 else ("FFF2CC" if adh >= 60 else "F4CCCC")),
-        ("sRPE (mes)", f'{srpe}', "carga percibida", "E7ECF3"),
-        ("MOLESTIAS", ("SÍ" if molest else "NO"), (molest[0][:26] if molest else "sin molestias"), "F4CCCC" if molest else "D9EAD3")]
+_BOXES = [(2, 3), (4, 5), (6, 7), (8, 9)]
+def box_cols(k): return _BOXES[k]
+if no_fb:
+    adh_kpi = ("s/d", "atleta no cargó feedback", "FCE5CD")
+    srpe_kpi = ("s/d", "sin feedback este mes", "FCE5CD")
+    mol_kpi = ("s/d", "sin feedback este mes", "FCE5CD")
+elif not measurable:
+    adh_kpi = ("s/d", "sin semanas cerradas", "E7ECF3")
+    srpe_kpi = (f'{srpe}', "carga percibida", "E7ECF3")
+    mol_kpi = (("SÍ" if molest else "NO"), (molest[0][:26] if molest else "sin molestias"), "F4CCCC" if molest else "D9EAD3")
+else:
+    adh_kpi = (f'{adh}%', "solo runs · ver gráfico ET", "D9EAD3" if adh >= 80 else ("FFF2CC" if adh >= 60 else "F4CCCC"))
+    srpe_kpi = (f'{srpe}', "carga percibida", "E7ECF3")
+    mol_kpi = (("SÍ" if molest else "NO"), (molest[0][:26] if molest else "sin molestias"), "F4CCCC" if molest else "D9EAD3")
+KPIS = [("VOLUMEN SEMANAL", f'{vol_act} km', f'programado · máx hist {D["volMax"]["km"] if D.get("volMax") else "—"} km', "D6E4F0"),
+        ("ADHERENCIA (mes)", adh_kpi[0], adh_kpi[1], adh_kpi[2]),
+        ("sRPE (mes)", srpe_kpi[0], srpe_kpi[1], srpe_kpi[2]),
+        ("MOLESTIAS", mol_kpi[0], mol_kpi[1], mol_kpi[2])]
 for k, (lb, val, sub, fill) in enumerate(KPIS):
     c1, c2 = box_cols(k); F = PatternFill("solid", fgColor=fill)
     mcell(wsP, r, c1, c2, lb, F, KLB, C); mcell(wsP, r + 1, c1, c2, val, F, BIG, C); mcell(wsP, r + 2, c1, c2, sub, F, Font(size=8, color="5B6472"), C)
 wsP.row_dimensions[r].height = 15; wsP.row_dimensions[r + 1].height = 32; wsP.row_dimensions[r + 2].height = 15
 r += 4
 # (El volumen programado vs realizado se analiza directamente en ET.)
-# FOCO MENSUAL
-mcell(wsP, r, 1, LAST, "🗓️ FOCO MENSUAL  —  el QUÉ: contexto secuencial (incluye meses próximos)", PatternFill("solid", fgColor="34495E"), Font(bold=True, size=11, color="FFFFFF"), L); r += 1
-MB = max(1, (LAST - 1) // len(MONTHS))
+# FOCO MENSUAL  (meses en FILAS, atributos en COLUMNAS: más datos por mes, menos largo)
+mcell(wsP, r, 1, LAST, "🗓️ FOCO MENSUAL  —  el QUÉ: contexto secuencial (cada mes una fila; incluye próximos)", PatternFill("solid", fgColor="34495E"), Font(bold=True, size=11, color="FFFFFF"), L); r += 1
 _curk = mk(_cy, _cm)
-wsP.cell(r, 1, "Mes").fill = HEAD; wsP.cell(r, 1).font = HF; wsP.cell(r, 1).alignment = L; wsP.cell(r, 1).border = BORD
-for i, (y, mo) in enumerate(MONTHS):
-    c1 = 2 + i * MB; c2 = (1 + (i + 1) * MB) if i < len(MONTHS) - 1 else LAST
-    hl = (mk(y, mo) == _curk)
-    mcell(wsP, r, c1, c2, f'{_MN[mo]} {y}' + (" ◄HOY" if hl else ""), PatternFill("solid", fgColor="C0392B") if hl else PatternFill("solid", fgColor="223B57"), Font(bold=True, size=9, color="FFFFFF"), C)
-r += 1
-FROWS = [("Competencias", "a"), ("Tipo / Fase (inferida)", "c"), ("Comentarios atleta (mes pasado)", "a"),
-         ("Sesiones de referencia (mes pasado)", "a"), ("Obs del entrenador", "c"), ("Volumen semanal (ref. real)", "c"),
-         ("Intensidad prioritaria", "c"), ("Valoraciones", "a"), ("Tipos de entrenamiento", "c"), ("Taper", "c"), ("Objetivo del mes", "c")]
-_BIGF = {"Comentarios atleta (mes pasado)", "Obs del entrenador", "Objetivo del mes", "Tipos de entrenamiento"}
 def comps_month(y, mo):
     k = mk(y, mo); return " / ".join(f'{fdm(c["date"])} {c["name"]}' for c in D["allComps"] if (c["date"] or "")[:7] == k)
 def tests_month(y, mo):
     k = mk(y, mo); return "\n".join(fdm(t["date"]) for t in D["allTests"] if (t["date"] or "")[:7] == k)
 def volreal_month(y, mo):
     k = mk(y, mo); kk = [w["km"] for p in D["plans"] for w in p["weeks"] if (w["start"] or "")[:7] == k and w["km"]]
-    return f'real ~{round(sum(kk)/len(kk))} km/sem' if kk else ""
-for label, owner in FROWS:
-    wsP.cell(r, 1, label).fill = (COACH if owner == "c" else LABF); wsP.cell(r, 1).font = LF; wsP.cell(r, 1).alignment = L; wsP.cell(r, 1).border = BORD
-    for i, (y, mo) in enumerate(MONTHS):
-        c1 = 2 + i * MB; c2 = (1 + (i + 1) * MB) if i < len(MONTHS) - 1 else LAST
-        py, pm = prevm(y, mo); pk = mk(py, pm)
-        if label == "Competencias": v = comps_month(y, mo)
-        elif label == "Comentarios atleta (mes pasado)": v = month_synth(py, pm)
-        elif label == "Sesiones de referencia (mes pasado)": v = " / ".join(RACEM.get(pk, []))
-        elif label == "Valoraciones": v = tests_month(y, mo)
-        elif label == "Volumen semanal (ref. real)": v = volreal_month(y, mo)
-        else: v = ""
-        al = L if label in _BIGF or label in ("Competencias", "Sesiones de referencia (mes pasado)") else C
-        mcell(wsP, r, c1, c2, v, COACH if owner == "c" else None, Font(size=8), al)
-    if label in _BIGF: wsP.row_dimensions[r].height = 50
+    return f'~{round(sum(kk)/len(kk))} km/sem' if kk else ""
+def phase_month(y, mo):
+    k = mk(y, mo)
+    for w in (act["weeks"] if act else []):
+        if (w.get("start") or "")[:7] == k or (w.get("end") or "")[:7] == k:
+            return mbn.get(w["meso"], {}).get("phaseInf", "") or ""
+    return ""
+# encabezado de columnas (atributos)
+_FCOLS = [("Mes", 1, "h"), ("Competencias", 2, "a"), ("Tipo / Fase", 3, "a"), ("Comentarios del atleta", 4, "a"),
+          ("Carreras (ritmo real)", 5, "a"), ("Vol. sem.", 6, "a"), ("Valoraciones", 7, "a"),
+          ("Obs. del entrenador", 8, "c"), ("Objetivo del mes", 9, "c")]
+for name, col, own in _FCOLS:
+    c = wsP.cell(r, col, name); c.fill = (COACH if own == "c" else HEAD); c.font = (LF if own == "c" else HF)
+    c.alignment = C; c.border = BORD
+r += 1
+for (y, mo) in MONTHS:
+    hl = (mk(y, mo) == _curk)
+    mfill = PatternFill("solid", fgColor="C0392B") if hl else PatternFill("solid", fgColor="223B57")
+    mcell(wsP, r, 1, 1, f'{_MN[mo]} {y}' + ("\n◄ HOY" if hl else ""), mfill, Font(bold=True, size=9, color="FFFFFF"), C)
+    vals = [(2, comps_month(y, mo), "a"), (3, phase_month(y, mo), "a"), (4, month_synth(y, mo), "a"),
+            (5, " / ".join(RACEM.get(mk(y, mo), [])), "a"), (6, volreal_month(y, mo), "a"),
+            (7, tests_month(y, mo), "a"), (8, "", "c"), (9, "", "c")]
+    for col, v, own in vals:
+        c = wsP.cell(r, col, v); c.border = BORD; c.font = Font(size=8)
+        c.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+        if own == "c": c.fill = COACH
+    wsP.row_dimensions[r].height = 52
     r += 1
 r += 1
 # VOZ + ALERTAS
@@ -483,8 +502,10 @@ mcell(wsP, r, 1, LAST, "🗣️ ÚLTIMO ANÁLISIS DEL COACH" + (f' ({fd(last_ana
 mcell(wsP, r, 1, LAST, (last_anal[1] if last_anal else "(sin análisis cargado)"), PatternFill("solid", fgColor="FFFBF0"), Font(size=9), L); wsP.row_dimensions[r].height = 110; r += 2
 mcell(wsP, r, 1, LAST, "⚠ ALERTAS", None, Font(bold=True, size=11, color="9C0006"), L); r += 1
 _al = []
+if no_fb:
+    _al.append("Sin feedback cargado este mes: adherencia / sRPE / molestias NO se pueden calcular desde ET. El atleta pudo entrenar sin registrar — verificar con él antes de asumir.")
 if molest: _al += ["Molestia reciente: " + m for m in molest]
-if adh < 70 and sp: _al.append(f"Adherencia baja ({adh}%) en el último mes")
+if adh < 70 and sp and not no_fb: _al.append(f"Adherencia baja ({adh}%) en el último mes")
 # candidato a incrementar volumen (referencia Roces)
 _disc = next((d for d in PROG["disciplinas"] if d["disciplina"] == D.get("disciplina")), None)
 if _disc and D.get("volAvg") and adh >= 70 and not molest:
@@ -498,7 +519,8 @@ wsP.sheet_view.showGridLines = False
 
 # =================== RECOMENDACIÓN (referencias por período) ===================
 wsR = wb.create_sheet("RECOMENDACIÓN")
-for i, wd in enumerate([3, 34, 14, 16, 34], 1): wsR.column_dimensions[get_column_letter(i)].width = wd
+NC = 6  # 6 columnas anchas: más aire horizontal, sin texto apretado en vertical
+for i, wd in enumerate([15, 15, 13, 15, 25, 25], 1): wsR.column_dimensions[get_column_letter(i)].width = wd
 def tr_jdc(s):  # traducir zonas Juan del Campo -> modelo base
     for a, b in [("Z3+", "§5"), ("Z1+", "§23"), ("Z0", "§1"), ("Z2", "§4"), ("Z3", "§45"), ("Z4", "§6"), ("Z5", "§7"), ("Z6", "§78"), ("Z1", "§2"), ("Z7", "§8")]:
         s = re.sub(re.escape(a), b, s)
@@ -509,18 +531,19 @@ pk = D.get("currentPeriodKey", "preparacion_especial")
 disc = D.get("disciplina", "")
 vol = D.get("volAvg", 0)
 rr = 1
-mcell(wsR, rr, 1, 5, f'RECOMENDACIÓN DE REFERENCIA — {D["athlete"]}', None, TITF, L); rr += 1
-mcell(wsR, rr, 1, 5, f'⚠ Basado en período INFERIDO ({D.get("currentPhase","")}) y disciplina DETECTADA de competencias ({disc}). Confirmá vos. Todo en tu modelo base de zonas. Son referencias, decidís vos.', None, SUBF, L); rr += 2
-mcell(wsR, rr, 1, 5, "🎯 ADAPTACIÓN OBJETIVO DEL PERÍODO", HEAD, HF, L); rr += 1
-mcell(wsR, rr, 1, 5, ADV.get(pk, ""), None, Font(size=10), L); wsR.row_dimensions[rr].height = 40; rr += 2
-mcell(wsR, rr, 1, 5, "📏 VOLUMEN DE REFERENCIA (Roces) vs ACTUAL", HEAD, HF, L); rr += 1
+mcell(wsR, rr, 1, NC, f'RECOMENDACIÓN DE REFERENCIA — {D["athlete"]}', None, TITF, L); rr += 1
+mcell(wsR, rr, 1, NC, f'⚠ Período INFERIDO ({D.get("currentPhase","")}) y disciplina DETECTADA de competencias ({disc}). Confirmá vos. Todo en tu modelo base de zonas. Son referencias, decidís vos.', None, SUBF, L); wsR.row_dimensions[rr].height = 26; rr += 2
+mcell(wsR, rr, 1, NC, "🎯 ADAPTACIÓN OBJETIVO DEL PERÍODO", HEAD, HF, L); rr += 1
+mcell(wsR, rr, 1, NC, ADV.get(pk, ""), None, Font(size=10), L); wsR.row_dimensions[rr].height = 32; rr += 2
+mcell(wsR, rr, 1, NC, "📏 VOLUMEN DE REFERENCIA (Roces) vs ACTUAL", HEAD, HF, L); rr += 1
 if _disc:
     _yr = max(D["anios"]["months"] // 12, 1)
     _ref = _disc["por_anio_km_sem"].get(str(min(_yr, 8)), "")
-    mcell(wsR, rr, 1, 5, f'{disc} · año {_yr}: {_ref} km/sem   ·   actual: {vol} km/sem', None, Font(size=10), L); rr += 2
-mcell(wsR, rr, 1, 5, f'📊 DISTRIBUCIÓN SUGERIDA (aplicada a {vol} km/sem)', HEAD, HF, L); rr += 1
-for i, h in enumerate(["Método", "%", "km sugeridos", "Adaptación", ""], 1):
-    c = wsR.cell(rr, i, h); c.fill = LABF; c.font = LF; c.border = BORD; c.alignment = C
+    mcell(wsR, rr, 1, NC, f'{disc} · año {_yr}: {_ref} km/sem   ·   actual: {vol} km/sem', None, Font(size=10), L); rr += 2
+mcell(wsR, rr, 1, NC, f'📊 DISTRIBUCIÓN SUGERIDA (aplicada a {vol} km/sem)', HEAD, HF, L); rr += 1
+# encabezado: Método(1-2) · %(3) · km(4) · Adaptación(5-6)
+for c1, c2, h in [(1, 2, "Método"), (3, 3, "%"), (4, 4, "km sugeridos"), (5, 6, "Adaptación")]:
+    mcell(wsR, rr, c1, c2, h, LABF, LF, C)
 rr += 1
 _mobj = {m["metodo"].lower().split("(")[0].strip(): m["objetivo"] for m in MET["metodos"]}
 for mth, info in DIST["periodos"].get(pk, {}).get("metodos", {}).items():
@@ -529,70 +552,98 @@ for mth, info in DIST["periodos"].get(pk, {}).get("metodos", {}).items():
     km = (f'{round(vol*pct[0]/100,1)}-{round(vol*pct[1]/100,1)} km' if pct else info.get("nota", ""))
     pcts = (f'{pct[0]}-{pct[1]}%' if pct else "—")
     obj = next((v for k, v in _mobj.items() if k.split()[0] in nm.lower()), "")
-    for i, v in enumerate([nm, pcts, km, obj, ""], 1):
-        c = wsR.cell(rr, i, v); c.border = BORD; c.font = CF; c.alignment = (L if i in (1, 4) else C)
+    mcell(wsR, rr, 1, 2, nm, None, CF, L); mcell(wsR, rr, 3, 3, pcts, None, CF, C)
+    mcell(wsR, rr, 4, 4, km, None, CF, C); mcell(wsR, rr, 5, 6, obj, None, CF, L)
     rr += 1
 rr += 1
-# sesiones de referencia (Juan del Campo) si disciplina media/maratón
+# sesiones de referencia (Juan del Campo) — solo media/maratón (módulo maratón)
+_JPMAP = {"preparacion_general": "introduccion", "preparacion_especial": "especifico_II", "competencia": "afinamiento"}
+_JPNICE = {"introduccion": "introducción / base", "especifico_I": "específico I", "especifico_II": "específico II", "afinamiento": "afinamiento"}
 if disc == "21.1-42.2km":
-    jp = {"preparacion_general": "introduccion", "preparacion_especial": "especifico_II", "competencia": "afinamiento"}.get(pk)
+    jp = _JPMAP.get(pk)
     jd = JDC["periodos"].get(jp) if jp else None
-    if jd:
-        mcell(wsR, rr, 1, 5, f'🧰 SESIONES DE REFERENCIA (Juan del Campo · {jp}) — zonas traducidas a tu modelo base', HEAD, HF, L); rr += 1
-        for s in jd.get("sesiones_ejemplo_amateur_3h", []):
-            mcell(wsR, rr, 1, 5, "· " + tr_jdc(s), None, CF, L); rr += 1
+    jsess = ((jd.get("sesiones_ejemplo_amateur_3h") or jd.get("sesiones")) if jd else None) or []
+    if jsess:
+        mcell(wsR, rr, 1, NC, f'🧰 SESIONES DE REFERENCIA (Juan del Campo · {_JPNICE.get(jp, jp)}) — zonas traducidas a tu modelo base', HEAD, HF, L); rr += 1
+        for s in jsess[:8]:
+            mcell(wsR, rr, 1, NC, "· " + tr_jdc(s), None, CF, L); rr += 1
         rr += 1
 
 # =================== biblioteca ET (sugerencias por nombre exacto) ===================
 def _nz(s): return re.sub(r"[̀-ͯ]", "", str(s or "").lower()).strip()
 _DKW = {
-    "21.1-42.2km": ["marat", "media", "21k", "42k", "21.1", "42.2", "consolidando", "champa", "16k"],
-    "5000-10000m": ["10k", "5k", "5000", "10000", "modelacion 10k", "recreacional"],
-    "800-3000m":   ["5k", "velocidad", "1500", "3000", "800", "neuro"],
+    "21.1-42.2km": ["marat", "media", "21k", "42k", "21.1", "42.2", "champa", "16k", "consolidando"],
+    "5000-10000m": ["10k", "5k", "5000", "10000", "recreacional"],
+    "800-3000m":   ["5k", "velocidad", "1500", "3000", "800", "neuro", "interval"],
 }
 _PKW = {
-    "preparacion_general":  ["base", "trote", "caminata", "easy", "comienzo", "inicio", "fitness", "transici", "consolidando", "general", "fondo", "endurance", "zona 2", "largo"],
-    "preparacion_especial": ["especif", "espec", "umbral", "interval", "tempo", "noruega", "vo2", "competitiv", "modelaci", "progresion", "hiit", "zona 4", "zona 5", "zona 6", "supraumbral"],
+    "preparacion_general":  ["base", "fondo", "endurance", "largo", "rodaje", "zona 2", "aerobic", "aeróbic", "consolidando"],
+    "preparacion_especial": ["especif", "espec", "umbral", "interval", "tempo", "noruega", "vo2", "competitiv", "modelaci", "progresion", "hiit", "zona 4", "zona 5", "zona 6", "supraumbral", "ritmo"],
     "competencia":          ["taper", "afinam", "competit", "compet", "mantenimiento"],
 }
 _PNICE = {"preparacion_general": "preparación general", "preparacion_especial": "preparación específica", "competencia": "competencia"}
+# excluir SIEMPRE lo que no es carrera de ruta; y lo de iniciación salvo principiante real
+_EXCL_ALWAYS = ["trail", "ciclismo", "cycling", "bicicleta", "mtb", "nataci", "swim", "aguas abiertas", "eliptica", "elíptica"]
+_EXCL_BEGIN = ["primeras zancadas", "caminar - correr", "caminar-correr", "trote y caminata", "trote caminata", "trote - caminata", "inicio de este camino", "el comienzo", "sedentar", "iniciante", "desde cero", "desde 0"]
+_is_begin = (vol and vol < 18) and (D["anios"]["months"] < 14)
+def _volband(t):
+    t = _nz(t).replace(" ", "")
+    for rgx in [r'volsem(\d{2,3})[/\-a](\d{2,3})', r'corredores(\d{2,3})k?-(\d{2,3})', r'(\d{2,3})[/\-a](\d{2,3})k/?(?:sem|porsemana)', r'\((\d{2,3})-(\d{2,3})k', r'(\d{2,3})a(\d{2,3})k']:
+        m = re.search(rgx, t)
+        if m:
+            a, b = int(m.group(1)), int(m.group(2)); return (min(a, b), max(a, b))
+    m = re.search(r'<(\d{2,3})k?', t)  # "<48k" / "corredores<48k" => hasta 48
+    if m: return (0, int(m.group(1)))
+    return None
 def _libmatch(tp, limit):
-    dkw = _DKW.get(disc, []); pkw = _PKW.get(pk, [])
-    out = []
-    seen = set()
+    dkw = _DKW.get(disc, []); pkw = _PKW.get(pk, []); v = vol
+    out = []; seen = set()
     for it in LIBE["items"]:
         if it.get("type") != tp: continue
-        txt = _nz(it.get("name", "") + " / " + it.get("folder", ""))
+        name = it.get("name", ""); fold = it.get("folder", "")
+        txt = _nz(name + " / " + fold)
+        if any(x in txt for x in _EXCL_ALWAYS): continue
+        if not _is_begin and any(x in txt for x in _EXCL_BEGIN): continue
         dh = [k for k in dkw if k in txt]; ph = [k for k in pkw if k in txt]
-        sc = len(dh) * 2 + len(ph)
-        if sc <= 0: continue
-        key = _nz(it.get("name", ""))
+        band = _volband(name + " " + fold); bfit = None
+        if band and v:
+            lo, hi = band
+            if lo <= v <= hi: bfit = ("in", f'~{v} dentro de {lo}-{hi}k')
+            elif hi >= v * 0.65 and lo <= v * 1.5: bfit = ("near", f'~{v} vs {lo}-{hi}k')
+            else: continue  # banda de volumen incompatible -> descartar
+        if not dh and not ph: continue  # toda sugerencia matchea disciplina o período (volumen sólo filtra/pondera)
+        sc = len(dh) * 3 + len(ph) + (4 if bfit and bfit[0] == "in" else (2 if bfit else 0))
+        key = _nz(name)
         if key in seen: continue
         seen.add(key)
-        out.append((sc, it, dh, ph))
+        out.append((sc, it, dh, ph, bfit))
     out.sort(key=lambda x: -x[0])
     return out[:limit]
-mcell(wsR, rr, 1, 5, "📚 DE TU LIBRERÍA ET (buscá por el nombre EXACTO en tu biblioteca)", HEAD, HF, L); rr += 1
-mcell(wsR, rr, 1, 5, f'Sugerencias filtradas por disciplina detectada ({disc or "s/d"}) y período inferido ({_PNICE.get(pk, pk)}). Son candidatas para INSPIRARTE; vos elegís y adaptás.', None, SUBF, L); rr += 1
-for i, h in enumerate(["Tipo", "Nombre a buscar en tu librería", "Carpeta", "Por qué la sugerencia", ""], 1):
-    c = wsR.cell(rr, i, h); c.fill = LABF; c.font = LF; c.border = BORD; c.alignment = C
+mcell(wsR, rr, 1, NC, "📚 DE TU LIBRERÍA ET (buscá por el nombre EXACTO en tu biblioteca)", HEAD, HF, L); rr += 1
+mcell(wsR, rr, 1, NC, f'Filtradas por disciplina ({disc or "s/d"}), período ({_PNICE.get(pk, pk)}) y volumen (~{vol} km/sem). Excluye trail/ciclismo/natación y, por tu nivel, contenido de iniciación. Candidatas para inspirarte; vos elegís y adaptás.', None, SUBF, L); wsR.row_dimensions[rr].height = 26; rr += 1
+# encabezado: Tipo(1) · Nombre(2-4) · Carpeta(5) · Por qué(6)
+for c1, c2, h in [(1, 1, "Tipo"), (2, 4, "Nombre a buscar en tu librería"), (5, 5, "Carpeta"), (6, 6, "Por qué")]:
+    mcell(wsR, rr, c1, c2, h, LABF, LF, C)
 rr += 1
 _any = False
-for tp, lim in [("PLAN", 3), ("MESO", 6), ("MICRO", 3), ("SESION", 6)]:
-    for sc, it, dh, ph in _libmatch(tp, lim):
+for tp, lim in [("PLAN", 3), ("MESO", 5), ("MICRO", 3), ("SESION", 5)]:
+    for sc, it, dh, ph, bfit in _libmatch(tp, lim):
         _any = True
         why = []
-        if dh: why.append(f'disciplina ({disc})')
-        if ph: why.append(f'período ({_PNICE.get(pk, pk)})')
-        row = [tp, it.get("name", ""), it.get("folder", "") or "—", "coincide con " + " + ".join(why), ""]
-        for i, v in enumerate(row, 1):
-            c = wsR.cell(rr, i, v); c.border = BORD; c.font = CF; c.alignment = (C if i in (1,) else L)
-        wsR.row_dimensions[rr].height = 26
+        if dh: why.append("disciplina")
+        if ph: why.append("período")
+        if bfit: why.append(f"volumen ({bfit[1]})")
+        reason = "coincide con " + " + ".join(why) if why else "coincide por nombre"
+        mcell(wsR, rr, 1, 1, tp, None, Font(size=8, bold=True, color="1F3A5F"), C)
+        mcell(wsR, rr, 2, 4, it.get("name", ""), None, CF, L)
+        mcell(wsR, rr, 5, 5, it.get("folder", "") or "—", None, Font(size=8), L)
+        mcell(wsR, rr, 6, 6, reason, None, Font(size=8), L)
+        wsR.row_dimensions[rr].height = 28
         rr += 1
 if not _any:
-    mcell(wsR, rr, 1, 5, "· Sin coincidencias claras en la librería para esta combinación; revisá tus carpetas por disciplina/período manualmente.", None, CF, L); rr += 1
+    mcell(wsR, rr, 1, NC, "· Sin coincidencias claras en la librería para esta combinación; revisá tus carpetas por disciplina/período manualmente.", None, CF, L); rr += 1
 rr += 1
-mcell(wsR, rr, 1, 5, "Nota: las zonas y ritmos se expresan SIEMPRE en el modelo base (Z1 Recuperación … Z8 Neuromuscular). Los min/km reales salen de las zonas del atleta en ET.", None, SUBF, L)
+mcell(wsR, rr, 1, NC, "Nota: las zonas y ritmos se expresan SIEMPRE en el modelo base (Z1 Recuperación … Z8 Neuromuscular). Los min/km reales salen de las zonas del atleta en ET.", None, SUBF, L)
 
 # =================== orden + guardar ===================
 order = ["PANEL", "DASHBOARD", "PLANIFICACIÓN ACTUAL", "HISTORIAL (planes previos)", "PERFILADO Y COMPETENCIAS", "RECOMENDACIÓN"]
