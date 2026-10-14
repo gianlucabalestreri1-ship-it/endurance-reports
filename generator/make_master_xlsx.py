@@ -439,8 +439,7 @@ for k, (lb, val, sub, fill) in enumerate(KPIS):
     mcell(wsP, r, c1, c2, lb, F, KLB, C); mcell(wsP, r + 1, c1, c2, val, F, BIG, C); mcell(wsP, r + 2, c1, c2, sub, F, Font(size=8, color="5B6472"), C)
 wsP.row_dimensions[r].height = 15; wsP.row_dimensions[r + 1].height = 32; wsP.row_dimensions[r + 2].height = 15
 r += 4
-# VOLUMEN (placeholder para pegar gráficos de ET)
-mcell(wsP, r, 1, LAST, "📊 VOLUMEN: PROGRAMADO vs REALIZADO — pegá acá las capturas de ET (Gráficos → Volumen → Tiempo y Distancia)", PatternFill("solid", fgColor="FBEFD3"), Font(italic=True, size=9, color="974706"), L); r += 2
+# (El volumen programado vs realizado se analiza directamente en ET.)
 # FOCO MENSUAL
 mcell(wsP, r, 1, LAST, "🗓️ FOCO MENSUAL  —  el QUÉ: contexto secuencial (incluye meses próximos)", PatternFill("solid", fgColor="34495E"), Font(bold=True, size=11, color="FFFFFF"), L); r += 1
 MB = max(1, (LAST - 1) // len(MONTHS))
