@@ -16,6 +16,7 @@ def ref(n): return json.load(open(ROOT + "data/" + n + ".json"))
 ZB = ref("modelo-zonas-base"); DIST = ref("distribucion-carga-periodo")
 MET = ref("metodos-entrenamiento"); PROG = ref("progresion-volumen-anual")
 BAR = ref("baremo-perfil-fondo"); JDC = ref("sesiones-microciclos-jdc")
+LIBE = ref("libreria-et")
 TPL = ROOT + "plantilla.xlsx"
 TODAY = D["generatedAt"]
 RO = D["rowOrder"]; MBLK = 5
@@ -541,6 +542,56 @@ if disc == "21.1-42.2km":
         for s in jd.get("sesiones_ejemplo_amateur_3h", []):
             mcell(wsR, rr, 1, 5, "· " + tr_jdc(s), None, CF, L); rr += 1
         rr += 1
+
+# =================== biblioteca ET (sugerencias por nombre exacto) ===================
+def _nz(s): return re.sub(r"[̀-ͯ]", "", str(s or "").lower()).strip()
+_DKW = {
+    "21.1-42.2km": ["marat", "media", "21k", "42k", "21.1", "42.2", "consolidando", "champa", "16k"],
+    "5000-10000m": ["10k", "5k", "5000", "10000", "modelacion 10k", "recreacional"],
+    "800-3000m":   ["5k", "velocidad", "1500", "3000", "800", "neuro"],
+}
+_PKW = {
+    "preparacion_general":  ["base", "trote", "caminata", "easy", "comienzo", "inicio", "fitness", "transici", "consolidando", "general", "fondo", "endurance", "zona 2", "largo"],
+    "preparacion_especial": ["especif", "espec", "umbral", "interval", "tempo", "noruega", "vo2", "competitiv", "modelaci", "progresion", "hiit", "zona 4", "zona 5", "zona 6", "supraumbral"],
+    "competencia":          ["taper", "afinam", "competit", "compet", "mantenimiento"],
+}
+_PNICE = {"preparacion_general": "preparación general", "preparacion_especial": "preparación específica", "competencia": "competencia"}
+def _libmatch(tp, limit):
+    dkw = _DKW.get(disc, []); pkw = _PKW.get(pk, [])
+    out = []
+    seen = set()
+    for it in LIBE["items"]:
+        if it.get("type") != tp: continue
+        txt = _nz(it.get("name", "") + " / " + it.get("folder", ""))
+        dh = [k for k in dkw if k in txt]; ph = [k for k in pkw if k in txt]
+        sc = len(dh) * 2 + len(ph)
+        if sc <= 0: continue
+        key = _nz(it.get("name", ""))
+        if key in seen: continue
+        seen.add(key)
+        out.append((sc, it, dh, ph))
+    out.sort(key=lambda x: -x[0])
+    return out[:limit]
+mcell(wsR, rr, 1, 5, "📚 DE TU LIBRERÍA ET (buscá por el nombre EXACTO en tu biblioteca)", HEAD, HF, L); rr += 1
+mcell(wsR, rr, 1, 5, f'Sugerencias filtradas por disciplina detectada ({disc or "s/d"}) y período inferido ({_PNICE.get(pk, pk)}). Son candidatas para INSPIRARTE; vos elegís y adaptás.', None, SUBF, L); rr += 1
+for i, h in enumerate(["Tipo", "Nombre a buscar en tu librería", "Carpeta", "Por qué la sugerencia", ""], 1):
+    c = wsR.cell(rr, i, h); c.fill = LABF; c.font = LF; c.border = BORD; c.alignment = C
+rr += 1
+_any = False
+for tp, lim in [("PLAN", 3), ("MESO", 6), ("MICRO", 3), ("SESION", 6)]:
+    for sc, it, dh, ph in _libmatch(tp, lim):
+        _any = True
+        why = []
+        if dh: why.append(f'disciplina ({disc})')
+        if ph: why.append(f'período ({_PNICE.get(pk, pk)})')
+        row = [tp, it.get("name", ""), it.get("folder", "") or "—", "coincide con " + " + ".join(why), ""]
+        for i, v in enumerate(row, 1):
+            c = wsR.cell(rr, i, v); c.border = BORD; c.font = CF; c.alignment = (C if i in (1,) else L)
+        wsR.row_dimensions[rr].height = 26
+        rr += 1
+if not _any:
+    mcell(wsR, rr, 1, 5, "· Sin coincidencias claras en la librería para esta combinación; revisá tus carpetas por disciplina/período manualmente.", None, CF, L); rr += 1
+rr += 1
 mcell(wsR, rr, 1, 5, "Nota: las zonas y ritmos se expresan SIEMPRE en el modelo base (Z1 Recuperación … Z8 Neuromuscular). Los min/km reales salen de las zonas del atleta en ET.", None, SUBF, L)
 
 # =================== orden + guardar ===================
