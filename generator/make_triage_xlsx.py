@@ -125,5 +125,97 @@ for arq in ARQ_ORDER:
     r += 1  # respiro entre bloques
 
 ws.freeze_panes = "A4"
+
+# =================== una hoja por atleta: EXTRACCIÓN DEL MESOCICLO ===================
+# Tabla cronológica (una fila por sesión) con programado vs ejecutado, ritmo, feedback,
+# dolor y estado. Para no abrir sesión por sesión en Endurance Tool.
+import os, re as _re
+CAT_FONT = {"LIT": Font(bold=True, size=10, color="1C4E8A"), "ThT": Font(bold=True, size=10, color="9A7400"), "HIT": Font(bold=True, size=10, color="B02A2A")}
+ST_FILL = {"Realizada": PatternFill("solid", fgColor="D9EAD3"), "Modificada": PatternFill("solid", fgColor="FFF2CC"),
+           "No realizada": PatternFill("solid", fgColor="F4CCCC"), "Futura": PatternFill("solid", fgColor="EEF2F7"), "Fuerza": PatternFill("solid", fgColor="F3F3F3")}
+DEVIA = _re.compile(r"no pude|no logr[eé]|suspend|cort[eé]|abandon|dolor|molest|parcial|me falt|incomplet|menos|pesad|agot|cansad", _re.I)
+def _mmdd(d):
+    try: return d[8:10] + "/" + d[5:7]
+    except Exception: return d
+def s_tipo(s): return "Fuerza" if s.get("strength") else (s.get("cat") or "")
+def s_ses(s): return (("★ " if s.get("key") else "") + (s.get("title") or "")).strip()
+def s_rpe(s):
+    a, b = s.get("progRpe"), s.get("sRPE")
+    return (f'{a if a is not None else "–"} → {b if b is not None else "–"}')
+def s_durdist(s):
+    du = (s.get("realDur") or s.get("progDur") or "–"); di = (s.get("realDist") or s.get("progDist") or "–")
+    return f'{du} · {di}'
+def s_ritmo(s):
+    tp = [t.get("target") for t in (s.get("targets") or []) if t.get("target")]
+    obj = " · ".join(tp[:3]) if tp else (s.get("targetPace") or "–")
+    real = s.get("realPace") or "–"
+    return f'obj {obj}\nreal {real}' + ("  [FIT]" if s.get("hasFit") else "")
+def s_estado(s):
+    if s.get("strength"): return "Fuerza"
+    if s.get("future"): return "Futura"
+    if s.get("executed"):
+        dev = s.get("pain") or (DEVIA.search(s.get("comment") or "") is not None)
+        a, b = s.get("progRpe"), s.get("sRPE")
+        if a is not None and b is not None and b <= a - 3: dev = True
+        return "Modificada" if dev else "Realizada"
+    if s.get("due", True): return "No realizada"
+    return "Futura"
+MCOLS = [("Fecha", 9), ("Tipo", 9), ("Sesión", 30), ("RPE p→s", 10), ("Dur · Dist", 18),
+         ("Ritmo obj→real", 20), ("Feedback del atleta", 40), ("Dolor", 8), ("Estado", 13)]
+usednames = set()
+def tabname(arq, name):
+    base = f'{arq} {name}'[:28]
+    base = _re.sub(r'[:\\/?*\[\]]', ' ', base)
+    t = base; i = 2
+    while t in usednames: t = f'{base[:25]} {i}'; i += 1
+    usednames.add(t); return t
+
+ordered = []
+for arq in ARQ_ORDER:
+    ordered += sorted([a for a in A if a.get("arquetipo") == arq], key=sort_key)
+for a in ordered:
+    pid = a.get("planId")
+    fp = f'report/renewal-{pid}-data.json'
+    if not os.path.exists(fp): continue
+    rd = json.load(open(fp))
+    wsa = wb.create_sheet(tabname(a.get("arquetipo", ""), a.get("athlete", "")))
+    wsa.sheet_view.showGridLines = False
+    for i, (h, w) in enumerate(MCOLS, 1): wsa.column_dimensions[get_column_letter(i)].width = w
+    MN = len(MCOLS); rr = 1
+    wsa.merge_cells(start_row=rr, start_column=1, end_row=rr, end_column=MN)
+    c = wsa.cell(rr, 1, f'{a.get("athlete","")}  ·  {a.get("arquetipoNombre","")}'); c.font = Font(bold=True, size=14, color=INK); c.alignment = L; wsa.row_dimensions[rr].height = 22; rr += 1
+    lib = a.get("libMeso") or a.get("libPlan") or "—"
+    recap = f'{rd["plan"]["title"]}  ·  Librería: {lib}'
+    if a.get("roadmapNext"): recap += f'  ·  {a["roadmapNext"]}'
+    recap += f'  ·  Adherencia {a.get("adherencia","s/d")}%  ·  {a.get("accion","")}'
+    wsa.merge_cells(start_row=rr, start_column=1, end_row=rr, end_column=MN)
+    c = wsa.cell(rr, 1, recap); c.font = SUB; c.alignment = L; wsa.row_dimensions[rr].height = 26; rr += 1
+    vd = a.get("libVerdict")
+    if vd:
+        wsa.merge_cells(start_row=rr, start_column=1, end_row=rr, end_column=MN)
+        c = wsa.cell(rr, 1, "Tu filtro: " + vd); c.font = Font(italic=True, size=9, color="7F6000"); c.alignment = L; wsa.row_dimensions[rr].height = 26; rr += 1
+    rr += 1
+    for m in rd.get("micros", []):
+        wsa.merge_cells(start_row=rr, start_column=1, end_row=rr, end_column=MN)
+        mc = wsa.cell(rr, 1, f'{m.get("meso","")} · Microciclo {m.get("number","")} · {m.get("start","")} al {m.get("end","")} · {m.get("doneSessions",0)}/{m.get("progSessions",0)} ejecutadas ({m.get("adherence",0)}%)')
+        mc.fill = ARQF; mc.font = Font(bold=True, size=11, color="FFFFFF"); mc.alignment = L; wsa.row_dimensions[rr].height = 20; rr += 1
+        for i, (h, w) in enumerate(MCOLS, 1):
+            hc = wsa.cell(rr, i, h); hc.fill = HEAD; hc.font = HF; hc.alignment = C; hc.border = BORD
+        rr += 1
+        for s in sorted(m.get("sessions", []), key=lambda x: (x.get("date", ""), x.get("moment", ""))):
+            est = s_estado(s)
+            vals = [_mmdd(s.get("date", "")), s_tipo(s), s_ses(s), s_rpe(s), s_durdist(s), s_ritmo(s),
+                    s.get("comment", "") or "", ("SÍ" if s.get("pain") else "—"), est]
+            for i, v in enumerate(vals, 1):
+                cell = wsa.cell(rr, i, v); cell.border = BORD; cell.font = Font(size=10)
+                cell.alignment = L if i in (3, 6, 7) else C
+            if s_tipo(s) in CAT_FONT: wsa.cell(rr, 2).font = CAT_FONT[s_tipo(s)]
+            if est in ST_FILL: wsa.cell(rr, 9).fill = ST_FILL[est]
+            if s.get("pain"): wsa.cell(rr, 8).font = Font(bold=True, size=10, color="9C0006")
+            wsa.row_dimensions[rr].height = 30
+            rr += 1
+        rr += 1
+    wsa.freeze_panes = "A5"
+
 out = "report/Triage-Renovaciones.xlsx"
 wb.save(out); print(out)
