@@ -86,9 +86,18 @@ async function analyzePlan(s, planId, athleteName, urg) {
   const planBST = bst(plan);
   let progRun = 0, execRun = 0, progKm = 0, execKm = 0, fbCount = 0, pains = [], sesTitles = [], weeksN = new Set();
   let curMeso = null, recentMeso = null, recentDate = '';
+  const mesoStats = [];  // adherencia por meso (para tendencia)
   for (const m of mesos) {
     const inNow = m.start_date && m.end_date && m.start_date <= TODAY && TODAY <= m.end_date;
     if (inNow) curMeso = m;
+    // adherencia propia del meso (todas sus sesiones de carrera)
+    let mp = 0, me = 0, lastD = '';
+    for (const mic of (m.micros || [])) for (const se of sess(mic)) {
+      if (!isRun(se.type_name)) continue;
+      mp++; if (exec(se)) me++; if (se.date && se.date > lastD) lastD = se.date;
+    }
+    const ended = (m.end_date && m.end_date < TODAY) || (lastD && lastD < TODAY && daysAgo(lastD) > 7);
+    if (mp > 0 && ended) mesoStats.push({ num: m.number, end: m.end_date || lastD, adh: Math.round(100 * me / mp), prog: mp, exec: me });
     for (const mic of (m.micros || [])) for (const se of sess(mic)) {
       const d = se.date || '';
       if (!d || daysAgo(d) > 40 || daysAgo(d) < -3) continue;
@@ -124,18 +133,33 @@ async function analyzePlan(s, planId, athleteName, urg) {
   const volProg = Math.round(progKm / nw), volExec = Math.round(execKm / nw);
   const adh = progRun ? Math.round(100 * execRun / progRun) : null;
   const arq = archetype(plan.title, discName, mesoFolder, libMesoName, '', sesSig, volProg);
-  // acción sugerida
+  // tendencia de adherencia (últimos 2 mesos con datos)
+  mesoStats.sort((a, b) => ((a.end || '') < (b.end || '') ? -1 : 1));
+  const last2 = mesoStats.slice(-2);
+  let tendencia = 's/d', riesgoAbandono = false;
+  if (last2.length === 2) {
+    const diff = last2[1].adh - last2[0].adh;
+    tendencia = diff >= 12 ? 'sube' : diff <= -12 ? 'baja' : 'estable';
+    riesgoAbandono = (last2[1].adh < 45 && diff <= -12) || last2[1].adh <= 20;
+  } else if (last2.length === 1) { tendencia = 'estable'; riesgoAbandono = last2[0].adh <= 20; }
+  // días a la próxima competencia
+  const diasComp = prox ? Math.round((new Date(prox.date) - new Date(TODAY)) / 86400000) : null;
+  const afinar = diasComp != null && diasComp > 0 && diasComp <= 28;
+  // luz verde "listo para avanzar": alta adherencia + sin molestia + con feedback
+  const listoAvanzar = !pains.length && fbCount > 0 && adh != null && adh >= 80;
+  // acción sugerida (prioridad)
   let accion;
   if (pains.length) accion = 'CUIDAR / ajustar (molestia)';
   else if (progRun > 0 && execRun === 0) accion = 'PEDIR FEEDBACK (renueva a ciegas)';
+  else if (afinar) accion = `AFINAR / taper (comp en ${diasComp}d)`;
   else if (adh != null && adh < 50) accion = 'MANTENER (no progresar: <50% vol)';
-  else if (adh != null && adh >= 80) accion = 'PROGRESAR / siguiente bloque';
+  else if (listoAvanzar) accion = 'LISTO -> progresar (siguiente bloque)';
   else accion = 'REVISAR (ejecución parcial)';
   return {
     athlete: athleteName, planId, planTitle: plan.title, urgencia: urg,
     arquetipo: arq, arquetipoNombre: ARQ_NAME[arq], disciplina: discName,
     libPlan: libPlanName, libMeso: libMesoName, libFolder, roadmapNext, libVerdict,
-    topSes,
+    topSes, tendencia, riesgoAbandono, listoAvanzar, diasComp, afinar,
     volProg, volExec, progRun, execRun, adherencia: adh, fbCount,
     molestia: pains.length ? pains[0] : '', proxComp: prox, accion,
   };

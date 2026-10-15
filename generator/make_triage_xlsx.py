@@ -38,8 +38,8 @@ SUB = Font(italic=True, size=10, color="5B6472")
 CF = Font(size=11)
 
 ACC_FILL = {
-    "CUIDAR": "F4CCCC", "PEDIR": "FCE5CD", "MANTENER": "FFF2CC",
-    "PROGRESAR": "D9EAD3", "REVISAR": "E7ECF3",
+    "CUIDAR": "F4CCCC", "PEDIR": "FCE5CD", "AFINAR": "CFE2F3", "MANTENER": "FFF2CC",
+    "LISTO": "D9EAD3", "PROGRESAR": "D9EAD3", "REVISAR": "E7ECF3",
 }
 def acc_fill(acc):
     for k, v in ACC_FILL.items():
@@ -49,8 +49,8 @@ def acc_fill(acc):
 wb = Workbook(); ws = wb.active; ws.title = "TRIAGE RENOVACIONES"
 ws.sheet_view.showGridLines = False
 COLS = [("Atleta", 20), ("Urgencia", 12), ("Vence", 11), ("Librería que usó este mes", 30),
-        ("Próximo paso", 16), ("Disciplina", 12), ("Vol prog\n(km/sem)", 10), ("Adher.", 8),
-        ("Feedback", 10), ("Molestia", 20), ("Próx. comp.", 18), ("Acción sugerida", 22)]
+        ("Próximo paso", 16), ("Disciplina", 12), ("Vol prog\n(km/sem)", 10), ("Adher.", 8), ("Tend.", 11),
+        ("Feedback", 10), ("Molestia", 20), ("Próx. comp.", 18), ("Acción sugerida", 24)]
 for i, (h, w) in enumerate(COLS, 1):
     ws.column_dimensions[get_column_letter(i)].width = w
 NC = len(COLS)
@@ -62,6 +62,12 @@ c.font = Font(bold=True, size=15, color=INK); c.alignment = L; ws.row_dimensions
 ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=NC)
 c = ws.cell(r, 1, "Trabajá por bloque (mismo arquetipo = mismos circuitos). Dentro de cada bloque, los VENCIDOS (rojo) van primero: resolvé esos antes. La columna Librería dice con qué plantilla tuya venía entrenando; pasá el mouse para ver tu filtro de decisión del mes.")
 c.font = SUB; c.alignment = L; ws.row_dimensions[r].height = 28; r += 1
+# resumen: cantidad de atletas por arquetipo
+cnt = {}
+for a in A: cnt[a.get("arquetipo")] = cnt.get(a.get("arquetipo"), 0) + 1
+resumen = "Cantidad de atletas:  " + "   ·   ".join(f"{k} {cnt[k]}" for k in ARQ_ORDER if cnt.get(k))
+ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=NC)
+c = ws.cell(r, 1, resumen); c.font = Font(bold=True, size=10, color="1F3A5F"); c.alignment = L; r += 1
 r += 1
 
 URG_RANK = {"VENCIDO": 0, "POR VENCER": 1}
@@ -86,19 +92,29 @@ for arq in ARQ_ORDER:
         adh = a.get("adherencia")
         adhtxt = "s/d" if (adh is None or (a.get("progRun", 0) and a.get("execRun", 0) == 0)) else f"{adh}%"
         prox = a.get("proxComp")
-        proxtxt = (f'{prox["name"]} {str(prox["date"])[5:]}' if prox else "—")
+        dc = a.get("diasComp")
+        proxtxt = (f'{prox["name"]} {str(prox["date"])[5:]}' + (f' ({dc}d)' if dc else '') if prox else "—")
+        TEND = {"sube": "sube", "baja": "baja", "estable": "estable", "s/d": "s/d"}
+        tendtxt = TEND.get(a.get("tendencia", "s/d"), "s/d")
+        if a.get("riesgoAbandono"): tendtxt = "baja · RIESGO"
         vals = [a.get("athlete", ""), a.get("urgencia", ""), (a.get("vence") or "")[5:], lib, nxt,
-                a.get("disciplina", ""), a.get("volProg", ""), adhtxt, fbtxt,
+                a.get("disciplina", ""), a.get("volProg", ""), adhtxt, tendtxt, fbtxt,
                 a.get("molestia", "") or "—", proxtxt, a.get("accion", "")]
         for i, v in enumerate(vals, 1):
             cell = ws.cell(r, i, v); cell.border = BORD; cell.font = CF
-            cell.alignment = L if i in (1, 4, 10, 11, 12) else C
+            cell.alignment = L if i in (1, 4, 11, 12, 13) else C
         ws.cell(r, 2).fill = VENC if venc else POR
         ws.cell(r, 2).font = Font(bold=True, size=11, color=("9C0006" if venc else "7F6000"))
+        # tendencia coloreada
+        tc = ws.cell(r, 9)
+        if a.get("riesgoAbandono"): tc.fill = VENC; tc.font = Font(bold=True, size=10, color="9C0006")
+        elif a.get("tendencia") == "sube": tc.font = Font(size=11, color="006100")
+        elif a.get("tendencia") == "baja": tc.font = Font(size=11, color="9C0006")
         af = acc_fill(a.get("accion", ""))
-        if af: ws.cell(r, 12).fill = af
+        if af: ws.cell(r, 13).fill = af
+        if a.get("listoAvanzar"): ws.cell(r, 13).font = Font(bold=True, size=11, color="006100")
         # feedback NO -> resaltar
-        if not fb: ws.cell(r, 9).font = Font(size=11, color="9C0006")
+        if not fb: ws.cell(r, 10).font = Font(size=11, color="9C0006")
         # el filtro de decisión del coach (de la plantilla de librería) como comentario
         vd = a.get("libVerdict") or ""
         if vd:
