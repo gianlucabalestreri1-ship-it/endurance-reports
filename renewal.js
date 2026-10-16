@@ -233,6 +233,7 @@ async function renewalForPlan(session, planId) {
           targetPace: mainTarget ? mainTarget.target : '', targets,
           realDist, realDur, realPace, source: due ? source : '', laps,
           pain: ET.detectPain ? ET.detectPain((s.athlete_comment || '').trim()) : false,
+          painClass: ET.classifyPain ? ET.classifyPain((s.athlete_comment || '').trim()) : 'none',
           comment: (s.athlete_comment || '').replace(/\s+/g, ' ').trim().slice(0, 300),
         });
       }

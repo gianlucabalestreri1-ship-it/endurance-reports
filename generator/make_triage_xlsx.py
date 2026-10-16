@@ -103,12 +103,17 @@ for arq in ARQ_ORDER:
         TEND = {"sube": "sube", "baja": "baja", "estable": "estable", "s/d": "s/d"}
         tendtxt = TEND.get(a.get("tendencia", "s/d"), "s/d")
         if a.get("riesgoAbandono"): tendtxt = "baja · RIESGO"
+        molest = a.get("molestia", ""); mejora = a.get("mejora", "")
+        molcell = molest if molest else (("Mejora · " + mejora) if mejora else "—")
         vals = [a.get("athlete", ""), a.get("urgencia", ""), (a.get("vence") or "")[5:], lib, nxt,
                 a.get("disciplina", ""), a.get("volProg", ""), adhtxt, tendtxt, fbtxt,
-                a.get("molestia", "") or "—", proxtxt, a.get("accion", "")]
+                molcell, proxtxt, a.get("accion", "")]
         for i, v in enumerate(vals, 1):
             cell = ws.cell(r, i, v); cell.border = BORD; cell.font = CF
             cell.alignment = L if i in (1, 4, 11, 12, 13) else C
+        # molestia activa (rojo) vs mejora (lila)
+        if molest: ws.cell(r, 11).font = Font(size=11, color="9C0006")
+        elif mejora: ws.cell(r, 11).font = Font(size=11, color="7030A0")
         ws.cell(r, 2).fill = VENC if venc else POR
         ws.cell(r, 2).font = Font(bold=True, size=11, color=("9C0006" if venc else "7F6000"))
         # tendencia coloreada
@@ -159,6 +164,54 @@ def s_ritmo(s):
     obj = " · ".join(tp[:3]) if tp else (s.get("targetPace") or "–")
     real = s.get("realPace") or "–"
     return f'obj {obj}\nreal {real}' + ("  [FIT]" if s.get("hasFit") else "")
+
+# ---- alineación lap ↔ bloque programado (para FIT con estructura) ----
+_ZN = {1: "Recuperación", 2: "Endurance", 3: "Tempo", 4: "Umbral", 5: "Supraumbral", 6: "VO2Max", 7: "Glucolítico", 8: "Neuromuscular"}
+def _fmtkm(x):
+    if not x: return ""
+    return f"{x:g}K" if x >= 1 else f"{int(round(x * 1000))}m"
+def _lsec(p):
+    p = p or ""
+    if "h" in p: return 99999
+    m = _re.search(r"(\d+)'(\d+)", p)
+    return int(m.group(1)) * 60 + int(m.group(2)) if m else None
+def _lp(l):
+    return (l.get("pace") or "").replace('"', "").replace(" / km", "").replace("/ km", "").strip()
+def _is_pause_lap(l):
+    sec = _lsec(l.get("pace")); return (sec is not None and sec >= 720) or (l.get("distKm") or 0) < 0.2
+def _mkblocks(targets):
+    bl = []
+    for t in targets:
+        z = t.get("zone") or 0; name = _ZN.get(z, f"Z{z}")
+        tgt = t.get("target") or ""; dist = t.get("dist") or 0
+        nums = [int(x) for x in _re.findall(r"\d+", t.get("label") or "")]
+        reps = 1
+        for n in nums: reps *= n
+        is_pause = (z == 1 and not tgt)
+        total = (dist * reps) or 0.1
+        label = (f"{reps}x{int(round(dist * 1000))}m {name}" if (reps > 1 and dist < 1) else f"{_fmtkm(total)} {name}")
+        bl.append({"name": name, "tgt": tgt, "total": total, "is_pause": is_pause, "label": label, "dur": t.get("dur") or 0})
+    return bl
+def s_ritmo_blocks(s):
+    tg = s.get("targets") or []; lp = s.get("laps") or []
+    if not (s.get("hasFit") and tg and lp): return s_ritmo(s)
+    blocks = _mkblocks(tg)
+    laps = [l for l in lp if (l.get("distKm") or 0) >= 0.03]
+    i = 0; lines = []
+    for b in blocks:
+        if b["is_pause"]:
+            jog = []
+            while i < len(laps) and _is_pause_lap(laps[i]):
+                if (laps[i].get("distKm") or 0) >= 0.4 and (_lsec(laps[i].get("pace")) or 999) < 540: jog.append(laps[i])
+                i += 1
+            lines.append((f"{b['label']}: " + " ".join(_lp(l) for l in jog)) if jog else (f"pausa {round(b['dur'])}'" if b["dur"] else "pausa"))
+        else:
+            acc = 0; mine = []
+            while i < len(laps) and acc < b["total"] * 0.85:
+                if _is_pause_lap(laps[i]): i += 1; continue   # pausa intercalada entre reps
+                mine.append(laps[i]); acc += laps[i].get("distKm") or 0; i += 1
+            lines.append(f"{b['label']} (obj {b['tgt'] or '–'}): " + (" ".join(_lp(l) for l in mine) if mine else "–"))
+    return "\n".join(lines) if lines else s_ritmo(s)
 def s_estado(s):
     if s.get("strength"): return "Fuerza"
     if s.get("future"): return "Futura"
@@ -223,8 +276,8 @@ def _est_lines(text, width):
     import math
     return sum(max(1, math.ceil(len(seg) / cpl)) for seg in str(text).split("\n"))
 
-MCOLS = [("Fecha", 9), ("Tipo", 9), ("Sesión", 26), ("RPE p→s", 10), ("Dur · Dist", 16),
-         ("Ritmo obj→real", 18), ("Feedback del atleta (sensaciones · modificó · parciales)", 48), ("Dolor", 8), ("Estado", 13)]
+MCOLS = [("Fecha", 9), ("Tipo", 9), ("Sesión", 24), ("RPE p→s", 10), ("Dur · Dist", 15),
+         ("Ritmo obj → real (por bloque)", 34), ("Feedback del atleta (sensaciones · modificó · parciales)", 48), ("Dolor", 8), ("Estado", 13)]
 usednames = set()
 def tabname(arq, name):
     base = f'{arq} {name}'[:28]
@@ -267,15 +320,18 @@ for a in ordered:
         rr += 1
         for s in sorted(m.get("sessions", []), key=lambda x: (x.get("date", ""), x.get("moment", ""))):
             est = s_estado(s)
-            fb = structure_fb(s); ritmo = s_ritmo(s); ses = s_ses(s)
+            fb = structure_fb(s); ritmo = s_ritmo_blocks(s); ses = s_ses(s)
+            pc = s.get("painClass") or ("active" if s.get("pain") else "none")
+            dol = "SÍ" if pc == "active" else ("Mejora" if pc == "improving" else "—")
             vals = [_mmdd(s.get("date", "")), s_tipo(s), ses, s_rpe(s), s_durdist(s), ritmo,
-                    fb, ("SÍ" if s.get("pain") else "—"), est]
+                    fb, dol, est]
             for i, v in enumerate(vals, 1):
                 cell = wsa.cell(rr, i, v); cell.border = BORD; cell.font = Font(size=10)
                 cell.alignment = Alignment(horizontal=("left" if i in (3, 6, 7) else "center"), vertical="center", wrap_text=True)
             if s_tipo(s) in CAT_FONT: wsa.cell(rr, 2).font = CAT_FONT[s_tipo(s)]
             if est in ST_FILL: wsa.cell(rr, 9).fill = ST_FILL[est]
-            if s.get("pain"): wsa.cell(rr, 8).font = Font(bold=True, size=10, color="9C0006")
+            if pc == "active": wsa.cell(rr, 8).font = Font(bold=True, size=10, color="9C0006")
+            elif pc == "improving": wsa.cell(rr, 8).font = Font(bold=True, size=10, color="7030A0")
             # alto de fila ajustado al contenido (feedback manda, también ritmo/sesión)
             nlines = max(est_lines(fb, MCOLS[6][1]), est_lines(ritmo, MCOLS[5][1]), est_lines(ses, MCOLS[2][1]), 2)
             wsa.row_dimensions[rr].height = min(320, 15.6 * nlines + 8)

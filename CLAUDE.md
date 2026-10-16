@@ -254,10 +254,20 @@ Encarna el PRINCIPIO RECTOR (§0): trabajar por bloques, lo urgente primero, tod
   (CUIDAR molestia · PEDIR FEEDBACK si ejecución 0 · AFINAR si comp ≤28d · MANTENER <50% · LISTO→progresar si
   ≥80% sin molestia con feedback · REVISAR). Cabecera con cantidad de atletas por arquetipo.
 - **Una hoja por atleta = extracción del MESOCICLO del mes** (para no abrir ET sesión por sesión): tabla
-  cronológica con tipo (LIT/ThT/HIT), prog→ejecutado, ritmo obj→real [FIT], estado, y el **feedback estructurado**:
+  cronológica con tipo (LIT/ThT/HIT), prog→ejecutado, estado, **Dolor** (SÍ rojo / **Mejora** lila si
+  `classifyPain==='improving'` / —), y el **feedback estructurado**:
   `Sens:` (sensaciones/dolor) · `Mod:` (qué modificó, si se detecta) · `Parc:` (parciales del estímulo;
   **descarta laps de pausa ≥10'/km**, excepto variable/progresivo/fartlek/ondulado/cuestas/pausa activa = `[var.]`;
   si no hay parciales reales → "sin parciales reportados").
+- **Ritmo obj → real POR BLOQUE (FIT):** alineación lap↔bloque RESUELTA. Con dispositivo (`hasFit`) y estructura
+  (`targets`), la columna de ritmo muestra cada bloque programado con su objetivo y las laps ejecutadas que caen
+  dentro (por distancia acumulada), salteando las pausas intercaladas. Ej.: `3K Endurance (obj 6'34"/km): 6'43 6'29 6'42` /
+  `5x400m Supraumbral (obj 4'44"/km): 4'16 4'20 4'11 4'11 4'11` / `pausa 4'`. Sin FIT/estructura → obj/real simple.
+- **MOLESTIA vs MEJORA:** la acción CUIDAR y la columna Molestia usan sólo dolor **activo**; las menciones en
+  **progresión** ("me molestó menos", "va cediendo") se muestran como **Mejora** (lila) y NO disparan CUIDAR ni
+  bloquean LISTO→progresar. `classifyPain` (lib/endurance.js + endurance.js raíz, en sync) ahora detecta el
+  comparativo de reducción DESPUÉS de la palabra de dolor, no sólo la negación antes.
+- **Adherencia = sólo semanas REALIZADAS** (excluye sesiones futuras, fecha > hoy), igual que renewal.js.
 - **Formato:** sin emojis, **todo centrado/medio, letra mínima 11**, alto de fila **ajustado al contenido** del
   feedback. Datos sensibles → `SendUserFile` (no Artifact).
 

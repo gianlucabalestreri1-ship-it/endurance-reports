@@ -254,7 +254,11 @@ function classifyPain(comment) {
   PAIN_G.lastIndex = 0;
   let m, improving = false;
   while ((m = PAIN_G.exec(c)) !== null) {
-    if (!_painNegated(c, m.index)) return 'active';
+    if (!_painNegated(c, m.index)) {
+      const clauseAfter = c.slice(m.index, m.index + 50).split(/[.;:!?]|\bpero\b|\baunque\b/)[0];
+      if (/\bmenos\b|cada vez menos|va cediendo|\bcediendo\b|aflojand|disminu/.test(clauseAfter)) { improving = true; continue; }
+      return 'active';
+    }
     const win = c.slice(Math.max(0, m.index - 25), m.index + 45);
     if (PAIN_CTX.test(win)) improving = true;
   }

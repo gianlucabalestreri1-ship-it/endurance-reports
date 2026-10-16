@@ -84,7 +84,7 @@ async function analyzePlan(s, planId, athleteName, urg) {
   const mesos = (plan.macro && plan.macro.mesos) || [];
   const discName = (plan.discipline && plan.discipline.name) || '';
   const planBST = bst(plan);
-  let progRun = 0, execRun = 0, progKm = 0, execKm = 0, fbCount = 0, pains = [], sesTitles = [], weeksN = new Set();
+  let progRun = 0, execRun = 0, progKm = 0, execKm = 0, fbCount = 0, pains = [], mejoras = [], sesTitles = [], weeksN = new Set();
   let curMeso = null, recentMeso = null, recentDate = '';
   const mesoStats = [];  // adherencia por meso (para tendencia)
   for (const m of mesos) {
@@ -110,7 +110,12 @@ async function analyzePlan(s, planId, athleteName, urg) {
         const km = se.distance && se.distance.magnitude ? se.distance.magnitude / 1000 : 0; progKm += km;
         const akm = se.athlete_distance && se.athlete_distance.magnitude ? se.athlete_distance.magnitude / 1000 : 0; execKm += akm;
       }
-      if ((se.athlete_comment || '').trim()) { fbCount++; if (LIB.classifyPain(se.athlete_comment) === 'active') pains.push(painPhrase(se.athlete_comment)); }
+      if ((se.athlete_comment || '').trim()) {
+        fbCount++;
+        const pc = LIB.classifyPain(se.athlete_comment);
+        if (pc === 'active') pains.push(painPhrase(se.athlete_comment));
+        else if (pc === 'improving') mejoras.push(painPhrase(se.athlete_comment));
+      }
     }
   }
   // meso con el que entrenó ESTE mes (el que contiene hoy, o el más reciente con sesiones)
@@ -162,7 +167,7 @@ async function analyzePlan(s, planId, athleteName, urg) {
     libPlan: libPlanName, libMeso: libMesoName, libFolder, roadmapNext, libVerdict,
     topSes, tendencia, riesgoAbandono, listoAvanzar, diasComp, afinar,
     volProg, volExec, progRun, execRun, adherencia: adh, fbCount,
-    molestia: pains.length ? pains[0] : '', proxComp: prox, accion,
+    molestia: pains.length ? pains[0] : '', mejora: mejoras.length ? mejoras[0] : '', proxComp: prox, accion,
   };
 }
 
