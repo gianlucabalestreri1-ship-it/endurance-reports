@@ -261,8 +261,12 @@ Encarna el PRINCIPIO RECTOR (§0): trabajar por bloques, lo urgente primero, tod
   si no hay parciales reales → "sin parciales reportados").
 - **Ritmo obj → real POR BLOQUE (FIT):** alineación lap↔bloque RESUELTA. Con dispositivo (`hasFit`) y estructura
   (`targets`), la columna de ritmo muestra cada bloque programado con su objetivo y las laps ejecutadas que caen
-  dentro (por distancia acumulada), salteando las pausas intercaladas. Ej.: `3K Endurance (obj 6'34"/km): 6'43 6'29 6'42` /
-  `5x400m Supraumbral (obj 4'44"/km): 4'16 4'20 4'11 4'11 4'11` / `pausa 4'`. Sin FIT/estructura → obj/real simple.
+  dentro (por distancia acumulada), salteando las pausas intercaladas.
+  - **El objetivo es una ZONA (rango), no un ritmo único:** se extrae el **rango de la zona** del bloque
+    (`work.value.format` / `details`, ej. Z3 `6'03–5'18`) + el **nivel piso/mitad/techo** si el coach lo escribió
+    en `work.notes` (ej. "Mitad a techo de zona…"). renewal.js expone `range`, `zoneName`, `notes`, `nivel` por target.
+  - Ej.: `2K Tempo [obj Z3 6'03–5'18 · mitad-techo]: 5'33 5'32` / `5x400m Supraumbral [obj Z5 4'59–4'27]: 4'16 4'20 4'11 4'11 4'11` / `pausa 4'`.
+  - Sin FIT/estructura → obj/real simple.
 - **MOLESTIA vs MEJORA:** la acción CUIDAR y la columna Molestia usan sólo dolor **activo**; las menciones en
   **progresión** ("me molestó menos", "va cediendo") se muestran como **Mejora** (lila) y NO disparan CUIDAR ni
   bloquean LISTO→progresar. `classifyPain` (lib/endurance.js + endurance.js raíz, en sync) ahora detecta el

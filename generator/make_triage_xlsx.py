@@ -182,7 +182,7 @@ def _is_pause_lap(l):
 def _mkblocks(targets):
     bl = []
     for t in targets:
-        z = t.get("zone") or 0; name = _ZN.get(z, f"Z{z}")
+        z = t.get("zone") or 0; name = t.get("zoneName") or _ZN.get(z, f"Z{z}")
         tgt = t.get("target") or ""; dist = t.get("dist") or 0
         nums = [int(x) for x in _re.findall(r"\d+", t.get("label") or "")]
         reps = 1
@@ -190,7 +190,11 @@ def _mkblocks(targets):
         is_pause = (z == 1 and not tgt)
         total = (dist * reps) or 0.1
         label = (f"{reps}x{int(round(dist * 1000))}m {name}" if (reps > 1 and dist < 1) else f"{_fmtkm(total)} {name}")
-        bl.append({"name": name, "tgt": tgt, "total": total, "is_pause": is_pause, "label": label, "dur": t.get("dur") or 0})
+        # objetivo = RANGO de zona (no ritmo único) + piso/mitad/techo si el coach lo indicó
+        rng = t.get("range") or tgt or "–"
+        nivel = t.get("nivel") or ""
+        obj = (f"Z{z} {rng}" if z else rng) + (f" · {nivel}" if nivel else "")
+        bl.append({"name": name, "obj": obj, "total": total, "is_pause": is_pause, "label": label, "dur": t.get("dur") or 0, "notes": t.get("notes") or ""})
     return bl
 def s_ritmo_blocks(s):
     tg = s.get("targets") or []; lp = s.get("laps") or []
@@ -210,7 +214,7 @@ def s_ritmo_blocks(s):
             while i < len(laps) and acc < b["total"] * 0.85:
                 if _is_pause_lap(laps[i]): i += 1; continue   # pausa intercalada entre reps
                 mine.append(laps[i]); acc += laps[i].get("distKm") or 0; i += 1
-            lines.append(f"{b['label']} (obj {b['tgt'] or '–'}): " + (" ".join(_lp(l) for l in mine) if mine else "–"))
+            lines.append(f"{b['label']} [obj {b['obj']}]: " + (" ".join(_lp(l) for l in mine) if mine else "–"))
     return "\n".join(lines) if lines else s_ritmo(s)
 def s_estado(s):
     if s.get("strength"): return "Fuerza"

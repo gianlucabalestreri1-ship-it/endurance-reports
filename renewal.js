@@ -63,7 +63,15 @@ const magKm = (o) => (o && o.magnitude != null ? (o.unit === 'm' ? o.magnitude /
 const magMin = (o) => (o && o.magnitude != null ? (o.unit === 'min' ? o.magnitude : o.magnitude / 60) : null);
 function paceFrom(km, min) { if (!km || !min || km <= 0) return ''; let s = Math.round((min * 60) / km); const mm = Math.floor(s / 60), ss = s % 60; return `${mm}'${String(ss).padStart(2, '0')}"/km`; }
 
-// target pace of the main quality block: pick run works with a "/km" target, prefer highest zone
+// el objetivo es una ZONA (rango), no un ritmo único; el coach puede indicar piso/mitad/techo en notes.
+function zoneLevel(notes) {
+  const n = (notes || '').toLowerCase();
+  const t = [];
+  if (/piso|parte baja|bajo de (la )?zona/.test(n)) t.push('piso');
+  if (/mitad|medio de (la )?zona|parte media/.test(n)) t.push('mitad');
+  if (/techo|parte alta|alto de (la )?zona/.test(n)) t.push('techo');
+  return t.join('-'); // ej. "mitad-techo"
+}
 function programmedTargets(sessionFull) {
   const targets = [];
   for (const act of (sessionFull.activities || [])) {
@@ -74,10 +82,15 @@ function programmedTargets(sessionFull) {
       const mPace = det.match(/(\d{1,2}'\d{2}"?\s*\/\s*km)/);
       const km = magKm(w.distance), min = magMin(w.duration);
       if (!mPace && !(km || min)) continue;
+      const vf = (w.value && w.value.format) || '';
+      const range = /km/.test(vf) ? vf.replace(/\s*\/\s*km/g, '').replace(/\s*-\s*/, '–').replace(/"/g, '').trim() : '';
+      const mName = det.match(/\[Zona\s*\d+:\s*([^,\]]+)/);
+      const notes = (w.notes || '').replace(/\s+/g, ' ').trim();
       targets.push({
         label: `${sec.series || 1}x${sec.repetitions || 1}`,
         zone: w.zone_number || sec.workout_variable || '',
         target: mPace ? mPace[1].replace(/\s+/g, '') : '',
+        range, zoneName: mName ? mName[1].trim() : '', notes, nivel: zoneLevel(notes),
         dist: km, dur: min,
       });
     }
