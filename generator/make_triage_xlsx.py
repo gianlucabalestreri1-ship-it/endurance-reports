@@ -10,9 +10,15 @@ from openpyxl.comments import Comment
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
+import math
 SRC = sys.argv[1] if len(sys.argv) > 1 else "report/triage-data.json"
 D = json.load(open(SRC))
 A = D["athletes"]
+
+def est_lines(text, width):
+    if not text: return 1
+    cpl = max(8, int(width * 0.95))
+    return sum(max(1, math.ceil(len(seg) / cpl)) for seg in str(text).split("\n"))
 
 ARQ_ORDER = ["A0", "A1", "A2", "A3", "A4", "A5", "A6"]
 ARQ_NAME = {
@@ -115,12 +121,15 @@ for arq in ARQ_ORDER:
         if a.get("listoAvanzar"): ws.cell(r, 13).font = Font(bold=True, size=11, color="006100")
         # feedback NO -> resaltar
         if not fb: ws.cell(r, 10).font = Font(size=11, color="9C0006")
+        # alto de fila ajustado para que NO se corte la molestia / librería / acción
+        nl = max(est_lines(vals[10], COLS[10][1]), est_lines(vals[3], COLS[3][1]),
+                 est_lines(vals[4], COLS[4][1]), est_lines(vals[12], COLS[12][1]), est_lines(vals[11], COLS[11][1]), 2)
+        ws.row_dimensions[r].height = min(110, 15.6 * nl + 6)
         # el filtro de decisión del coach (de la plantilla de librería) como comentario
         vd = a.get("libVerdict") or ""
         if vd:
             cm = Comment(vd, "Tu filtro de decisión (librería)"); cm.width = 420; cm.height = 180
             ws.cell(r, 4).comment = cm
-        ws.row_dimensions[r].height = 30
         r += 1
     r += 1  # respiro entre bloques
 
@@ -268,7 +277,7 @@ for a in ordered:
             if est in ST_FILL: wsa.cell(rr, 9).fill = ST_FILL[est]
             if s.get("pain"): wsa.cell(rr, 8).font = Font(bold=True, size=10, color="9C0006")
             # alto de fila ajustado al contenido (feedback manda, también ritmo/sesión)
-            nlines = max(_est_lines(fb, MCOLS[6][1]), _est_lines(ritmo, MCOLS[5][1]), _est_lines(ses, MCOLS[2][1]), 2)
+            nlines = max(est_lines(fb, MCOLS[6][1]), est_lines(ritmo, MCOLS[5][1]), est_lines(ses, MCOLS[2][1]), 2)
             wsa.row_dimensions[rr].height = min(320, 15.6 * nlines + 8)
             rr += 1
         rr += 1

@@ -100,7 +100,8 @@ async function analyzePlan(s, planId, athleteName, urg) {
     if (mp > 0 && ended) mesoStats.push({ num: m.number, end: m.end_date || lastD, adh: Math.round(100 * me / mp), prog: mp, exec: me });
     for (const mic of (m.micros || [])) for (const se of sess(mic)) {
       const d = se.date || '';
-      if (!d || daysAgo(d) > 40 || daysAgo(d) < -3) continue;
+      // adherencia SOLO sobre semanas realizadas: excluir sesiones FUTURAS (fecha > hoy)
+      if (!d || daysAgo(d) > 40 || daysAgo(d) < 0) continue;
       if (d > recentDate) { recentDate = d; recentMeso = m; }
       weeksN.add(d.slice(0, 7) + '-' + Math.floor(new Date(d).getDate() / 7));
       if (se.title && isRun(se.type_name)) sesTitles.push(se.title);
