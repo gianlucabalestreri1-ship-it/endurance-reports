@@ -160,8 +160,55 @@ def s_estado(s):
         return "Modificada" if dev else "Realizada"
     if s.get("due", True): return "No realizada"
     return "Futura"
-MCOLS = [("Fecha", 9), ("Tipo", 9), ("Sesión", 30), ("RPE p→s", 10), ("Dur · Dist", 18),
-         ("Ritmo obj→real", 20), ("Feedback del atleta", 40), ("Dolor", 8), ("Estado", 13)]
+# ---- feedback estructurado (sensaciones · qué modificó · parciales del estímulo) ----
+_PACE_RE = _re.compile(r"(\d{1,2})[\s'’:.]+(\d{2})(?:\s*[\"”])?|[/](\d{1,2})\s*[\"”]")
+_MODIF = _re.compile(r"(en vez de|en lugar de|cambi[eé]|modifi\w+|no pude (?:terminar|completar|hacer|seguir)|suspend\w+|acort\w+|cort[eé]|camin[eé][^.]{0,40}?(?:no daba|porque|cansad|falt)|hice menos|redu\w+|no logr[eé]|par[eé] antes|dej[eé] antes|me falt[oó])", _re.I)
+_VAR = _re.compile(r"variable|fartlek|cambios de ritmo|ondulado|progres|pausa activa|intensidad variable|cuestas", _re.I)
+def _paces(text, keep_slow):
+    out = []; last = None
+    for m in _PACE_RE.finditer(text or ""):
+        if m.group(1):
+            mn = int(m.group(1)); sc = int(m.group(2)); last = mn
+        else:
+            if last is None: continue
+            mn = last; sc = int(m.group(3))
+        sec = mn * 60 + sc
+        if 150 <= sec <= 1200: out.append((sec, f"{mn}'{sc:02d}\""))
+    work = out if keep_slow else [p for p in out if p[0] < 600]
+    paus = 0 if keep_slow else sum(1 for p in out if p[0] >= 600)
+    return work, paus
+def _narr(text):
+    # saca sólo los tiempos/ritmos (van a "Parc"), mantiene las palabras para que se lea
+    n = _PACE_RE.sub(" ", text or "")
+    n = _re.sub(r"\b[Rr]itmo\b[:\s]*", " ", n)      # la etiqueta "Ritmo" sobra
+    n = _re.sub(r"[·|]{2,}", " ", n)
+    n = _re.sub(r"\s{2,}", " ", n).strip(" ,.-:·/|\"”")
+    return n
+def structure_fb(s):
+    c = (s.get("comment") or "").strip()
+    if not c: return "—"
+    keep = bool(_VAR.search((s.get("title") or "") + " " + c))
+    work, paus = _paces(c, keep)
+    narr = _narr(c)
+    mod = ""
+    mm = _MODIF.search(c)
+    if mm:
+        seg = c[mm.start():]; seg = _re.split(r"[.!?\n]", seg)[0]; mod = seg.strip()[:90]
+    lines = [f"Sens: {narr if narr else '—'}"]
+    if mod: lines.append(f"Mod: {mod}")
+    if work:
+        ptxt = " ".join(p[1] for p in work)
+        tail = "  [var.]" if keep else (f"  (–{paus} pausa)" if paus else "")
+        lines.append(f"Parc: {ptxt}{tail}")
+    return "\n".join(lines)
+def _est_lines(text, width):
+    if not text: return 1
+    cpl = max(8, int(width * 0.95))
+    import math
+    return sum(max(1, math.ceil(len(seg) / cpl)) for seg in str(text).split("\n"))
+
+MCOLS = [("Fecha", 9), ("Tipo", 9), ("Sesión", 26), ("RPE p→s", 10), ("Dur · Dist", 16),
+         ("Ritmo obj→real", 18), ("Feedback del atleta (sensaciones · modificó · parciales)", 48), ("Dolor", 8), ("Estado", 13)]
 usednames = set()
 def tabname(arq, name):
     base = f'{arq} {name}'[:28]
@@ -204,15 +251,18 @@ for a in ordered:
         rr += 1
         for s in sorted(m.get("sessions", []), key=lambda x: (x.get("date", ""), x.get("moment", ""))):
             est = s_estado(s)
-            vals = [_mmdd(s.get("date", "")), s_tipo(s), s_ses(s), s_rpe(s), s_durdist(s), s_ritmo(s),
-                    s.get("comment", "") or "", ("SÍ" if s.get("pain") else "—"), est]
+            fb = structure_fb(s); ritmo = s_ritmo(s); ses = s_ses(s)
+            vals = [_mmdd(s.get("date", "")), s_tipo(s), ses, s_rpe(s), s_durdist(s), ritmo,
+                    fb, ("SÍ" if s.get("pain") else "—"), est]
             for i, v in enumerate(vals, 1):
                 cell = wsa.cell(rr, i, v); cell.border = BORD; cell.font = Font(size=10)
-                cell.alignment = L if i in (3, 6, 7) else C
+                cell.alignment = Alignment(horizontal=("left" if i in (3, 6, 7) else "center"), vertical="center", wrap_text=True)
             if s_tipo(s) in CAT_FONT: wsa.cell(rr, 2).font = CAT_FONT[s_tipo(s)]
             if est in ST_FILL: wsa.cell(rr, 9).fill = ST_FILL[est]
             if s.get("pain"): wsa.cell(rr, 8).font = Font(bold=True, size=10, color="9C0006")
-            wsa.row_dimensions[rr].height = 30
+            # alto de fila ajustado al contenido (feedback manda, también ritmo/sesión)
+            nlines = max(_est_lines(fb, MCOLS[6][1]), _est_lines(ritmo, MCOLS[5][1]), _est_lines(ses, MCOLS[2][1]), 2)
+            wsa.row_dimensions[rr].height = min(300, 14.5 * nlines + 6)
             rr += 1
         rr += 1
     wsa.freeze_panes = "A5"
