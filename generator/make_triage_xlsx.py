@@ -181,8 +181,13 @@ def _narr(text):
     # saca sólo los tiempos/ritmos (van a "Parc"), mantiene las palabras para que se lea
     n = _PACE_RE.sub(" ", text or "")
     n = _re.sub(r"\b[Rr]itmo\b[:\s]*", " ", n)      # la etiqueta "Ritmo" sobra
+    # placeholders vacíos del template de la app (ej. Nike): x '' - '' - '' , comillas sueltas
+    n = _re.sub(r"[x×]\s*(?=['’\"”])", " ", n)
+    n = _re.sub(r"(['’\"”]+\s*[-–]?\s*){2,}", " ", n)
+    n = _re.sub(r"['’\"”]{1,2}", " ", n)
+    n = _re.sub(r"(?:\s[-–]\s)+", " ", n)
     n = _re.sub(r"[·|]{2,}", " ", n)
-    n = _re.sub(r"\s{2,}", " ", n).strip(" ,.-:·/|\"”")
+    n = _re.sub(r"\s{2,}", " ", n).strip(" ,.-:·/|\"”'’")
     return n
 def structure_fb(s):
     c = (s.get("comment") or "").strip()
@@ -200,6 +205,8 @@ def structure_fb(s):
         ptxt = " ".join(p[1] for p in work)
         tail = "  [var.]" if keep else (f"  (–{paus} pausa)" if paus else "")
         lines.append(f"Parc: {ptxt}{tail}")
+    elif not s.get("strength"):
+        lines.append("Parc: sin parciales reportados")
     return "\n".join(lines)
 def _est_lines(text, width):
     if not text: return 1
@@ -262,10 +269,20 @@ for a in ordered:
             if s.get("pain"): wsa.cell(rr, 8).font = Font(bold=True, size=10, color="9C0006")
             # alto de fila ajustado al contenido (feedback manda, también ritmo/sesión)
             nlines = max(_est_lines(fb, MCOLS[6][1]), _est_lines(ritmo, MCOLS[5][1]), _est_lines(ses, MCOLS[2][1]), 2)
-            wsa.row_dimensions[rr].height = min(300, 14.5 * nlines + 6)
+            wsa.row_dimensions[rr].height = min(320, 15.6 * nlines + 8)
             rr += 1
         rr += 1
     wsa.freeze_panes = "A5"
+
+# post-proceso global: todo centrado + al medio + ajustado, letra mínima 11
+for wsx in wb.worksheets:
+    for row in wsx.iter_rows():
+        for cc in row:
+            if cc.value is None: continue
+            cc.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+            f = cc.font
+            if f is not None and f.size and f.size < 11:
+                cc.font = Font(name=f.name, size=11, bold=f.bold, italic=f.italic, color=f.color, underline=f.underline)
 
 out = "report/Triage-Renovaciones.xlsx"
 wb.save(out); print(out)
