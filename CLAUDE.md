@@ -5,6 +5,21 @@ Objetivo: leer las notificaciones de **Endurance Tool** y entregar al coach una
 cómo se accede, dónde están los datos y cómo se entrega, para que cada corrida salga
 optimizada. **La vía optimizada es HTTP puro (sin navegador).**
 
+## 0. PRINCIPIO RECTOR (aplica a TODO lo que construyamos)
+
+> **Función clave del asistente: reducir radicalmente el costo de cambio de contexto
+> y poner toda la información CLAVE de un pantallazo para decidir con cada deportista.**
+> Cada entrega (planilla, informe, triage, master) se diseña con este norte. En la práctica:
+> - **Agrupar por bloques** afines (arquetipo / objetivo / período) para trabajar varios atletas
+>   seguidos con los mismos circuitos mentales, en vez de saltar de contexto.
+> - **Lo urgente primero** (ej. VENCIDOS antes que por vencer), resaltado.
+> - **Formato repetitivo y consistente** (mismos rótulos y orden en cada fila/atleta) para
+>   detectar patrones rápido; una **acción sugerida** clara por caso.
+> - **Traer el dato, no el clic**: si algo está en ET a 3 clics (ritmo por lap, meso, plantilla de
+>   librería usada, filtro de decisión), extraerlo y mostrarlo; no obligar a abrir sesión por sesión.
+> - **No inventar** lo que es labor del coach (objetivos / a dónde va): se deja vacío.
+> - Entregar en el **formato que el coach ya usa** (Excel), sin ruido, centrado y legible.
+
 ## 1. Acceso al sistema
 
 > **DECISIÓN (2026-10-11): acceso API-first.** El proyecto se construye sobre la
@@ -219,6 +234,32 @@ carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPU
   base/precomp/competición/pico, tabla de tipos, ejemplos de sesiones con progresión, semanas de descarga).
   Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces, expresado SIEMPRE
   en el modelo base. (Pendiente: el coach sumará guías específicas de YouTube de Magness.)
+
+### TRIAGE de renovaciones por ARQUETIPO (`generator/triage.js` + `make_triage_xlsx.py`)
+Encarna el PRINCIPIO RECTOR (§0): trabajar por bloques, lo urgente primero, todo de un pantallazo.
+- `node plans.js --report` → `report/plans-expiry-data.json` (vencidos + por vencer ≤7d).
+  `node generator/triage.js` → `report/triage-data.json`. `python3 generator/make_triage_xlsx.py`
+  → `report/Triage-Renovaciones.xlsx` (necesita `report/renewal-<planId>-data.json` de `node renewal.js <ids>`
+  para las hojas de mesociclo). Correr renewal con los MISMOS plan_id de la lista de vencimientos.
+- **7 arquetipos** (escalera de progresión): A0 primeros pasos (caminar/correr) · A1 consolidando al corredor ·
+  A2 base/desarrollo · A3 10K (5-10K) · A4 21K · A5 42K/ultra/trail · A6 medio fondo/velocidad.
+  Clasifica por la **disciplina oficial de ET** + el **`book_shop_template` del meso actual** (autoritativo),
+  no por la distancia de una carrera lejana.
+- **Detección de librería (clave):** `meso.book_shop_template` / `plan.book_shop_template` traen `name`,
+  `folder_name` y `description` → dicen EXACTO con qué plantilla tuya entrenó este mes, el **próximo paso del
+  roadmap** (Mesociclo N→N+1) y tu propio **filtro de decisión** (va como comentario en la celda).
+- **Hoja TRIAGE:** una fila por atleta agrupada por arquetipo, **VENCIDOS primero**; columnas: urgencia · vence ·
+  librería+roadmap · disciplina · vol prog · adherencia · **tendencia** (↑/↓, RIESGO de abandono comparando los
+  2 mesos COMPLETOS) · feedback sí/no · molestia · próx. comp · **acción sugerida**
+  (CUIDAR molestia · PEDIR FEEDBACK si ejecución 0 · AFINAR si comp ≤28d · MANTENER <50% · LISTO→progresar si
+  ≥80% sin molestia con feedback · REVISAR). Cabecera con cantidad de atletas por arquetipo.
+- **Una hoja por atleta = extracción del MESOCICLO del mes** (para no abrir ET sesión por sesión): tabla
+  cronológica con tipo (LIT/ThT/HIT), prog→ejecutado, ritmo obj→real [FIT], estado, y el **feedback estructurado**:
+  `Sens:` (sensaciones/dolor) · `Mod:` (qué modificó, si se detecta) · `Parc:` (parciales del estímulo;
+  **descarta laps de pausa ≥10'/km**, excepto variable/progresivo/fartlek/ondulado/cuestas/pausa activa = `[var.]`;
+  si no hay parciales reales → "sin parciales reportados").
+- **Formato:** sin emojis, **todo centrado/medio, letra mínima 11**, alto de fila **ajustado al contenido** del
+  feedback. Datos sensibles → `SendUserFile` (no Artifact).
 
 ## 4. Tarea programada
 
