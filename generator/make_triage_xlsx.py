@@ -247,13 +247,15 @@ def _narr(text):
     # saca sólo los tiempos/ritmos (van a "Parc"), mantiene las palabras para que se lea
     n = _PACE_RE.sub(" ", text or "")
     n = _re.sub(r"\b[Rr]itmo\b[:\s]*", " ", n)      # la etiqueta "Ritmo" sobra
+    n = _re.sub(r"\|+", " ", n)                        # pipes de la tabla del dispositivo ("| |")
+    n = _re.sub(r"\b\d{1,4}\s*m\b", " ", n)           # distancias sueltas en metros ("411 m", "1032 m")
     # placeholders vacíos del template de la app (ej. Nike): x '' - '' - '' , comillas sueltas
     n = _re.sub(r"[x×]\s*(?=['’\"”])", " ", n)
-    n = _re.sub(r"(['’\"”]+\s*[-–]?\s*){2,}", " ", n)
+    n = _re.sub(r"(['’\"”]+\s*[-–—]?\s*){2,}", " ", n)
     n = _re.sub(r"['’\"”]{1,2}", " ", n)
-    n = _re.sub(r"(?:\s[-–]\s)+", " ", n)
-    n = _re.sub(r"[·|]{2,}", " ", n)
-    n = _re.sub(r"\s{2,}", " ", n).strip(" ,.-:·/|\"”'’")
+    n = _re.sub(r"\s[-–—]+(?=\s|$)", " ", n)          # guiones/em-dash sueltos ("— —")
+    n = _re.sub(r"[·]{2,}", " ", n)
+    n = _re.sub(r"\s{2,}", " ", n).strip(" ,.-:·/|\"”'’—–")
     return n
 def structure_fb(s):
     c = (s.get("comment") or "").strip()

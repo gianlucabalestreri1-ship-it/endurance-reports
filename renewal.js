@@ -247,7 +247,7 @@ async function renewalForPlan(session, planId) {
           realDist, realDur, realPace, source: due ? source : '', laps,
           pain: ET.detectPain ? ET.detectPain((s.athlete_comment || '').trim()) : false,
           painClass: ET.classifyPain ? ET.classifyPain((s.athlete_comment || '').trim()) : 'none',
-          comment: (s.athlete_comment || '').replace(/\s+/g, ' ').trim().slice(0, 300),
+          comment: (s.athlete_comment || '').replace(/\s+/g, ' ').trim().slice(0, 600),
         });
       }
       micros.push({ meso: meso.name || `Meso ${meso.number || ''}`, number: mi.number, start: mi.start_date, end: mi.end_date, future,
