@@ -167,6 +167,17 @@ carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPU
   - **Adherencia = solo runs** (la fuerza no se reporta → no cuenta; se muestra pero no penaliza; nota al pie).
   - **Ejecutada** = feedback manual **o FIT** (`resume_fit`). Ritmo real: FIT→laps; sin FIT→ritmos del comentario.
   - Formato: columnas B–H ancho 30,86; nombre de atleta y plan en celdas combinadas; todo centrado/medio/ajustado.
+  - **Respuestas del formulario de renovación (Google Form) EN la hoja de cada atleta** (pedido del coach:
+    no abrir el form aparte ni cambiar de contexto). Fuente: Google Sheet de respuestas
+    `1TYqDW6rM0BP8a_YnHhdf5o61M5FLYNhZphy5wEW_LIg` (hoja "Respuestas de formulario 1", cols A=Marca temporal,
+    B=Nombre, C–N=preguntas, O=email). Leer con el connector de Google Drive: `download_file_content` devuelve el
+    **CSV en base64** (decodificar), filtrar las respuestas de los **últimos 7-10 días** (col A `DD/MM/YYYY`) y
+    escribir `report/form-responses.json` = `{ <nombre_norm>: {name, date(ISO), email, qa:[[etiqueta,respuesta],…]} }`
+    (etiquetas cortas por pregunta; se omiten respuestas vacías). `make_renewal_xlsx.py` lo lee solo si existe y
+    **inyecta un bloque "Formulario de renovación — respondido DD/MM" arriba de las tablas semanales** de cada
+    pestaña. Match atleta↔respuesta por tokens (acentos fuera + prefijos, p.ej. "Ana"↔"Anabel", "Ariel Luna"↔
+    "Roberto Ariel Luna", ignora paréntesis "(todavia)"; umbral ≥2 tokens). La fila **Dolores/molestias** se resalta
+    en rojo si la respuesta no empieza por no/nada/ningún/sin. `report/form-responses.json` queda en `report/` (gitignored).
 
 **Alerta de adherencia semanal** (`alert.js` + `make_alert_xlsx.py`):
 - `node alert.js` (todos) | `--days N` (umbral, def. 7) | `--names ...`. → `report/alert-data.json`;

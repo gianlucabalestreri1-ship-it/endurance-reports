@@ -4,7 +4,7 @@
 una tabla por microciclo, columnas = días Lunes..Domingo, filas = atributos de la
 sesión, y un renglón superior combinado con el rango de fechas (Lun al Dom).
 Lee report/renewal-<plan>-data.json. Texto ajustado y alineado al medio. Sin fórmulas."""
-import json, sys, re
+import json, sys, re, unicodedata
 from datetime import date, timedelta
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -53,6 +53,30 @@ def d2(s):
     try: return date.fromisoformat(s)
     except Exception: return None
 def fmt(d): return d.strftime("%d/%m/%Y")
+
+# --- Respuestas del formulario de renovación (Google Form) por atleta ---
+# report/form-responses.json: { <norm>: {name, date(ISO), email, qa:[[label,answer],...]} }
+# Se inyectan en la pestaña de cada atleta para no tener que abrir el form aparte.
+def _ntok(s):
+    s=unicodedata.normalize("NFD",s or "").encode("ascii","ignore").decode().lower()
+    s=re.sub(r"\(.*?\)"," ",s)                      # saca aclaraciones entre paréntesis
+    return [t for t in re.split(r"[^a-z0-9]+",s) if t]
+try:
+    FORMS=list(json.load(open("report/form-responses.json")).values())
+except Exception:
+    FORMS=[]
+def match_form(name):
+    nt=_ntok(name); best=None; bestsc=0
+    for v in FORMS:
+        ft=_ntok(v.get("name")); sc=0
+        for a in ft:
+            if any(a==b or (len(a)>=3 and len(b)>=3 and (a.startswith(b) or b.startswith(a))) for b in nt):
+                sc+=1
+        if sc>bestsc: bestsc=sc; best=v
+    return best if bestsc>=2 else None
+def _pain_answer(ans):
+    a=unicodedata.normalize("NFD",ans or "").encode("ascii","ignore").decode().lower().strip()
+    return bool(a) and not re.match(r"^(no|nada|ningun|sin )", a)
 
 # filas (atributos) de cada tabla semanal
 def val_sesion(s): return (("★ " if s.get("key") else "")+(s.get("cat") or "")+" "+(s.get("title") or "")).strip()
@@ -147,6 +171,25 @@ for d in plans:
     ws["A1"]=d["athlete"]; ws["A1"].font=TITLEF; ws["A1"].alignment=CEN
     ws["A2"]=f'{p["title"]} · {p["start"]} → {p["end"]} · {p["status"]} · período: {" + ".join(str(x) for x in d["periodMesos"])}   —   (la adherencia considera solo los runs; no se reportan feedbacks de fuerza)'; ws["A2"].font=SUBF; ws["A2"].alignment=CEN
     W(ws,[15]+[30.86]*7); r=4
+    # --- bloque: respuestas del formulario de renovación (si las hay) ---
+    fr=match_form(d["athlete"])
+    if fr:
+        fd=d2(fr.get("date")); fdtxt=fmt(fd) if fd else (fr.get("date") or "")
+        ws.merge_cells(start_row=r,start_column=1,end_row=r,end_column=NCOL)
+        hc=ws.cell(r,1,f'Formulario de renovación — respondido {fdtxt}')
+        hc.fill=HEADER; hc.font=HEADERF; hc.alignment=CEN
+        for c in range(1,NCOL+1): ws.cell(r,c).border=BORD
+        r+=1
+        for lab,ans in fr.get("qa",[]):
+            lc=ws.cell(r,1,lab); lc.fill=LABF; lc.font=Font(bold=True,size=9,color="1F3A5F"); lc.alignment=CEN; lc.border=BORD
+            ws.merge_cells(start_row=r,start_column=2,end_row=r,end_column=NCOL)
+            ac=ws.cell(r,2,ans); ac.font=Font(size=9); ac.border=BORD
+            ac.alignment=Alignment(horizontal="left",vertical="center",wrap_text=True)
+            if lab=="Dolores/molestias" and _pain_answer(ans):
+                ac.fill=PAINF; ac.font=Font(size=9,bold=True,color="B02A2A")
+            for c in range(3,NCOL+1): ws.cell(r,c).border=BORD
+            r+=1
+        r+=1   # respiro antes de las tablas semanales
     for m in d["micros"]:
         # lunes..domingo de la semana del micro
         base = d2(m.get("start"))
