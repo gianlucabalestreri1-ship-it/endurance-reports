@@ -34,7 +34,7 @@ def colw(sid,c0,c1,px): return {"updateDimensionProperties":{"range":{"sheetId":
 
 # ---------- SETUP ----------
 setup=[
-  {"updateSheetProperties":{"properties":{"sheetId":0,"title":"Ficha","gridProperties":{"rowCount":40,"columnCount":4}},"fields":"title,gridProperties"}},
+  {"updateSheetProperties":{"properties":{"sheetId":0,"title":"Ficha","gridProperties":{"rowCount":40,"columnCount":6}},"fields":"title,gridProperties"}},
   {"addSheet":{"properties":{"sheetId":1,"title":"Rendimiento","gridProperties":{"rowCount":40,"columnCount":12}}}},
   {"addSheet":{"properties":{"sheetId":2,"title":"Planificación","gridProperties":{"rowCount":30,"columnCount":30}}}},
 ]
@@ -118,6 +118,17 @@ for idx,(lab,bg,fg) in enumerate(METHODS):
     fmt.append(fill(2,r,r+1,1,1+NMC,bg))
 # COMENTARIOS label
 fmt.append(fill(2,23,24,0,1,LABF,bold=True,fontcolor=INK,align="CENTER"))
+
+# ---- tabla lateral: FORMULARIO DE RENOVACIÓN (si cargó en los últimos 7 días) ----
+rnw=d.get("renewal")
+if rnw and rnw.get("qa"):
+    qa=rnw["qa"]; n=len(qa)
+    rv=[[f'FORMULARIO DE RENOVACIÓN — {rnw.get("date","")}', ""]]+[[l,a] for l,a in qa]
+    values.append({"range":"Ficha!D1","values":rv})
+    fmt+=[colw(0,2,3,30), colw(0,3,4,230), colw(0,4,5,430)]
+    fmt+=[merge(0,0,1,3,5), fill(0,0,1,3,5,DARK,bold=True,fontcolor=WHITE,align="LEFT")]
+    fmt+=[fill(0,1,1+n,3,4,LABF,bold=True,fontcolor=INK,align="LEFT")]
+    fmt+=[fill(0,1,1+n,4,5,WHITE,fontcolor=INK,align="LEFT")]
 
 json.dump(setup, open(out+".setup.json","w"))
 json.dump(values, open(out+".values.json","w"), ensure_ascii=False)
