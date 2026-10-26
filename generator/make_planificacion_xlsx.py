@@ -91,10 +91,14 @@ nrows=max(12, len(comps)+2)
 for k in range(nrows):
     c=comps[k] if k < len(comps) else None
     fecha = dmy(c["date"]) if c else ""
-    nota  = (f'{c.get("name","")}' + (f' · prioridad {c.get("priority")}' if c and c.get("priority") else '')) if c else ""
-    if c and c.get("rpe") is not None: nota += f' · sRPE {c["rpe"]}'
-    if c and c.get("comment"): nota += f' · {c["comment"]}'
-    vals=[fecha,"","","","",nota]
+    fc    = (f'{c.get("hr")}' if c and c.get("hr") else "")
+    cond  = (f'Prioridad {c.get("priority")}' if c and c.get("priority") else "")
+    nota  = ""
+    if c:
+        nota = c.get("name","")
+        if c.get("km"): nota += f' · {c["km"]} km (Garmin)'
+        if c.get("comment"): nota += f' · {c["comment"]}'
+    vals=[fecha, (c.get("time","") if c else ""), (c.get("pace","") if c else ""), fc, cond, nota]
     for i,v in enumerate(vals,1):
         cc=ws2.cell(tr,i,v); cc.border=BORD
         cc.alignment=(LEFT if i==6 else CEN); cc.font=INKF
