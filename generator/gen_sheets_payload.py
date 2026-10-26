@@ -58,13 +58,14 @@ for c in HIST: fvals.append([c, historial.get(c,"")])
 
 # ---------- RENDIMIENTO ----------
 pr_hdr=["Año","Mejor 5K","Mejor 10K","Mejor 21K","Mejor 42K","Test de Milla","VO2 Max estimado","FCM","VT1","VT2","KMS PICO"]
-comp_hdr=["Fecha","Tiempo (mm:ss)","Ritmo (min/km)","Frecuencia cardíaca (med/max)","Condiciones","Carrera / Notas"]
+comp_hdr=["Fecha","Distancia","Tiempo (mm:ss)","Ritmo (min/km)","Frecuencia cardíaca (med/max)","Condiciones","Carrera / Notas"]
 comps=d.get("competitions",[])
 comp_rows=[]
 for c in comps:
     nota=c.get("name","")
-    if c.get("km"): nota+=f' · {c["km"]} km (Garmin)'
-    comp_rows.append([dmy(c.get("date","")), c.get("time",""), c.get("pace",""),
+    if c.get("comment"): nota+=f' · {c["comment"]}'     # feedback del atleta (métricas si no hay Garmin)
+    comp_rows.append([dmy(c.get("date","")), (f'{c["km"]} km' if c.get("km") else ""),
+                      c.get("time",""), c.get("pace",""),
                       (str(c.get("hr")) if c.get("hr") else ""),
                       (f'Prioridad {c.get("priority")}' if c.get("priority") else ""), nota])
 
@@ -99,8 +100,8 @@ fmt+=[fill(0,23,29,0,1,LABF,bold=True,fontcolor=INK,align="LEFT")]      # labels
 # Rendimiento
 for i,w in enumerate([90,80,80,80,80,90,110,70,70,70,90]): fmt.append(colw(1,i,i+1,w))
 fmt+=[fill(1,0,1,0,11,PURPLE,bold=True,fontcolor=WHITE,align="CENTER")]
-fmt+=[merge(1,7,8,0,6), fill(1,7,8,0,6,LABF,bold=True,fontcolor=INK,align="LEFT")]
-fmt+=[fill(1,8,9,0,6,DARK,bold=True,fontcolor=WHITE,align="CENTER")]
+fmt+=[merge(1,7,8,0,7), fill(1,7,8,0,7,LABF,bold=True,fontcolor=INK,align="LEFT")]
+fmt+=[fill(1,8,9,0,7,DARK,bold=True,fontcolor=WHITE,align="CENTER")]
 # Planificación widths
 fmt+=[colw(2,0,1,150), colw(2,1,1+NMC,34)]
 fmt+=[merge(2,0,1,0,14)]
