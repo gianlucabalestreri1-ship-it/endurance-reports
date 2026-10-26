@@ -240,6 +240,25 @@ ya construido: `1ojnx-WAF16b3yGzbm6TSS3UsJoI7nS312LKXe8sbkTM`. Estructura = rép
   ("Invalid conversion requested"). Por eso se construye NATIVO con el connector Google Sheets, no subiendo openpyxl.
   (`generator/make_planificacion_xlsx.py` queda sólo para previsualizar/entregar por `SendUserFile`.)
 
+**Variante CICLISTAS (formulario de ingreso COMPLETO de endurance) — 2026-10-26:** algunos deportistas son
+**ciclistas** (MTB xco/xcm, ruta, RuralBike) y NO están en esta cuenta de ET (están en **otra cuenta de coach**),
+así que con estas credenciales NO hay `athlete_list`/Garmin → Rendimiento/competencias queda **vacío** (lo carga el
+coach, o si pasan la otra cuenta se traen). Vienen de un **formulario de ingreso distinto** (más largo: preguntas de
+potencia/vatios, potenciómetro, rodillo, FC máx/reposo, días+horas disponibles, controles médicos, antecedentes).
+Se reusa el MISMO template de 3 pestañas (copy a su carpeta) pero se **sobreescribe TODO el bloque `Ficha!A1` 29×2
+(etiquetas col A + valores col B)** con rótulos adaptados a ciclismo (no runner), + un `update_spreadsheet` que pone
+`B1:B29` en `WRAP`+`MIDDLE` (las celdas son densas, multi-línea con `\n`). Mapeo intake→Ficha (col del CSV por índice
+0-based; ojo campos citados multi-línea): DATOS = Nombre(2)·Fecha nac(3)·Edad(5)·Altura(4)·Peso(6)·Email(1)·Profesión(7)·
+Día normal/traslado(8)·Condición médica actual(53)·Lesiones 5a(54)·Dolor articular/espalda(56)·Antecedentes
+familiares(57)·Medicación/tratamiento(58)·Controles médicos(59)·Ciclos menstruales mujeres(55)·Alimentación(61)·
+Hidratación(60)·Gimnasio(41)·Act. que le gustan(42)·Act. que NO quiere(43)·Días+horas disponibles(19 + 20-26).
+HISTORIAL = Disciplina/especialidad(9)·Años sistemáticos(17)+discontinuó(18)·Entren. reciente(12)+meses(10)+comp.(11)·
+Nivel actual(16)+nivel competencia(44)·Dispositivos GPS/FC(45)+potenciómetro(46)+rodillo(47)+FC máx(51)/reposo(52)+
+récords potencia(48)·Objetivos(14)+competencias deseadas(15). SEXO no se pregunta en este form → no va (no inventar).
+Carpetas creadas 2026-10-26 (dentro de la madre): Nancy Perez `1gI34420kFKZd14dSEkDaG2VG5rJSNA9d`, Odduardo Díaz y
+Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaEfxoQ2Pfil1`, Emilio Muhlenpfordt
+`1vUqgkmfCRc_Zt0dWpqTW8ES3_r7Oq1So`.
+
 **Alerta de adherencia semanal** (`alert.js` + `make_alert_xlsx.py`):
 - `node alert.js` (todos) | `--days N` (umbral, def. 7) | `--names ...`. → `report/alert-data.json`;
   `python3 make_alert_xlsx.py` → **`report/Alerta-Adherencia.xlsx`**.
