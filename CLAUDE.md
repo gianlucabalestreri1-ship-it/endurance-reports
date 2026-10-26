@@ -179,6 +179,67 @@ carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPU
     "Roberto Ariel Luna", ignora paréntesis "(todavia)"; umbral ≥2 tokens). La fila **Dolores/molestias** se resalta
     en rojo si la respuesta no empieza por no/nada/ningún/sin. `report/form-responses.json` queda en `report/` (gitignored).
 
+### Planilla de PLANIFICACIÓN por atleta — Google Sheet NATIVO en su carpeta de Drive
+Pedido del coach (2026-10-26): una **planilla nativa de Google Sheets por deportista**, en su **carpeta
+privada** dentro de la carpeta madre `1UQ0YzfaAZBE5ilTeExJIhr-D11VZRBCS`. Nombre del archivo:
+**`Nombre Apellido - Planificación AÑO`** (ej. `Roberto Ariel Luna - Planificación 2026`). Ejemplo modelo
+ya construido: `1ojnx-WAF16b3yGzbm6TSS3UsJoI7nS312LKXe8sbkTM`. Estructura = réplica de `Plantilla_planificación`
+(el PDF/Sheets modelo del coach): **3 pestañas** (sheetId 0=Ficha, 1=Rendimiento, 2=Planificación).
+
+- **Pestaña Ficha** (col A rótulo gris `EEF2F7` negrita, col B valor; banda de sección azul `1F3A5F` blanco):
+  - **DATOS DEL DEPORTISTA** (banner A1:B1) + 21 campos (NOMBRE, FECHA NAC, SEXO, RESIDENCIA, TELÉFONO, EMAIL,
+    CONDICIÓN MÉDICA, LESIONES, MEDICACIÓN, CIRUGÍAS, FUMA/ALCOHOL, DIETA, HORAS DE SUEÑO, TRABAJO, EXPERIENCIA
+    EN RUNNING, COMPETENCIAS QUE HA PARTICIPADO, EXPERIENCIA CON ENTRENADOR, OTRAS DISCIPLINAS, MOTIVACIONES,
+    DÍAS DISPONIBLES, CUANDO NO PUEDE ENTRENAR).
+  - **HISTORIAL DEPORTIVO** (banner) + 6 (Años Corriendo, Experiencia Previa, Última Carrera y Ritmo, Volumen
+    Promedio Semanal (km), Entrenamientos Semanales Actuales (#), KMS PICO máx. semanal histórico).
+  - **FORMULARIO DE RENOVACIÓN**: va **AL COSTADO** de DATOS DEL DEPORTISTA (no debajo), **misma altura**,
+    dejando **columna C vacía de separación** → banner en D1:E1, 12 preguntas en D2:E13 (mismo formato: rótulo
+    gris D, valor E). Se agrega **solo si el atleta cargó un formulario de renovación en los últimos 7 días**
+    (ver §3 renovación, Sheet `1TYqDW6rM0BP8a_YnHhdf5o61M5FLYNhZphy5wEW_LIg`). Si no, la Ficha va sin esa tabla.
+- **Pestaña Rendimiento**: tabla PRs por año (header violeta `674EA7`: Año·5K·10K·21K·42K·Milla·VO2·FCM·VT1·VT2·KMS pico,
+  filas en blanco para el coach) + **Registro de competencias (histórico ET)** (A8 combinado; header azul oscuro:
+  Fecha·Tiempo·Ritmo·FC·Condiciones·Carrera/Notas) con **todas las competencias de TODOS los planes** y sus
+  resultados reales del Garmin.
+- **Pestaña Planificación**: título combinado + Objetivos (los carga el coach, NO inventar) + grilla 28 microciclos
+  con código de color del manual: **COMPETENCIA** malva `C27BA0` · **TEST** verde `6AA84F` · **SPRINT/GLUCOLÍTICA/
+  VO2MAX/SUPRAUMBRAL** rojo `E06666` (HIT) · **UMBRAL/TEMPO** amarillo `FFD966` (ThT) · **ENDURANCE/RECUPERACIÓN**
+  azul `6FA8DC` (LIT). PERÍODO = banda violeta. Filas MESOCICLO/OBJETIVO/KILÓMETROS/COMENTARIOS vacías (coach).
+
+**Fuentes de datos y PRIORIDAD para llenar la Ficha (antes de dejar un campo vacío):**
+1. **DATOS DEL DEPORTISTA** ← **Formulario de inicio del deportista (intake)**, Sheet
+   `1etcgQ_o77y7yyEb40cBO9Y2dpNopi9nyxBeEKfz1OOw` (hoja "Respuestas de formulario 1", ~147 respuestas; cols:
+   C=Nombre, D=Nac, E=Sexo, F=Residencia, G=Tel, H=Email, I=Cond.médica (+M entrenador), J=Lesiones, K=Medicación,
+   L=Cirugías, N=Fuma/alcohol, O=Dieta, P=Sueño, Q=Trabajo, R=Años corriendo, S=Competencias, U=Entrenador,
+   W=Otra disciplina, Z=Motivaciones, AB=Días disponibles). Descargar con `download_file_content` (base64 CSV,
+   decodificar) → `report/intake-data.json` = `{<nombre_norm>: {name,email,norm,ficha:{...}, años_corriendo, otra_disc}}`
+   (última ocurrencia gana). Match por tokens (acentos fuera + prefijos, ≥2).
+2. Si falta en intake → **Endurance Tool** (`athlete_list`: nombre, email). 3. Si no está en ninguno → **vacío** (lo carga el coach; NO inventar).
+   (`report/intake-data.json` gitignored — datos personales de salud.)
+- **HISTORIAL DEPORTIVO / Competencias** ← ET: `training_plan_list{athlete_id}` → por cada plan `training_plan`
+  → competencias + sesiones con `resume_fit` (Garmin). `getSession(session_id)`→`resume.total_distance`(m) +
+  `laps`(ritmo/FC) por sesión; sumar por semana ISO → **volumen promedio (12 sem) y KMS pico histórico**; sesiones
+  ejecutadas/semana del plan activo → **entrenamientos semanales**; match fecha carrera↔sesión del día (±1) →
+  tiempo/ritmo/FC reales. Script: `generator/batch.js` (lista de nombres → `report/planifdata-<id>.json`).
+  **Ojo:** muchos NO usan `athlete_distance` (viene vacío con dispositivo); el dato real está en `resume` por sesión.
+
+**Construcción (connector Google Sheets NATIVO):**
+- `generator/gen_sheets_payload.py <planifdata.json> <out>` → `<out>.setup.json` (addSheet/rename),
+  `<out>.values.json` (lista {range,values} para `mcp__Google_Sheets__update_values`), `<out>.format.json`
+  (requests para `mcp__Google_Sheets__update_spreadsheet`: merges, repeatCell colores, anchos). Colores hex→rgb
+  **redondeado a 3 decimales** (más chico). El **formato es IDÉNTICO para todos**; sólo cambian los valores.
+- Flujo por atleta: `create_file` (Drive, `contentMimeType: application/vnd.google-apps.spreadsheet`, `parentId`=carpeta)
+  → `update_spreadsheet`(setup) → `update_values`(texto) → `update_spreadsheet`(format, en trozos de ~10 requests
+  porque mi salida corrompe JSON grande). La tabla lateral de renovación: expandir `columnCount` a 6 + anchos C/D/E
+  + merge D1:E1 + fills, y `update_values` D1:E13.
+- **Patrón eficiente para el lote (plantilla + copy):** como el formato es igual, mantener UNA plantilla con formato
+  y rótulos fijos + datos vacíos; por atleta `copy_file(plantilla, parentId=carpeta, title=...)` (conserva todo el
+  formato) y sólo `update_values` de los datos variables (DATOS, HISTORIAL, competencias, y tabla renovación si tiene).
+- **GOTCHA CRÍTICO — NO subir .xlsx por base64 inline:** `create_file` con `base64Content` de un .xlsx >~10 KB se
+  **corrompe/trunca en mi salida** (archivo inválido en Drive) y la conversión a Sheets nativo la rechaza el connector
+  ("Invalid conversion requested"). Por eso se construye NATIVO con el connector Google Sheets, no subiendo openpyxl.
+  (`generator/make_planificacion_xlsx.py` queda sólo para previsualizar/entregar por `SendUserFile`.)
+
 **Alerta de adherencia semanal** (`alert.js` + `make_alert_xlsx.py`):
 - `node alert.js` (todos) | `--days N` (umbral, def. 7) | `--names ...`. → `report/alert-data.json`;
   `python3 make_alert_xlsx.py` → **`report/Alerta-Adherencia.xlsx`**.
