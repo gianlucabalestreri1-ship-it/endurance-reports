@@ -47,16 +47,21 @@ CAMPOS=["NOMBRE Y APELLIDO","FECHA DE NACIMIENTO","SEXO","LUGAR DE RESIDENCIA",
 "¿PRACTICA OTRAS DISCIPLINAS A LA PAR?","MOTIVACIONES PARA ENTRENAR",
 "DÍAS A LA SEMANA DISPONIBLES","CUANDO NO PUEDE ENTRENAR"]
 LARGAS={"CONDICIÓN MÉDICA","DIETA","COMPETENCIAS QUE HA PARTICIPADO","MOTIVACIONES PARA ENTRENAR"}
-r=1
+# banda de sección (azul oscuro) igual que HISTORIAL DEPORTIVO
+ws.merge_cells(start_row=1,start_column=1,end_row=1,end_column=2)
+h0=ws.cell(1,1,"DATOS DEL DEPORTISTA"); h0.fill=fill(DARK); h0.font=WHITEF; h0.alignment=LEFT; h0.border=BORD
+ws.cell(1,2).border=BORD
+r=2
 for campo in CAMPOS:
     lc=ws.cell(r,1,campo); lc.fill=fill(LABF); lc.font=BOLD; lc.alignment=LEFT; lc.border=BORD
     vc=ws.cell(r,2,ficha.get(campo,"")); vc.font=INKF; vc.alignment=LEFT; vc.border=BORD
     if campo in LARGAS: ws.row_dimensions[r].height=58
     r+=1
-# --- HISTORIAL DEPORTIVO (mismo diseño que la ficha: rótulo gris claro + negrita) ---
+# --- HISTORIAL DEPORTIVO (banda azul oscuro, igual que DATOS DEL DEPORTISTA) ---
 r+=1
-hc=ws.cell(r,1,"HISTORIAL DEPORTIVO"); hc.fill=fill(LABF); hc.font=BOLD; hc.alignment=LEFT; hc.border=BORD
-ws.cell(r,2,""); ws.cell(r,2).border=BORD; r+=1
+ws.merge_cells(start_row=r,start_column=1,end_row=r,end_column=2)
+hc=ws.cell(r,1,"HISTORIAL DEPORTIVO"); hc.fill=fill(DARK); hc.font=WHITEF; hc.alignment=LEFT; hc.border=BORD
+ws.cell(r,2).border=BORD; r+=1
 HIST=["Años Corriendo","Experiencia Previa (deportes)","Última Carrera y Ritmo",
 "Volumen Promedio Semanal (km)","Entrenamientos Semanales Actuales (#)","KMS PICO (máx. semanal histórico)"]
 for campo in HIST:
