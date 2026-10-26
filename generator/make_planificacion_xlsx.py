@@ -77,9 +77,7 @@ for i,w in enumerate([12,12,12,12,12,13,14,10,10,10,12],1):
     ws2.column_dimensions[get_column_letter(i)].width=w
 for i,h in enumerate(cols2,1):
     c=ws2.cell(1,i,h); c.fill=fill(PURPLE); c.font=WHITEF; c.alignment=CEN; c.border=BORD
-for rr in range(2,7):
-    for i in range(1,len(cols2)+1):
-        c=ws2.cell(rr,i,""); c.border=BORD; c.alignment=CEN
+# (filas de años en blanco: sin estilar, las completa el coach)
 # ---- registro de competencias (desde TODOS los planes ET) ----
 tr=8
 ws2.merge_cells(start_row=tr,start_column=1,end_row=tr,end_column=6)
@@ -91,20 +89,15 @@ cols2b=["Fecha","Tiempo (mm:ss)","Ritmo (min/km)","Frecuencia cardíaca (med/max
 for i,h in enumerate(cols2b,1):
     c=ws2.cell(tr,i,h); c.fill=fill(DARK); c.font=WHITEF; c.alignment=CEN; c.border=BORD
 tr+=1
-nrows=max(12, len(comps)+2)
-for k in range(nrows):
-    c=comps[k] if k < len(comps) else None
-    fecha = dmy(c["date"]) if c else ""
-    fc    = (f'{c.get("hr")}' if c and c.get("hr") else "")
-    cond  = (f'Prioridad {c.get("priority")}' if c and c.get("priority") else "")
-    nota  = ""
-    if c:
-        nota = c.get("name","")
-        if c.get("km"): nota += f' · {c["km"]} km (Garmin)'
-        if c.get("comment"): nota += f' · {c["comment"]}'
-    vals=[fecha, (c.get("time","") if c else ""), (c.get("pace","") if c else ""), fc, cond, nota]
+for c in comps:   # solo filas con datos reales (las vacías las agrega el coach)
+    nota = c.get("name","")
+    if c.get("km"): nota += f' · {c["km"]} km (Garmin)'
+    if c.get("comment"): nota += f' · {c["comment"]}'
+    vals=[dmy(c["date"]), c.get("time",""), c.get("pace",""),
+          (f'{c.get("hr")}' if c.get("hr") else ""),
+          (f'Prioridad {c.get("priority")}' if c.get("priority") else ""), nota]
     for i,v in enumerate(vals,1):
-        cc=ws2.cell(tr,i,v); cc.border=BORD
+        cc=ws2.cell(tr,i,v)
         cc.alignment=(LEFT if i==6 else CEN); cc.font=INKF
     tr+=1
 
@@ -123,13 +116,15 @@ for lab,row in [("Carrera objetivo:",4),("Objetivos generales:",5),("Objetivos e
     c=ws3.cell(row,1,lab); c.font=Font(bold=True,size=10,color=INK); c.alignment=Alignment(horizontal="left",vertical="center")
 r=9
 def grid_label(row, text, bg=None, fg=INK):
-    c=ws3.cell(row,1,text); c.font=Font(bold=True,size=10,color=fg); c.alignment=CEN1; c.border=BORD
+    c=ws3.cell(row,1,text); c.font=Font(bold=True,size=10,color=fg); c.alignment=CEN1
     c.fill=fill(bg if bg else LABF); return c
 def grid_cells(row, bg=None, vals=None):
     darkbg = bg in (PURPLE,MAUVE,GREEN,RED,DARK)
     for j in range(NMC):
         v=(vals[j] if vals and j<len(vals) else "")
-        c=ws3.cell(row,2+j,v); c.alignment=CEN; c.border=BORD
+        if not bg and not v:   # celda vacía y sin color → no la escribimos (ahorra XML)
+            continue
+        c=ws3.cell(row,2+j,v); c.alignment=CEN
         c.font=Font(size=8, color=("FFFFFF" if darkbg else INK))
         if bg: c.fill=fill(bg)
 grid_label(r,"PERÍODO", PURPLE, "FFFFFF"); grid_cells(r, PURPLE); r+=1
@@ -146,4 +141,16 @@ for lab,bg,fg in METHODS:
 grid_label(r,"COMENTARIOS"); grid_cells(r); ws3.row_dimensions[r].height=30; r+=1
 
 out=f"report/Planificacion-{re.sub(r'[^A-Za-z0-9 ]','',name).strip()}.xlsx"
-wb.save(out); print("OK ->", out)
+wb.save(out)
+
+# --- post-proceso: achicar el xlsx (theme mínimo + recompresión máx) para que
+#     el base64 entre en una subida inline al connector de Drive ---
+import zipfile, os
+_MIN_THEME='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="t"><a:themeElements><a:clrScheme name="t"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="1F3A5F"/></a:dk2><a:lt2><a:srgbClr val="EEEEEE"/></a:lt2><a:accent1><a:srgbClr val="674EA7"/></a:accent1><a:accent2><a:srgbClr val="6AA84F"/></a:accent2><a:accent3><a:srgbClr val="E06666"/></a:accent3><a:accent4><a:srgbClr val="FFD966"/></a:accent4><a:accent5><a:srgbClr val="6FA8DC"/></a:accent5><a:accent6><a:srgbClr val="C27BA0"/></a:accent6><a:hlink><a:srgbClr val="0563C1"/></a:hlink><a:folHlink><a:srgbClr val="954F72"/></a:folHlink></a:clrScheme><a:fontScheme name="t"><a:majorFont><a:latin typeface="Calibri"/><a:ea typeface=""/><a:cs typeface=""/></a:majorFont><a:minorFont><a:latin typeface="Calibri"/><a:ea typeface=""/><a:cs typeface=""/></a:minorFont></a:fontScheme><a:fmtScheme name="t"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:fillStyleLst><a:lnStyleLst><a:ln><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln><a:ln><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln><a:ln><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements></a:theme>'
+_zin=zipfile.ZipFile(out); _members=[(it.filename, _zin.read(it.filename)) for it in _zin.infolist()]; _zin.close()
+with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED,compresslevel=9) as _zout:
+    for fn,data in _members:
+        if fn=="xl/theme/theme1.xml": data=_MIN_THEME.encode("utf-8")
+        _zout.writestr(fn, data)
+import base64 as _b64
+print("OK ->", out, "|", os.path.getsize(out), "bytes |", len(_b64.b64encode(open(out,"rb").read())), "base64 chars")
