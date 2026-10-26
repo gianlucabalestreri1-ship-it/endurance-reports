@@ -53,11 +53,10 @@ for campo in CAMPOS:
     vc=ws.cell(r,2,ficha.get(campo,"")); vc.font=INKF; vc.alignment=LEFT; vc.border=BORD
     if campo in LARGAS: ws.row_dimensions[r].height=58
     r+=1
-# --- HISTORIAL DEPORTIVO ---
+# --- HISTORIAL DEPORTIVO (mismo diseño que la ficha: rótulo gris claro + negrita) ---
 r+=1
-ws.merge_cells(start_row=r,start_column=1,end_row=r,end_column=2)
-hc=ws.cell(r,1,"HISTORIAL DEPORTIVO"); hc.fill=fill(DARK); hc.font=WHITEF; hc.alignment=Alignment(horizontal="left",vertical="center")
-ws.cell(r,2).border=BORD; hc.border=BORD; r+=1
+hc=ws.cell(r,1,"HISTORIAL DEPORTIVO"); hc.fill=fill(LABF); hc.font=BOLD; hc.alignment=LEFT; hc.border=BORD
+ws.cell(r,2,""); ws.cell(r,2).border=BORD; r+=1
 HIST=["Años Corriendo","Experiencia Previa (deportes)","Última Carrera y Ritmo",
 "Volumen Promedio Semanal (km)","Entrenamientos Semanales Actuales (#)","KMS PICO (máx. semanal histórico)"]
 for campo in HIST:
