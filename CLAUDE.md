@@ -328,6 +328,12 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   secundario. Trae mapeo zonas noruegas→modelo base (su 'threshold' Z3 = base Z3-Z4 sub-umbral), tabla de parámetros
   en tiempo por zona —AWD, dur. intervalo, nº reps, recuperación, ratio work:rest—, el microciclo doble-umbral de 7
   días + opciones del sábado + sesión X por distancia, y el catálogo de sesiones ya nombrado para la librería ET).
+  **`microciclos-recreativos`** (microciclos de 4 días POR FASE para corredores recreacionales, diseñados con el coach
+  2026-10-28, cruzando Magness + Roces + Noruego, en el modelo base + librería NOR: **Base** (énfasis umbral+aeróbico,
+  mantenimiento de un toque de VO2 vía HIIT corto en cuesta, apoyo velocidad pura; distinción cuestas explosivas
+  alácticas vs HIIT corto en cuesta vs ondulado) → **Prep. especial/Precompetición** (entra VO2) → **Competición**
+  (entra tolerancia/ritmo de carrera, mini-tapers; Z7 solo avanzado 5-10K) → **Transición**. Jerarquía énfasis
+  (progresa) vs mantenimiento (dosis fija), progresión por duración/pausa no por ritmo, cuidados osteoarticulares).
   Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces + Noruego, expresado SIEMPRE
   en el modelo base. (Pendiente: el coach sumará guías específicas de YouTube de Magness.)
 - **Librería (bookshop) de ET — NO editable por API** (solo lectura: `bookshops_list`/`folder_bookshops_list`; la

@@ -1,0 +1,79 @@
+{
+  "id": "microciclos_recreativos",
+  "titulo": "Microciclos por fase para corredores RECREACIONALES (modelo base Z1-Z8)",
+  "fuentes": ["Steve Magness (magness-sistema)", "César Roces (metodos-entrenamiento, distribucion-carga-periodo, progresion-volumen-anual, microciclos-patron)", "Sistema Noruego / doble umbral (noruego-sistema)"],
+  "nota": "Diseñado con el coach (2026-10-28) fase por fase. Son microciclos de 4 días adaptados a recreativos (3-5 días reales, no élite). Dosis en FORMATO TIEMPO; nombres de la librería NOR. Todo ritmo real sale de las zonas del atleta en ET. REFERENCIAS, no reglas: decide el coach.",
+  "principios_rectores": {
+    "magness_construir_y_mantener": "Cada fase tiene ÉNFASIS (lo que se construye y progresa), APOYO/MANTENIMIENTO (lo que se sostiene con poca dosis, sin progresar). No se desarrolla todo a la vez.",
+    "jerarquia_no_igualdad": "Umbral (LT, Z3-Z4) y VO2 (Z6) son cualidades DISTINTAS: no se alternan como si fueran lo mismo. En una misma semana pueden convivir, pero una es énfasis (progresa) y la otra mantenimiento (dosis fija).",
+    "progresion_de_la_calidad": "La cualidad de énfasis progresa por DURACIÓN / nº de reps / menos pausa / acercar al ritmo meta, ANTES que subiendo el ritmo en seco.",
+    "distribucion": "Siempre mayoría fácil (LIT). Base ~85-90% fácil con 1 énfasis; especial/competitivo ~75-80% con 2 calidades.",
+    "recreativo_vs_elite": "Sin doble umbral. 1-2 calidades/sem (no 2-5). Volumen mucho menor; el FONDO es el motor aeróbico. FUERZA = prioridad (debilidad típica). Correr por sensaciones/RPE (muchos sin dispositivo).",
+    "velocidad_pura_es_apoyo_gratis": "Zancadas (6×20\") y cuestas cortas explosivas (8-12\", RPE 9-10, recuperación COMPLETA) son ALÁCTICAS (Z8): mantienen neuromuscular/economía sin fatiga ni costo de recuperación. Van en TODAS las fases como apoyo."
+  },
+  "distincion_cuestas": {
+    "cuestas_cortas_explosivas": "8-12\", RPE 9-10, recuperación completa → neuromuscular aláctico (Z8). Apoyo, sin fatiga.",
+    "hiit_corto_en_cuesta": "~25-40\" (ej. 100m subida) RPE 6-7, trote/caminata bajada → FUERZA + potencia aeróbica/VO2 bajo (Z4-Z5), lactato 3-6. Es el método 'cuestas' de Roces (5-10% en base). Ocupa lugar de CALIDAD, no es apoyo gratis.",
+    "ondulado_continuo": "20-30' en terreno ondulado, Z2-Z3 controlado (la fuerza la da el terreno, no el ritmo; subidas sin acelerar, bajadas aflojar) → fuerza-resistencia + mitocondrial/capilar a la vez. Variante del día fácil/fondo."
+  },
+  "fases": {
+    "base": {
+      "orden": 1, "nombre_roces": "Preparación General", "duracion_magness": "~12 semanas",
+      "cuando": "Al terminar el período competitivo, cuando hay tiempo de desarrollar la base aeróbica.",
+      "enfasis": ["Aeróbico vía kilometraje (el fondo es el motor)", "Umbral de lactato SUAVE/controlado (Z3-Z4)"],
+      "mantenimiento_apoyo": ["Velocidad pura: zancadas + cuestas cortas explosivas (Z8 aláctico)", "Un TOQUE de VO2 bajo vía HIIT corto en cuesta (Z5), dosis fija de mantenimiento — NO progresa", "Fuerza (gimnasio, pesado/neural)"],
+      "poco_o_nada": "VO2máx alto, glucolítico (Z6 duro, Z7). En base NO se desarrollan.",
+      "distribucion": "~85-90% fácil (Z1-Z2). 1 énfasis (umbral) + 1 mantenimiento (cuesta) como mucho.",
+      "microciclo_4dias": {
+        "nota": "Semana con las dos calidades conviviendo (Magness): umbral=énfasis que progresa, cuesta=mantenimiento fijo. Spacing: si V cuesta y S fondo quedan pegados, mover fondo a Domingo o mantener la cuesta en dosis mínima.",
+        "Lunes": "Umbral controlado (ÉNFASIS, progresa) — NOR Z3-4 Umbral · 3×10'/90\" (arrancar 3×8')",
+        "Miercoles": "Fácil + 6×20\" zancadas — NOR Z2 Fácil · 30-50' (Z2+Z8)",
+        "Viernes": "HIIT corto en cuesta (MANTENIMIENTO, dosis fija) — 6×100m subida RPE6-7 / trote-caminata bajada (Z5)",
+        "Sabado_o_Domingo": "Fondo — NOR Z2 Fondo · 60-90' (Z2)",
+        "fuerza": "2×/sem"
+      },
+      "progresion_meso_4sem": "Solo progresa el énfasis. Sem1 LT 3×8'/cuesta 6×100/fondo 60'. Sem2 LT 3×10'/6×100/70'. Sem3 LT 4×10'/6×100/80'. Sem4 DESCARGA LT 2×10' suave/cuesta 4×100 o fuera/fondo 50' (−20% vol, sin intensidad dura; en base ~3-4 días blandos alcanzan).",
+      "libreria_NOR": {"usar": ["NOR Z2 Fácil (todas)", "NOR Z2 Fondo", "NOR Z3-4 Umbral (3×10'/90\" o 6×5'/1')", "zancadas/cuestas cortas", "NOR Z4-5 Cuestas · 6-10×100 RPE6-7"], "todavia_no": ["NOR Z5 Supraumbral duro", "NOR Z6 VO2", "NOR Z7-8 largos"]}
+    },
+    "preparacion_especial_precompeticion": {
+      "orden": 2, "nombre_roces": "Preparación Especial", "duracion_magness": "~6 semanas (precompetición)",
+      "enfasis": ["Entra VO2máx (Z6) como estímulo nuevo", "Desarrollo del umbral (Z3-Z4, intervalado extensivo)"],
+      "mantenimiento_apoyo": ["Base aeróbica (volumen, no se deja caer)", "Velocidad pura (zancadas/cuestas cortas)", "Fuerza"],
+      "poco_o_nada": "Glucolítico alto (Z7). Todavía no.",
+      "distribucion": "~75-80% fácil, 2 calidades.",
+      "microciclo_4dias": {
+        "nota": "2 exposiciones de calidad pero UNA sola sesión dura de intervalos (VO2 miércoles); la 2ª la da el cierre a ritmo del fondo (mantiene umbral sin 3er día duro). ≥48h entre calidades.",
+        "Lunes": "Fácil + 6 zancadas — NOR Z2 Fácil · 30-50' (Z2+Z8)",
+        "Miercoles": "Calidad A — VO2 (LO NUEVO) — NOR Z6 VO2 · 4-5×3'/2' (Z6)",
+        "Viernes": "Fácil / recuperación (+ cuestas cortas opcional) — NOR Z1 Recuperación · 40-60'",
+        "Sabado": "Fondo con final a ritmo (últimos 10-20' Z3-Z4 controlado) — NOR Z2 Fondo + cierre umbral",
+        "fuerza": "2×/sem (se sostiene)"
+      },
+      "progresion_meso_4sem": "VO2 por duración/reps/menos pausa, no ritmo. Sem1 VO2 4×3'/2' + cierre 10' Z3. Sem2 5×3' + 15'. Sem3 5-6×3' (o 4×4') + 15-20' Z3-Z4. Sem4 DESCARGA 3×3' suave + 10' fácil. Alternancia opcional: una semana VO2 corto, otra intervalado extensivo/supraumbral (NOR Z5 · 6-8×~3'/1:30).",
+      "libreria_NOR": {"entra": ["NOR Z6 VO2", "NOR Z5 Supraumbral (alternado)"], "mantiene": ["NOR Z2 Fácil/Fondo", "umbral en cierre del fondo", "velocidad pura"], "todavia_no": ["NOR Z7-8 largos"]},
+      "cuidados": "Ahora hay HIT real (VO2): descarga pesa más (puede necesitar semana completa), recuperación entre calidades no se negocia. Osteoarticulares (Sofía, Martín, Mauro): menos reps, terreno parejo; su 2ª calidad sigue siendo el cierre suave del fondo."
+    },
+    "competicion": {
+      "orden": 3, "nombre_roces": "Competencia", "duracion_magness": "~6 semanas",
+      "enfasis": ["Ritmo específico de carrera (modelación)", "Tolerancia/capacidad láctica (Z7) — SOLO 5-10K y avanzados"],
+      "mantenimiento": ["VO2 (Z6) y umbral (Z3-Z4): se tocan 1× o se cuelan en la modelación, no se desarrollan", "Resistencia a la velocidad", "Fondo fácil (~55-60% del total, Roces)"],
+      "distribucion_roces": "CC lenta 55-60% + media 10-15% + rápida progresiva 5-10% + intervalado intensivo 3-10% + tempo 2-5%. FONDO vs CORTO: 21-42K sustituye el trabajo láctico por intervalado extensivo (más aeróbico); 5-10K sube intensivo/tolerancia.",
+      "volumen": "Reducido vs precompetición; intensidad específica, no volumen máximo. Mini-tapers alrededor de carreras.",
+      "microciclo_4dias_sin_carrera": {
+        "Lunes": "Fácil + 6 zancadas (Z2+Z8)",
+        "Martes_o_Miercoles": "Calidad A — tolerancia/ritmo específico (ÉNFASIS). 5-10K: 6-8×400 @ritmo 5K / R igual (NOR Z7-8). 21K: NOR Z5 · 4-6×2km @ritmo HM (intervalado extensivo).",
+        "Jueves": "Fácil / recuperación (Z1-Z2)",
+        "Sabado": "Calidad B — modelación a ritmo de carrera. 10K: NOR X-10K · 2-3×10' prog + 6-8×30/30, o 5×1000 @ritmo 10K. 21K: fondo 12-16k con bloques a ritmo HM.",
+        "fuerza": "1-2×/sem (reducida, mantenimiento)"
+      },
+      "microciclo_4dias_con_carrera": "Mini-taper. L Fácil+zancadas · M Afilado corto 4-5×400 @ritmo meta/R completa (no agotador) · J Trote corto + 4 zancadas (activación) · V Descanso o 20' fácil · S/Dom CARRERA (NOR Sáb · Test/competencia). Post-carrera 1-2 días fáciles.",
+      "progresion": "La cualidad progresa acercándose al ritmo meta y bajando descanso, no por volumen. Taper: tras semanas de trabajo intenso puede hacer falta semana completa de descarga; antes de carrera A, mini-taper 4-7 días.",
+      "libreria_NOR": {"entra": ["NOR Z7-8 corto (tolerancia, SOLO 5-10K, dosis chica)", "ritmo de carrera: NOR Sáb · 5×1000 @5-10K, NOR X-5K/10K/HM"], "mantiene": ["NOR Z6 VO2 + NOR Z3-4 Umbral (dosis reducida)", "velocidad pura"]},
+      "cuidados": "Z7 (tolerancia láctica) = el estímulo MÁS estresante y lesivo. Para la mayoría de recreativos el 'competitivo' es ritmo de carrera + afilado, SIN glucolítico profundo. Z7 solo para avanzado de distancia corta; principiantes y osteoarticulares (Sofía, Martín, Mauro) → NADA de Z7."
+    },
+    "transicion": {
+      "orden": 4, "nombre_roces": "Transición", "nota": "Entre macrociclos / post-competición. Recuperación activa + mantenimiento de base. Roces: CC lenta 70-75% + media 25-30% (FC baja), + complementos (gimnasia, coordinación, rectas, progresiones). Sin calidad dura. Vuelve a empezar en Base."
+    }
+  },
+  "volumen_referencia": "Ver progresion-volumen-anual.json (Roces, por disciplina + años). Sedentarios inicio: fase1 12-15 km/sem (3-4 meses) → fase2 15-30. En principiantes la base se mide en TIEMPO (caminar-correr), no km."
+}
