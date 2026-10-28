@@ -1,0 +1,98 @@
+{
+  "id": "noruego_sistema",
+  "titulo": "Sistema Noruego (doble umbral) — microciclo y sesiones, en FORMATO TIEMPO",
+  "fuentes": [
+    "Double Threshold weekly structure — Marius Bakken / SISU Endurance Lab (imagen del coach)",
+    "PMC11560996 (https://pmc.ncbi.nlm.nih.gov/articles/PMC11560996/) — Tablas de sesiones por zona en atletas noruegos de élite (LD running): Table con AWD/parámetros de tiempo + Table con ejemplos por zona"
+  ],
+  "nota_coach": "El coach quiere TODO en formato TIEMPO (duración de intervalo + nº reps + recuperación en min/seg + ratio work:rest) porque da universalidad: misma DOSIS para cualquier nivel, y la distancia se ajusta después por atleta. Guardado 2026-10-28 a pedido del coach ('todo esto es sistema noruego, guardalo en tu información').",
+  "regla_zonas": "El paper usa su propia escala (Z1-Z5 + Z6/7). SIEMPRE traducir al modelo base Z1-Z8 del proyecto (ver data/modelo-zonas-base.json) antes de sugerir. El 'threshold' noruego (su Z3) es trabajo CONTROLADO ligeramente POR DEBAJO del umbral (sub-umbral) → cae en Z3-Z4 (ThT) del modelo base.",
+  "mapeo_zonas_noruego_a_base": {
+    "NorZ1": "base Z2 Endurance (fácil aeróbico; algo de Z1 recuperación)",
+    "NorZ2": "base Z3 Tempo (rara vez pura; 5-30' dentro de fondos)",
+    "NorZ3_threshold": "base Z3-Z4 (ThT) — el 'doble umbral', sub-umbral controlado",
+    "NorZ4": "base Z5 Supraumbral",
+    "NorZ5": "base Z6 VO2max",
+    "NorZ6_7": "base Z7-Z8 (Glucolítico / Neuromuscular — reps de 200-300m / 0:20-0:40)"
+  },
+  "frecuencia_semanal_por_zona_elite": {
+    "NorZ1": "5-9 sesiones/sem", "NorZ2": "rara (dentro de fondos)",
+    "NorZ3": "2-5/sem", "NorZ4": "0-2/sem", "NorZ5": "0-1/sem", "NorZ6_7": "0-1/sem"
+  },
+  "parametros_en_tiempo_por_zona": {
+    "_cols": "AWD = duración total de trabajo por sesión (min). Valores del paper (LD running).",
+    "NorZ1_baseZ2": {"AWD_min": "30-105", "metodo": "Continuo", "modalidad_%esp": ">90/<10", "int_dur": "NA", "n_int": "NA", "rec": "NA"},
+    "NorZ2_baseZ3": {"AWD_min": "5-30 (dentro de fondos)", "metodo": "Continuo", "modalidad_%esp": "100", "int_dur": "NA", "n_int": "NA", "rec": "NA"},
+    "NorZ3_baseZ3_4": {"AWD_min": "20-40", "metodo": "Continuo o intervalado", "int_dur_min": "3-12", "n_int": "5-12", "rec_min": "1-2", "ratio_work_rest": "5-3 : 1", "rec_tipo": "activa o pasiva"},
+    "NorZ4_baseZ5": {"AWD_min": "15-35", "metodo": "Intervalado o competencia", "int_dur_min": "1-6", "n_int": "4-25", "rec_min": "0:30-3", "ratio_work_rest": "2-1.5 : 1", "rec_tipo": "pasiva"},
+    "NorZ5_baseZ6": {"AWD_min": "10-20", "metodo": "Intervalado o competencia", "int_dur_min": "0:30-3", "n_int": "4-20", "rec_min": "1-2", "ratio_work_rest": "1.5-0.5 : 1", "rec_tipo": "activa o pasiva"},
+    "NorZ6_7_baseZ7_8": {"AWD_min": "3-6", "metodo": "Intervalado", "int_dur": "0:20-0:40", "n_int": "5-12", "rec_min": "0:30-5", "ratio_work_rest": "1-0.1 : 1", "rec_tipo": "pasiva"}
+  },
+  "microciclo_doble_umbral": {
+    "subtitulo": "Calidad controlada, días fáciles y un estímulo específico rotativo (sábado).",
+    "dias": {
+      "Lunes": {"base_zona": "Z1-Z2", "sesion": "Fácil o recuperación 40-60' por debajo del 70% FCmáx"},
+      "Martes_AM": {"base_zona": "Z3-Z4", "sesion": "5-6 × 6' umbral / 1' rec", "nota": "día de DOBLE umbral"},
+      "Martes_PM": {"base_zona": "Z3-Z4", "sesion": "20-25 × 1' umbral / 30\" rec"},
+      "Miercoles": {"base_zona": "Z1", "sesion": "40-60' muy fácil, o descanso"},
+      "Jueves_AM": {"base_zona": "Z3-Z4", "sesion": "3 × 10' umbral / 90\" rec", "nota": "2º día de DOBLE umbral"},
+      "Jueves_PM": {"base_zona": "Z3-Z4", "sesion": "15 × 90\" ligeramente progresivo / 30\" rec"},
+      "Viernes": {"base_zona": "Z1", "sesion": "30-45' completamente fácil, o descanso total"},
+      "Sabado": {"base_zona": "variable", "sesion": "Sesión X (rotar opciones)"},
+      "Domingo": {"base_zona": "Z2", "sesion": "Fondo: ajustar duración y ritmo al objetivo. Para 5K/10K, 60-90' suele alcanzar."}
+    },
+    "sabado_opciones_rotativas": [
+      "25-30 × 45\"/15\" progresivo (base Z4-Z5)",
+      "5 × 1000m a ritmo de 5K-10K (base Z5-Z6)",
+      "Test o competencia",
+      "16-20 km en fondo progresivo específico de maratón (base Z2-Z3)"
+    ],
+    "sesion_X_por_distancia": {
+      "5K": "Cuestas, 8-10 × 60-75\", o 30\"/30\"",
+      "10K": "2-3 × 10' progresivo + 6-8 × 30\"/30\"",
+      "HM": "3 × 12-15' umbral, o 40-60' continuo de umbral a ritmo variado"
+    },
+    "notas": "45/15 y 30/30 = trabajo/recuperación en SEGUNDOS. El umbral sigue un enfoque controlado, ligeramente por DEBAJO del umbral (sub-umbral). Individualizar según historia de entrenamiento y recuperación."
+  },
+  "catalogo_sesiones_tiempo": {
+    "_nota": "Nombres en modelo base. Prefijo 'NOR' para agrupar. Dosis en TIEMPO (distancia = referencia secundaria que el coach ajusta por atleta).",
+    "baseZ2_facil": [
+      {"nombre": "NOR Z2 Fácil · 30-50' continuo", "ref_dist": "8-14 km"},
+      {"nombre": "NOR Z2 Fácil · 50-75' continuo", "ref_dist": "14-17 km"},
+      {"nombre": "NOR Z2 Fondo · 75-105' continuo", "ref_dist": "20-25 km"},
+      {"nombre": "NOR Z1 Recuperación · 40-60' <70% FCmáx", "ref_dist": "-"}
+    ],
+    "baseZ3_4_umbral_doble": [
+      {"nombre": "NOR Z3-4 Umbral · 5-6×6' / 1' (AM doble)", "ref_dist": "~1000m"},
+      {"nombre": "NOR Z3-4 Umbral · 20-25×1' / 30\" (PM doble)", "ref_dist": "-"},
+      {"nombre": "NOR Z3-4 Umbral · 3×10' / 90\" (AM doble)", "ref_dist": "-"},
+      {"nombre": "NOR Z3-4 Umbral · 15×90\" progresivo / 30\" (PM doble)", "ref_dist": "-"},
+      {"nombre": "NOR Z3-4 Umbral · 6×5' / 1'", "ref_dist": "~1200m"},
+      {"nombre": "NOR Z3-4 Umbral · 3×9-10' / 2'", "ref_dist": "3×3 km"},
+      {"nombre": "NOR Z3-4 Umbral · 5-12×3' / 1-2' (plantilla por tiempo)", "ref_dist": "~1000m"}
+    ],
+    "baseZ5_supraumbral": [
+      {"nombre": "NOR Z5 Supraumbral · 6-8×~3' / 1:30", "ref_dist": "6-8×1000m (2:45-3:00)"},
+      {"nombre": "NOR Z5 Supraumbral · 20-25×65-70\" / 30-45\"", "ref_dist": "20-25×400m"},
+      {"nombre": "NOR Z5 Supraumbral · 4-6×6-6:20' / 2'", "ref_dist": "4-6×2 km"},
+      {"nombre": "NOR Z5 Supraumbral · 25-30×45\"/15\" progresivo", "ref_dist": "-"}
+    ],
+    "baseZ6_vo2": [
+      {"nombre": "NOR Z6 VO2 · 4-6×2:30-3' / 2'", "ref_dist": "4-6×1000m"},
+      {"nombre": "NOR Z6 VO2 · 10-15×60-70\" / 60-75\"", "ref_dist": "10-15×400m"},
+      {"nombre": "NOR Z6 VO2 · 2-3×10' progresivo + 6-8×30\"/30\" (sesión X 10K)", "ref_dist": "-"}
+    ],
+    "baseZ7_8_velocidad": [
+      {"nombre": "NOR Z7-8 Velocidad · 5×35-40\" / 3-5'", "ref_dist": "5×300m"},
+      {"nombre": "NOR Z7-8 Velocidad · 10-12×25-30\" / 30-60\"", "ref_dist": "10-12×200m"},
+      {"nombre": "NOR Z7-8 Cuestas · 20×30-40\" cuesta / trote bajada ~60\"", "ref_dist": "20×200m cuesta"},
+      {"nombre": "NOR Z7-8 Velocidad · 8-10×60-75\" cuestas (sesión X 5K)", "ref_dist": "-"}
+    ]
+  },
+  "nomenclatura_libreria_ET": {
+    "problema": "El coach tenía UNA carpeta 'Sesiones de entrenamiento - Noruegas' con 16 sesiones de Zona 1 (una por cada duración 30-105' cada 5') + 1 de Z3 → ilegible, sin Z2/Z4/Z5/Z6.",
+    "decision": "Nombre = PREFIJO 'NOR' + ZONA BASE + dosis en TIEMPO. Así ordena alfabético y agrupa por zona dentro de la carpeta. Ej.: 'NOR Z3-4 Umbral · 3×10'/90\"'.",
+    "limpieza_Z1": "No hacen falta 16 plantillas de Z1 cada 5'. Dejar 3-4 canónicas (p.ej. 30-50', 50-75', 75-105', + Recuperación 40-60') y ajustar la duración exacta al soltar la sesión en el plan.",
+    "escritura_ET": "La librería (bookshop) de ET NO es editable por API (solo lectura; la única escritura permitida del proyecto es web_notifications_readed/marcar leído). Crear/renombrar sesiones se hace desde la app de ET. Yo entrego el catálogo ya nombrado + lo guardo en memoria para reusarlo al programar."
+  }
+}

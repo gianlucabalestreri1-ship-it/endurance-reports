@@ -322,9 +322,20 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   `distribucion-carga-periodo`, `metodos-entrenamiento`, `microciclos-patron`, `sesiones-microciclos-jdc`
   (Juan del Campo), `modelo-zonas-base` (Z1-Z8 canónico — TRADUCIR zonas de otros autores a este),
   `libreria-et` (catálogo de plantillas del coach), **`magness-sistema`** (Steve Magness — periodización
-  base/precomp/competición/pico, tabla de tipos, ejemplos de sesiones con progresión, semanas de descarga).
-  Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces, expresado SIEMPRE
+  base/precomp/competición/pico, tabla de tipos, ejemplos de sesiones con progresión, semanas de descarga),
+  **`noruego-sistema`** (SISTEMA NORUEGO / doble umbral — microciclo semanal de Bakken/SISU + sesiones por zona
+  del paper PMC11560996, **en FORMATO TIEMPO** por pedido del coach: dosis universal por tiempo, distancia = ajuste
+  secundario. Trae mapeo zonas noruegas→modelo base (su 'threshold' Z3 = base Z3-Z4 sub-umbral), tabla de parámetros
+  en tiempo por zona —AWD, dur. intervalo, nº reps, recuperación, ratio work:rest—, el microciclo doble-umbral de 7
+  días + opciones del sábado + sesión X por distancia, y el catálogo de sesiones ya nombrado para la librería ET).
+  Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces + Noruego, expresado SIEMPRE
   en el modelo base. (Pendiente: el coach sumará guías específicas de YouTube de Magness.)
+- **Librería (bookshop) de ET — NO editable por API** (solo lectura: `bookshops_list`/`folder_bookshops_list`; la
+  única escritura del proyecto es marcar leído). Crear/renombrar/configurar sesiones de la librería se hace desde la
+  **app de ET** (el asistente entrega el catálogo ya nombrado + lo guarda en `data/`). **Nomenclatura acordada
+  (2026-10-28):** `NOR` (prefijo del sistema) + **zona del modelo base** + **dosis en tiempo** → ordena alfabético y
+  agrupa por zona. Ej.: `NOR Z3-4 Umbral · 3×10'/90"`. El coach tenía 16 plantillas de Z1 (cada 5', 30-105') en una
+  sola carpeta "Sesiones de entrenamiento - Noruegas" → **colapsar a 3-4 canónicas** y ajustar duración al soltarlas.
 
 ### TRIAGE de renovaciones por ARQUETIPO (`generator/triage.js` + `make_triage_xlsx.py`)
 Encarna el PRINCIPIO RECTOR (§0): trabajar por bloques, lo urgente primero, todo de un pantallazo.
