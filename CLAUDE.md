@@ -334,8 +334,15 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   alácticas vs HIIT corto en cuesta vs ondulado) → **Prep. especial/Precompetición** (entra VO2) → **Competición**
   (entra tolerancia/ritmo de carrera, mini-tapers; Z7 solo avanzado 5-10K) → **Transición**. Jerarquía énfasis
   (progresa) vs mantenimiento (dosis fija), progresión por duración/pausa no por ritmo, cuidados osteoarticulares).
+  **`magness-umbral-lactato`** (masterclass de Steve Magness sobre el UMBRAL DE LACTATO, de YouTube — guía cargada
+  2026-10-29: lactato=combustible (lactate shuttle), MLSS y falsa precisión del lab (±5-10 s/milla), el ESPECTRO del
+  umbral mapeado al modelo base (Steady/maratón→Z3 · Sub-umbral noruego→Z3-Z4 · Umbral estricto Daniels→Z4 · Super-
+  umbral/CV Canova→Z5), los métodos (tempo continuo Daniels · fraccionado sub-umbral noruego = NOR Z3-4 · volumen
+  histórico Lydiard/Peters/Clarke · CV · alternancias de Canova), **PUSH vs PULL** y el **diagnóstico de estancamiento**
+  (si abusó de push→pasar a pull y viceversa; aplica al caso 'estancada' tipo Bárbara), programación por distancia y
+  el framework de decisión del entrenador).
   Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces + Noruego, expresado SIEMPRE
-  en el modelo base. (Pendiente: el coach sumará guías específicas de YouTube de Magness.)
+  en el modelo base. (El coach irá sumando más guías de YouTube de Magness a `data/`.)
 - **Librería (bookshop) de ET — NO editable por API** (solo lectura: `bookshops_list`/`folder_bookshops_list`; la
   única escritura del proyecto es marcar leído). Crear/renombrar/configurar sesiones de la librería se hace desde la
   **app de ET** (el asistente entrega el catálogo ya nombrado + lo guarda en `data/`). **Nomenclatura acordada

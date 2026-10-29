@@ -1,0 +1,80 @@
+{
+  "id": "magness_umbral_lactato",
+  "titulo": "Masterclass: Fisiología y metodología REAL del Umbral de Lactato (Steve Magness)",
+  "fuente": "Charla de Steve Magness, desglosada por el coach (guía YouTube). Video: https://www.youtube.com/watch?v=3oiuUrlPzYw",
+  "uso": "Base de asesoramiento para desarrollar/desbloquear el UMBRAL en cualquier atleta. NO reemplaza la decisión del coach. Todo ritmo/zona se expresa en el modelo base Z1-Z8; los ritmos concretos salen de las zonas reales del atleta en ET. Cargado 2026-10-29 (= la guía de Magness que figuraba pendiente en CLAUDE.md).",
+  "regla_de_oro": "NO hay método mágico. El umbral es un CONTINUO, no una zona aislada. Se elige la herramienta por especificidad de la prueba + costo de fatiga + volumen objetivo + fase. Mejor entrenar 0.5 mmol POR DEBAJO y acumular 40' de estímulo, que clavar el umbral exacto y colapsar a los 15'.",
+  "fisiologia_clave": {
+    "lactato_es_combustible": "El lactato NO es desecho tóxico: es combustible aeróbico de alta eficiencia. En zona de umbral se entrena el reciclado (lactate shuttle vía MCT-1/MCT-4 → piruvato → mitocondria → ATP). El 'punto dulce' del umbral = máximo costo-beneficio: máximo estrés aeróbico de alta intensidad SIN reclutar de más la reserva anaeróbica ni generar fatiga severa (H+).",
+    "MLSS": "Lo que se intenta aproximar = Máximo Estado Estable de Lactato: intensidad máxima donde producción = aclaramiento. Protocolo real (20' a varios ritmos en días separados) es destructivo → siempre se trabaja sobre ESTIMACIONES.",
+    "falsa_precision": "Cualquier test de lactato es aproximado: margen implícito ±5-10 s/milla (~±3-6 s/km). El umbral se MUEVE día a día por ritmo/pacing, clima/temperatura, fatiga acumulada y glucógeno. Entrenar guiado por 'falsa precisión' matemática → sobreentrenar o errar el estímulo. Correr por sensaciones/rango, no por un número mágico.",
+    "canova_mlss_rapido": "El MLSS tradicional ≈ ritmo sostenible ~1 h (≈ HM / Z4). Pero (Canova) también puede ocurrir a ritmos más altos (ritmo 10K) por períodos breves: hay intervalos donde producción/eliminación se estabilizan temporalmente más rápido que el umbral de 1 h."
+  },
+  "espectro_umbral_mapeado_base": {
+    "nota": "El umbral va desde el ritmo sostenido largo hasta por encima del VO2 corto. Mapeo al modelo base:",
+    "steady_maraton_lydiard": "Ritmo maratón / aeróbico fuerte → base Z3 Tempo (parte baja del espectro)",
+    "sub_umbral_noruego_cruise": "0.5-1.0 mmol por DEBAJO del umbral → base Z3-Z4 (justo por debajo de LT2)",
+    "umbral_estricto_daniels": "Ritmo ~1 h (HM), MLSS → base Z4 Umbral",
+    "super_umbral_CV_canova": "Velocidad Crítica = ritmo 30-45' (10-15K) → base Z5 Supraumbral"
+  },
+  "metodos": {
+    "tempo_continuo_daniels": {
+      "que": "Rodaje continuo 20-30' (o 4-5 millas) a ritmo de umbral (~ritmo de 1 h).",
+      "base": "Z4 Umbral continuo",
+      "pro": "Adaptación psicológica (leer sensaciones, sostener tensión mental); bueno para jóvenes/novatos (concentración sostenida).",
+      "contra": "Margen de error estrecho: variaciones diarias (fatiga/calor/estrés) hacen cruzar fácil a anaeróbico. Si se pasa de ritmo a los 10-15', fatiga prematura → el estímulo útil se limita a ~15'.",
+      "cuando": "Busco dureza mental y lectura del ritmo de carrera."
+    },
+    "fraccionado_sub_umbral_noruego": {
+      "que": "2 modificaciones vs tempo: (1) intensidad ligeramente SUB-umbral (0.5-1.0 mmol por debajo); (2) fraccionar en bloques medios (5-6-8') o reps cortas (400/600/800) con pausas MUY breves (30-60\").",
+      "base": "Z3-Z4 (sub-umbral controlado) — es EXACTAMENTE el 'doble umbral' noruego de nuestra librería NOR",
+      "por_que_funciona": "Micro-pausas + bajar intensidad 1-2% → la acidosis no se dispara, pero FC/VO2 no caen (pausa corta): se acumulan 30-40-50' de trabajo aeróbico de calidad en vez de 15-20' de un tempo exhaustivo. LA CLAVE ES LA PAUSA CORTA (densidad).",
+      "peligro": "En reps cortas (400 a umbral) el atleta NO regula bien: se siente 'fácil' las primeras 5; si acelera 2\"/rep (73\" en vez de 75\") se mete en agotamiento glucolítico. El lactámetro se usa como FRENO de seguridad (que no corra rápido), no para buscar un número.",
+      "origen": "No es nuevo: nadadores (60s-70s) fraccionaban por monotonía/tolerancia (100/200m con 10-15\" rec); Iglói (bloques 100/150/200m fluidos controlados); Zátopek (decenas de 400m a ritmo 10K/umbral con trote corto).",
+      "cuando": "Busco MÁXIMO volumen de umbral con MÍNIMO riesgo/fatiga. (= nuestro NOR Z3-4 Umbral.)"
+    },
+    "volumen_aerobico_historico": {
+      "que": "Precursores del trabajo aeróbico fuerte continuo (antes del término 'umbral'): Jim Peters ('10 millas duras' diarias, aeróbico superior continuo); Ron Clarke (rodajes a 5:15-5:30/milla + aceleraciones/fartlek en cuestas); Arthur Lydiard (volúmenes masivos a ritmo 'aeróbicamente fuerte'; 10-15 millas → reclutamiento progresivo de fibras intermedias por fatiga, adaptadas aeróbicamente sin romper homeostasis).",
+      "base": "Z2-Z3 continuo de alto volumen"
+    },
+    "super_umbral_CV": {
+      "que": "Velocidad Crítica = ritmo sostenible ~30-45' (10-15K). Reps 800-1000m a CV → recluta fibras IIa y las obliga a adaptarse aeróbicamente, elevando el aclaramiento muscular de lactato. Entrenar POR ENCIMA del umbral SIGUE siendo estímulo aeróbico de primer nivel si se controla la fatiga.",
+      "base": "Z5 Supraumbral (reps 800-1000)",
+      "cuando": "Busco capacidad de aclaramiento a ritmos altos / desbloquear estancamiento (PULL)."
+    },
+    "alternancias_canova": {
+      "que": "Alternar bloques rápidos (ej. 800m a ritmo 10K / un poco más rápido que umbral) con 'recuperación activa' (ej. 800m a ritmo maratón / un poco más lento que umbral — NO trote suave).",
+      "base": "alterna Z5 ↔ Z3 sosteniendo ritmo",
+      "mecanismo": "En la fase rápida el músculo vuelca lactato a sangre; en la fase 'activa' el cuerpo reutiliza/aclara ese lactato flotante MIENTRAS mantiene ritmo elevado → enseña a procesar lactato en condiciones de carrera.",
+      "cuando": "Busco re-absorción de lactato a ritmos altos; puente entre umbral y ritmo específico 5-10K."
+    }
+  },
+  "push_vs_pull": {
+    "push_empujar": "Trabajo SUB-umbral / ritmo maratón → empuja la curva del umbral HACIA ARRIBA desde abajo (base Z3-Z4).",
+    "pull_tirar": "Trabajo SUPER-umbral / CV / ritmo 10K → TIRA del umbral hacia arriba desde arriba (base Z5).",
+    "ambos_validos": "Los dos elevan el umbral; son direcciones distintas de fuerza sobre la misma curva."
+  },
+  "diagnostico_estancamiento": {
+    "principio": "Error común = aplicar dogmáticamente UN método mucho tiempo. Cuando el atleta se estanca, la 'fuga en la tubería' (kink in the pipe) cambió de lugar → hay que CAMBIAR el estímulo.",
+    "abuso_de_push": "Meses de volumen sub-umbral fraccionado y los ritmos no mejoran → techo con ese estímulo → pasar a PULL (Velocidad Crítica, alternancias de Canova, reps a ritmo 10K).",
+    "abuso_de_pull": "Fatigado de reps duras por encima del umbral (fatiga neurológica alta) → volver a PUSH (sub-umbral fraccionado denso, bajo estrés nervioso) para regenerar la base aeróbica.",
+    "tie_in_proyecto": "Aplica directo al caso 'estancada' (ej. Bárbara 5:40-5:50 en 10K): si viene de puro umbral/tempo (push) sin mejorar, el desbloqueo es PULL — CV/alternancias/ritmo 10K — además de velocidad pura y fuerza."
+  },
+  "programacion_por_distancia": {
+    "maraton": {"construccion": "Reps sub-umbral fraccionadas (4×2500m o bloques de 6') o alternancias — CONSTRUIR LT sin romper musculatura.", "especifica": "Bajar en el espectro: rodajes largos Steady a ritmo maratón (10-15 millas); el estrés aeróbico lo da la DURACIÓN acumulada."},
+    "5k_10k": {"construccion": "Base aeróbica: rodajes steady + tempos fraccionados sub-umbral amplios.", "especifica": "Fraccionados a umbral + ALTERNANCIAS de Canova (800 rápido/800 moderado) como puente al ritmo específico + trabajo a CV (ritmo 10K)."},
+    "medio_fondo_800_1500": {"estrategia": "EVITAR tempos continuos 20-30' (generan fatiga neuromuscular excesiva y pérdida de eficiencia biomecánica en atletas rápidos).", "solucion": "Reps MUY cortas (150/200/300/400m) con pausas cortas a ritmos fluidos (estilo Iglói) → desarrollan la vía aeróbica superior sin perder las cualidades mecánicas de la zancada."}
+  },
+  "framework_decision_coach": {
+    "max_volumen_min_riesgo": "→ Fraccionado sub-umbral (noruego / series cortas-medias con pausa breve) = NOR Z3-4 Umbral.",
+    "dureza_mental_y_lectura_ritmo": "→ Tempo continuo tradicional (Daniels 20-30').",
+    "reabsorcion_lactato_ritmos_altos": "→ Alternancias de Canova (800 rápido / 800 moderado).",
+    "atleta_estancado_en_ritmos_aerobicos": "→ Cambiar la DIRECCIÓN de la fuerza (si hacía Push → pasar a Pull con CV / ritmo 10K)."
+  },
+  "principios_para_recordar": [
+    "No dogmatismo: Daniels, series noruegas, alternancias Canova = herramientas del MISMO continuo.",
+    "Volumen sobre falsa precisión: 0.5 mmol por debajo y 40' de estímulo > umbral estricto y colapso a los 15'.",
+    "Densidad de la pausa: la pausa CORTA mantiene FC/demanda aeróbica elevadas y da el margen justo para no saturarse de H+.",
+    "Correr por sensaciones/rango: el lab da ±5-10 s/milla; el umbral se mueve por clima/fatiga/glucógeno."
+  ]
+}
