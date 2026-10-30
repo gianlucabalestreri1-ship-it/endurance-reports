@@ -295,6 +295,11 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   fantasma). **No usar `drop_ghost_row`/`delete_rows` en hojas con celdas combinadas** (los separadores):
   `delete_rows` corrompe/borra los datos. El freeze por string ya evita la fila fantasma.
 - Por defecto solo **sin leer** (`status=pending`); `feedback-table.js --all` incluye leídas.
+- **Filtro de antigüedad (2026-10-30):** las notificaciones **FIT (dispositivo/Garmin)** se acumulan sin leer
+  (el coach lee el feedback del atleta pero la notif. de dispositivo queda `pending` en la pestaña FIT) → arrastraban
+  feedbacks de **2025** al reporte diario. `feedback-table.js` ahora **descarta las > 30 días** (parseando `date`
+  DD/MM/YYYY). Override: `--days N` (0 = sin filtro) o env `FEEDBACK_MAX_AGE_DAYS`; `--all` / `--all-dates` lo desactivan.
+  Imprime cuántas filtró. (Limpieza de fondo: marcar leídas las viejas con `mark-read.js` para bajar el contador de 169.)
 - El Excel es export estático: **sin fórmulas**, no requiere recalc de LibreOffice.
 - **Datos sensibles** (salud de atletas): entregar como **archivo** (`SendUserFile`), no
   publicar como Artifact. `report/` está en `.gitignore`.

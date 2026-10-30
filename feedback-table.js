@@ -23,6 +23,25 @@ const ET = require('./lib/endurance');
 const ONLY_UNREAD = !process.argv.includes('--all');
 const OUT_DIR = path.join(__dirname, 'report');
 
+// Stale-feedback guard: notifications left unread for a long time (old sessions
+// never marked read) otherwise surface in the daily report (e.g. 2025 feedbacks
+// in an Oct-2026 run). Default window: 30 days. Override with `--days N`
+// (0 = no age filter); `--all` and `--all-dates` also disable the age filter.
+function argVal(flag) { const i = process.argv.indexOf(flag); return i >= 0 ? process.argv[i + 1] : null; }
+const NO_AGE_FILTER = process.argv.includes('--all') || process.argv.includes('--all-dates');
+const MAX_AGE_DAYS = NO_AGE_FILTER ? Infinity
+  : Number(argVal('--days') || process.env.FEEDBACK_MAX_AGE_DAYS || 30) || Infinity;
+function parseDMY(s) {
+  const m = String(s || '').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  return m ? new Date(Date.UTC(+m[3], +m[2] - 1, +m[1])) : null;
+}
+function tooOld(r) {
+  if (!isFinite(MAX_AGE_DAYS)) return false;
+  const d = parseDMY(r.date || r.rawDate);
+  if (!d) return false;                               // no parseable date → keep
+  return (Date.now() - d.getTime()) / 86400000 > MAX_AGE_DAYS;
+}
+
 function esc(s) {
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -177,6 +196,9 @@ async function main() {
   const raw = await ET.listNotifications(session);
   let records = raw.map(ET.parseNotification);
   if (ONLY_UNREAD) records = records.filter((r) => r.unread);
+  const beforeAge = records.length;
+  records = records.filter((r) => !tooOld(r));
+  const droppedStale = beforeAge - records.length;
 
   // Upcoming competitions: the control-panel agenda gives near-term ones with
   // exact dates; countdown notifications add the weeks-out alerts.
@@ -259,6 +281,7 @@ async function main() {
   console.log(`  Sin leer (total): ${counts.totalUnread}  ·  Atletas distintos: ${counts.athletes}`);
   console.log(`  Feedbacks de sesión: ${counts.atletasNotifs} (${counts.atletas} filas agrupadas) · FIT: ${counts.fit} · Competencias hechas: ${counts.competitions} · Próximas competencias: ${counts.upcoming}`);
   console.log(`  sRPE>=6: ${counts.hot} · Dolor/molestia: ${counts.pain}`);
+  if (droppedStale > 0) console.log(`  (filtradas ${droppedStale} notificaciones viejas > ${MAX_AGE_DAYS} días — usá --all-dates para incluirlas)`);
   console.log(`  -> report/feedback-table.html`);
   return model;
 }
