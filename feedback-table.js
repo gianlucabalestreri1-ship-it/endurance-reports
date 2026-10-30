@@ -37,7 +37,10 @@ function parseDMY(s) {
 }
 function tooOld(r) {
   if (!isFinite(MAX_AGE_DAYS)) return false;
-  const d = parseDMY(r.date || r.rawDate);
+  // Age by FEEDBACK date (rawDate = notification date), not the session date:
+  // a feedback left today for an old session is still recent (e.g. Melisa Oliva
+  // reported 29/10 a session dated 14/10). Falls back to session date.
+  const d = parseDMY(r.rawDate || r.date);
   if (!d) return false;                               // no parseable date → keep
   return (Date.now() - d.getTime()) / 86400000 > MAX_AGE_DAYS;
 }
@@ -75,6 +78,7 @@ function buildHtml(model) {
       <td>${r.unread ? '<span class="dot green"></span>' : '<span class="dot"></span>'}</td>
       <td>${esc(r.athlete)}</td>
       <td>${esc(r.date)} ${r.moment ? `<span class="mo">${r.moment}</span>` : ''}</td>
+      <td>${esc(r.reportedAt || '—')}${r.reportedAt && r.date && r.reportedAt !== r.date ? ' <span class="mo" title="feedback cargado después de la sesión">tarde</span>' : ''}</td>
       <td>${esc(r.session)}</td>
       <td>${esc(r.sport)}</td>
       <td>${r.sessionType ? badge(r.intensity) + '<br><span class="sub">' + esc(r.sessionType) + '</span>' : ''}</td>
@@ -155,8 +159,8 @@ function buildHtml(model) {
 
   <h2>🏃 Feedback por sesión — Atletas <span class="count">(${sessionRows.length})</span></h2>
   <div class="scroll"><table>
-    <thead><tr><th></th><th>Atleta</th><th>Fecha</th><th>Sesión</th><th>Deporte</th><th>Tipo</th><th>sRPE</th><th>Feedback / comentario</th><th>Dolor</th><th>FIT (métrica)</th></tr></thead>
-    <tbody>${sessionRows.map(sessionRow).join('') || emptyRow(10)}</tbody>
+    <thead><tr><th></th><th>Atleta</th><th>Fecha sesión</th><th>Fecha feedback</th><th>Sesión</th><th>Deporte</th><th>Tipo</th><th>sRPE</th><th>Feedback / comentario</th><th>Dolor</th><th>FIT (métrica)</th></tr></thead>
+    <tbody>${sessionRows.map(sessionRow).join('') || emptyRow(11)}</tbody>
   </table></div>
 
   <h2>⌚ FIT — Feedback de dispositivo <span class="count">(${fit.length})</span></h2>
