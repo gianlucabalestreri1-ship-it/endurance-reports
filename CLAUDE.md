@@ -346,8 +346,16 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   histórico Lydiard/Peters/Clarke · CV · alternancias de Canova), **PUSH vs PULL** y el **diagnóstico de estancamiento**
   (si abusó de push→pasar a pull y viceversa; aplica al caso 'estancada' tipo Bárbara), programación por distancia y
   el framework de decisión del entrenador).
-  Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces + Noruego, expresado SIEMPRE
-  en el modelo base. (El coach irá sumando más guías de YouTube de Magness a `data/`.)
+  **`noruego-bakken-ama`** (AMA de Reddit del PROPIO **Marius Bakken** — fuente autoritativa, solo sus respuestas,
+  cargada 2026-10-31: los **6 pilares** del sistema, consejo central para aficionados (entrenás los PROCESOS internos,
+  no el ritmo), sub-umbral + Golden Zone conservadora (ante dudas ajustar A LA BAJA), **45/15** (20-30 reps, cómo
+  introducirlo gradual), **doble umbral** (tarde+mañana NO equivale; separación máx ~12h), **TONO MUSCULAR** en
+  profundidad (pasivo/reposo, medible, estudio Nike 2025 PMC12174218, test de escaleras, normaliza en 3-4 días),
+  periodización plana vs natural (guiar por VFC/escaleras no calendario), cuestas/economía/fuerza, fibras rápidas
+  (protocolo de prueba 4 sem), maratón (período específico 12→4 sem, taper manteniendo frecuencia), y cuándo cambiar
+  el estímulo. Su 'sub-umbral controlado' = base Z3-Z4).
+  Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces + Noruego (+ AMA de Bakken),
+  expresado SIEMPRE en el modelo base. (El coach irá sumando más guías —YouTube de Magness, etc.— a `data/`.)
 - **Librería (bookshop) de ET — NO editable por API** (solo lectura: `bookshops_list`/`folder_bookshops_list`; la
   única escritura del proyecto es marcar leído). Crear/renombrar/configurar sesiones de la librería se hace desde la
   **app de ET** (el asistente entrega el catálogo ya nombrado + lo guarda en `data/`). **Nomenclatura acordada
