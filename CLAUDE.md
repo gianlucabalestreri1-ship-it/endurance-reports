@@ -295,6 +295,13 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
     solo las laps con ritmo real de trabajo/calentamiento/strides. Se mantiene el **número de lap** original (L1, L2, L8…)
     para que el salto marque dónde hubo pausa. El **resumen** (km·dur·FC) sigue siendo el de la sesión completa.
     Umbral configurable (hoy 8'/km); para ciclismo (laps en km/h) no aplica el filtro.
+  - **Ritmos dejados a mano en el comentario** (pedido del coach 2026-11-02): para atletas SIN dispositivo que
+    cargan sus parciales en el `athlete_comment` (formatos AR `7.52`, `7:24`, `7.36/km`, `6:20`…), parsearlos
+    **ordenados y sin de-duplicar** (cada parcial = una lap) y mostrarlos en la MISMA columna `FIT — resumen · laps`
+    (rótulo "Ritmos (comentario)"), y **quitarlos del comentario** para no duplicar. No confundir distancias con
+    ritmos: `X.YY km` (con "km" sin barra) es distancia; validar ritmo plausible 2:24–12:00. Al limpiar el comentario,
+    colapsar solo separadores huérfanos (con espacios), NO los puntos de decimales de la narrativa (ej. "km 1.5 al 2.5").
+    Base del parser: `parseCommentPaces` de `renewal.js` (pero ahí de-duplica; para mostrar laps va ordenado y con repetidos).
 - **Resaltar siempre:** `sRPE ≥ 6`, competencias completadas, dolor/molestia.
 - **Gotcha openpyxl:** `freeze_panes` por **string** (`"A2"`), no `ws.cell(...)` (materializa una fila
   fantasma). **No usar `drop_ghost_row`/`delete_rows` en hojas con celdas combinadas** (los separadores):
