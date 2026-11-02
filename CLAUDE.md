@@ -290,6 +290,11 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   existe para sesiones clave): `feedback-table.js` enriquece cada fila leyendo `session`→`resume`
   (`ET.getSession`/`ET.fitMetric`) y muestra **resumen (km · duración · FC) + cada lap** (vuelta ·
   tiempo · dist · ritmo · FC), igual que renovación. Cuesta 1 llamada por sesión (en `--all` son muchas).
+  - **Al mostrar las laps, DESCARTAR las de pausa** (pedido del coach 2026-11-02): laps con **ritmo > 8'/km**
+    (recuperaciones/caminatas; ojo parsear el `Nh M'SS" / km` de laps paradas = ritmo enorme) **no se envían** —
+    solo las laps con ritmo real de trabajo/calentamiento/strides. Se mantiene el **número de lap** original (L1, L2, L8…)
+    para que el salto marque dónde hubo pausa. El **resumen** (km·dur·FC) sigue siendo el de la sesión completa.
+    Umbral configurable (hoy 8'/km); para ciclismo (laps en km/h) no aplica el filtro.
 - **Resaltar siempre:** `sRPE ≥ 6`, competencias completadas, dolor/molestia.
 - **Gotcha openpyxl:** `freeze_panes` por **string** (`"A2"`), no `ws.cell(...)` (materializa una fila
   fantasma). **No usar `drop_ghost_row`/`delete_rows` en hojas con celdas combinadas** (los separadores):
