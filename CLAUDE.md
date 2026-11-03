@@ -302,6 +302,22 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
     ritmos: `X.YY km` (con "km" sin barra) es distancia; validar ritmo plausible 2:24–12:00. Al limpiar el comentario,
     colapsar solo separadores huérfanos (con espacios), NO los puntos de decimales de la narrativa (ej. "km 1.5 al 2.5").
     Base del parser: `parseCommentPaces` de `renewal.js` (pero ahí de-duplica; para mostrar laps va ordenado y con repetidos).
+  - **Emparejar FITs ejecutados en OTRO día** (pedido del coach 2026-11-03): muchos atletas ejecutan la sesión un día
+    distinto al programado → el FIT NO queda pegado a la sesión (`session.resume_fit=false`) y se pierde. **`training_plan`
+    trae `micro.fits` VACÍO; hay que llamar `get_micro(micro_id)`**, que sí lo pobla: `micro.fits` = **7 slots por día**,
+    cada uno un **array** de actividades `{id(=resume_id), session_date(fecha real), sport_code, session(null si suelto),
+    device_info{device_name, origin, distance, duration, avg_rhythm, avg/max_heart_rate}}`. Algoritmo: juntar los fits del
+    micro, **de-duplicar** subidas repetidas (misma corrida de 2 fuentes: misma fecha ±1 día y distancia ~igual → una sola),
+    y **emparejar cada fit con la sesión de running programada más cercana** por **fecha (±4 días) + distancia** (rechazar
+    mismatch de distancia salvo mismo día; score = díasDiff + |fitKm−progKm|·0.6). Laps del fit: `session_resume(fit.id)`.
+    Marcar la **fecha de ejecución real** cuando difiere de la programada ("ejec. DD-MM"). Los fits que no matchean ninguna
+    sesión → fila "(actividad sin sesión programada)".
+  - **Solo dispositivos con laps reales** (pedido del coach 2026-11-03): contar como FIT **solo relojes GPS reales** que
+    dan splits — `device_name` tipo **Garmin/Apple Watch/Amazfit/Coros/Polar/Suunto/Fitbit/…** o `origin=="garmin"`.
+    **Nike Run / Strava-teléfono / `device_name` desconocido ("?") dan UNA sola lap (solo el resumen)** → NO se tratan como
+    FIT: para esos atletas alcanza su **feedback manual** (parciales escritos en el comentario). Verificado: Apple Watch = 14
+    laps con ritmo+FC; Nike / "?"-Strava = 1 lap. También elegir el **último meso COMPLETADO** (end ≤ hoy) o con actividad
+    sustancial (≥4), no el meso de noviembre recién arrancado (1 sesión).
 - **Resaltar siempre:** `sRPE ≥ 6`, competencias completadas, dolor/molestia.
 - **Gotcha openpyxl:** `freeze_panes` por **string** (`"A2"`), no `ws.cell(...)` (materializa una fila
   fantasma). **No usar `drop_ghost_row`/`delete_rows` en hojas con celdas combinadas** (los separadores):
