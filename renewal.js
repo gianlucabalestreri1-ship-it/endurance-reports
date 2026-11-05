@@ -204,7 +204,9 @@ async function pairCrossDayFits(session, microId, sessions, rawRun) {
   for (const slot of (micro.fits || [])) if (Array.isArray(slot)) for (const f of slot) if (f && f.id) {
     const dev = f.device_info || {};
     if (!realDevice(dev) || !/run/i.test(f.sport_code || '')) continue;
-    fits.push({ id: f.id, date: d10(f.session_date), km: parseFloat(dev.distance) || 0 });
+    const km = parseFloat(dev.distance) || 0;
+    if (km < 1) continue;                      // fragmentos <1km (artefactos GPS / pausas de relojes que parten la corrida)
+    fits.push({ id: f.id, date: d10(f.session_date), km });
   }
   // de-dup (misma corrida subida por 2 fuentes: misma fecha ±1 y distancia ~igual)
   const kept = [];
@@ -212,10 +214,10 @@ async function pairCrossDayFits(session, microId, sessions, rawRun) {
     const dup = kept.some((k) => Math.abs(dayDiff(f.date, k.date)) <= 1 && (!f.km || !k.km || Math.abs(k.km - f.km) / Math.max(k.km, f.km) <= 0.2));
     if (!dup) kept.push(f);
   }
-  const assigned = new Set(), usedFit = new Set();
+  const assigned = new Set(), usedFit = new Set(), matchedDates = new Set();
   for (const f of kept) {
     // si ya hay una sesión con FIT en esa fecha, ese fit ya está representado (ET lo pegó)
-    if (sessions.some((ss) => ss.date === f.date && ss.hasFit)) { usedFit.add(f.id); continue; }
+    if (sessions.some((ss) => ss.date === f.date && ss.hasFit)) { usedFit.add(f.id); matchedDates.add(f.date); continue; }
     let best = null, bs = 1e9;
     for (const x of rawRun) {
       const ss = sessions[x.idx];
@@ -233,12 +235,18 @@ async function pairCrossDayFits(session, microId, sessions, rawRun) {
     if (!ss.executed) { ss.executed = true; extraDone++; }
     ss.hasFit = true; ss.laps = fl.laps; ss.realPace = fl.realPace; ss.realDist = fl.realDist; ss.realDur = fl.realDur; ss.source = 'FIT';
     if (ss.date !== f.date) ss.execDate = f.date;
-    assigned.add(best.idx); usedFit.add(f.id);
+    assigned.add(best.idx); usedFit.add(f.id); matchedDates.add(f.date);
   }
-  // fits que no matchean ninguna sesión -> filas "(actividad sin sesión programada)"
-  const loose = [];
+  // fits que no matchean ninguna sesión -> filas "(actividad sin sesión programada)".
+  // Para relojes que parten la corrida (varios fits el mismo día): NO generar filas por los fragmentos
+  // del día de una corrida ya emparejada, y de los días sueltos quedarse con el fit MÁS LARGO (≥3km).
+  const byDate = {};
   for (const f of kept) {
-    if (usedFit.has(f.id)) continue;
+    if (usedFit.has(f.id) || matchedDates.has(f.date) || f.km < 3) continue;
+    if (!byDate[f.date] || f.km > byDate[f.date].km) byDate[f.date] = f;
+  }
+  const loose = [];
+  for (const f of Object.values(byDate)) {
     const fl = await fitLaps(f.id, session); if (!fl) continue;
     loose.push({ date: f.date, moment: '', title: '(actividad sin sesión programada)', due: true, future: false, cat: '', key: false,
       status: 'Finished', executed: true, hasFit: true, strength: false, progRpe: null, sRPE: null, progDist: '', progDur: '',
