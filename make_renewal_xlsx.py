@@ -78,6 +78,9 @@ def _pain_answer(ans):
     a=unicodedata.normalize("NFD",ans or "").encode("ascii","ignore").decode().lower().strip()
     return bool(a) and not re.match(r"^(no|nada|ningun|sin )", a)
 
+# Los que respondieron el formulario de renovación van PRIMERO (y dentro, por adherencia asc.)
+plans.sort(key=lambda d: (0 if match_form(d["athlete"]) else 1, _adh(d)))
+
 # filas (atributos) de cada tabla semanal
 def val_sesion(s): return (("★ " if s.get("key") else "")+(s.get("cat") or "")+" "+(s.get("title") or "")).strip()
 def val_rpe(s):
