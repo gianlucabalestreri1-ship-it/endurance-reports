@@ -59,10 +59,25 @@ function fbTable(d){
 }
 function adh(d){let t=0,done=0;for(const m of d.micros){t+=m.progSessions;done+=m.doneSessions;}return{t,done,pct:t?Math.round(100*done/t):0};}
 // ---- clasificación por TIPO DE CORREDOR (batching de contexto, Newport) ----
+// El tier sale del NIVEL REAL del atleta (pico de volumen del plan, no la semana de receso) +
+// un PISO por disciplina (un fondista en receso NO es un iniciante) + override manual opcional.
 const cacoRe=/camin|caco|trote\s*\d+.?\s*[-·x].?\s*camin/i;
-function weeklyKm(d){let mx=0;for(const m of d.micros){if(m.future)continue;const v=parseFloat(String(m.progVol||"").replace(/[^\d.]/g,""))||0;if(v>mx)mx=v;}return mx/1000;}
+const OVERRIDE=(()=>{try{return JSON.parse(fs.readFileSync(DIR+"/tier-overrides.json","utf8"));}catch(e){return {};}})();
+// volumen semanal de referencia = pico del plan (planPeakKm) o, si falta, pico del meso actual
+function weeklyKm(d){let mx=0;for(const m of d.micros){if(m.future)continue;const v=parseFloat(String(m.progVol||"").replace(/[^\d.]/g,""))||0;if(v>mx)mx=v;}return Math.max(mx/1000, d.planPeakKm||0);}
 function isCaco(d){let c=0;for(const m of d.micros)for(const s of (m.sessions||[])){if(s.strength)continue;if(cacoRe.test(s.title||""))c++;}return c>=2;}
-function tierOf(d){if(d._caco)return "t1";const k=d._km;if(k<30)return "t2";if(k<50)return "t3";if(k<70)return "t4";return "t5";}
+const DISC_FLOOR=[[/ultra|50\s?k|100\s?k|gran\s?fondo|80\s?k/i,5],[/marat|42\s?k|trail\s?-?\s?42/i,4],[/21\s?k|media|half|trail\s?-?\s?21/i,3],[/10\s?k|calle\s?-?\s?10|trail\s?-?\s?10/i,2]];
+function discFloor(d){const s=d.discipline||"";for(const[re,n]of DISC_FLOOR)if(re.test(s))return n;return 0;}
+function tierOf(d){
+  const ov=OVERRIDE[norm(d.athlete)];
+  if(ov){const t=(typeof ov==="object")?ov.tier:ov; if(typeof ov==="object"&&ov.note)d._overNote=ov.note; d._receso=false; return /^t[1-5]$/.test(String(t))?String(t):("t"+t);}
+  const fl=discFloor(d), k=d._km;
+  if(d._caco && fl<3){d._receso=false;return "t1";}      // caminar-correr real (no un fondista en receso)
+  let n = k<30?2 : k<50?3 : k<70?4 : 5;
+  if(fl>n) n=fl;                                          // piso por disciplina
+  d._receso = (k<15 && fl>=3);                            // volumen actual bajo + disciplina de fondo = receso/transición
+  return "t"+n;
+}
 const TIERS=[
  {id:"t1",label:"Iniciantes · caminar-correr"},
  {id:"t2",label:"Consolidando al corredor · 15-30 km/sem"},
@@ -106,7 +121,7 @@ function card(d){
   const apill=`<span class="pill adh ${a.pct===0?"a0":a.pct<40?"alo":a.pct>=80?"ahi":"amid"}">${a.pct}% · ${a.done}/${a.t}</span>`;
   return `<div class="card">
     <h3>${esc(d.athlete)} ${apill} ${pill}</h3>
-    <div class="plan">${esc(d.plan.title)} · período ${d.periodMesos.join(" + ")} · ${esc(d.plan.start)}→${esc(d.plan.end)}${(d._km>=1&&!d._caco)?` · ~${Math.round(d._km)} km/sem`:""}</div>
+    <div class="plan">${esc(d.plan.title)} · período ${d.periodMesos.join(" + ")} · ${esc(d.plan.start)}→${esc(d.plan.end)}${(d._km>=1&&!d._caco)?` · ~${Math.round(d._km)} km/sem`:""}${d.discipline?` · <span class="disc">${esc(d.discipline)}</span>`:""}${d._receso?` · <span class="receso">en receso · tier por nivel/disciplina</span>`:""}${d._overNote?` · <span class="receso">${esc(d._overNote)}</span>`:""}</div>
     ${formBlock(fr)}
     <div class="fblabel">Feedback del último mesociclo</div>
     ${fbTable(d)}
@@ -115,12 +130,12 @@ function card(d){
 }
 // ---- cargar y ordenar ----
 const plans=files.map(f=>JSON.parse(fs.readFileSync(f,"utf8")));
-for(const p of plans){p._caco=isCaco(p);p._km=weeklyKm(p);p._form=!!matchForm(p.athlete);}
+for(const p of plans){p._caco=isCaco(p);p._km=weeklyKm(p);p._form=!!matchForm(p.athlete);p._tier=tierOf(p);}
 const nForm=plans.filter(p=>p._form).length;
 // dentro de cada tier: los que respondieron el formulario primero, luego por adherencia asc.
 function tierSort(a,b){return (a._form?0:1)-(b._form?0:1) || adh(a).pct-adh(b).pct;}
 function tierSection(t){
-  const grp=plans.filter(p=>tierOf(p)===t.id).sort(tierSort);
+  const grp=plans.filter(p=>p._tier===t.id).sort(tierSort);
   if(!grp.length) return "";
   const nf=grp.filter(p=>p._form).length;
   return `<h2 class="sec ${t.id}">${esc(t.label)} <span class="count">— ${grp.length}${nf?` · ${nf} con formulario`:""}</span></h2>\n`+grp.map(card).join("\n");
@@ -163,6 +178,7 @@ td.fitc{min-width:150px;font-size:10.8px}.obj{font-weight:700;color:#1f5fae;whit
 .laps{display:flex;flex-direction:column;gap:1px;margin-top:2px}.lap{font-size:10.2px;color:#44505d;white-space:nowrap;font-variant-numeric:tabular-nums}.mano{color:#8a6d10;font-weight:600}
 .dash{color:#c3ccd6}
 .sug{margin-top:8px;background:#0f1b2b;color:#fff;border-radius:6px;padding:7px 11px;font-size:12.5px}.sug b{color:#8fd0ff}
+.disc{background:#eef2f7;color:#44505d;border-radius:4px;padding:0 5px;font-size:11px;font-weight:600}.receso{background:#fdf3e6;color:#b5641a;border-radius:4px;padding:0 5px;font-size:11px;font-weight:700}
 .nofb{font-size:12px;color:#b5641a;background:#fff6ec;border-radius:6px;padding:6px 10px}
 .card.alta{border-left-color:#b5641a}.card.alta.warn{border-left-color:var(--red)}
 .pill.newp{background:#fbf0e4;color:#b5641a;border-color:#f0d9bf}.pill.alertp{background:#fbe0dd;color:#c0392b;border-color:#f3c9c3}
@@ -189,4 +205,4 @@ ${altasSec}
 </div></body></html>`;
 fs.writeFileSync(OUT,html);
 console.log("OK ->",OUT,"| atletas:",total,"| conForm:",nForm,"| altas:",ALTAS.length,"| bytes:",html.length);
-TIERS.forEach(t=>{const n=plans.filter(p=>tierOf(p)===t.id).length;if(n)console.log("   ",t.label,"->",n);});
+TIERS.forEach(t=>{const n=plans.filter(p=>p._tier===t.id).length;if(n)console.log("   ",t.label,"->",n);});

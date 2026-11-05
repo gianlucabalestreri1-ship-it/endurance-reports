@@ -162,9 +162,16 @@ carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPU
 - **ENTREGABLE OFICIAL = HTML (decisión coach 2026-11-05: se reemplazó el Excel por el HTML).**
   `node renewal-html.js ["etiqueta del lote"]` → **`report/Informe-Renovacion.html`** (una ficha por atleta).
   - **Agrupado por TIPO DE CORREDOR** (batching de contexto, Newport): Iniciantes (caminar-correr, detectado por títulos
-    de sesión CaCo) · Consolidando 15-30 · Desarrollo 30-50 · Fondo 50-70 · Alto volumen +70 km/sem. El tier sale del
-    **volumen semanal programado** (`micro.progVol`, máx de micros no futuros). **Dentro de cada tier, los que respondieron
-    el formulario van PRIMERO** (luego por adherencia asc.). Los tiers vacíos no se muestran.
+    de sesión CaCo) · Consolidando 15-30 · Desarrollo 30-50 · Fondo 50-70 · Alto volumen +70 km/sem. **Dentro de cada tier,
+    los que respondieron el formulario van PRIMERO** (luego por adherencia asc.). Los tiers vacíos no se muestran.
+  - **El tier = NIVEL REAL del atleta, NO la semana de receso** (bug detectado 2026-11-05: Franco, ultramaratonista en
+    receso con 0 km programado, caía en Consolidando). Resolución: nivel = **pico de volumen de TODO el plan**
+    (`renewal.js` expone `planPeakKm` = máx `prog_distance` sobre todos los mesos; `renewal.js` también expone
+    `discipline`) · **PISO por disciplina** (`DISC_FLOOR`: ultra/50-100k/gran fondo→t5 · maratón/42k→t4 · 21k/media/
+    trail21→t3 · 10k→t2): un fondista nunca cae en Iniciantes/Consolidando aunque su volumen actual sea bajo · marca
+    **"en receso"** cuando el volumen actual <15 km y la disciplina es de fondo · **override manual** opcional
+    `report/tier-overrides.json` = `{<nombre_norm>: {"tier":"t5","note":"…"}}` (gitignored) para casos que uno conoce de
+    contexto (ej. Franco = ultra, aunque su disciplina ET figure Trail-21k). La ficha muestra la **disciplina** y la nota de receso/override.
   - Cada ficha: **adherencia** (pill de color, solo runs) · **formulario conciso** (ver abajo) · **feedback del último
     mesociclo** (fecha, tipo LIT/ThT/HIT, sRPE, comentario, dolor, **ritmo obj→real**; laps de pausa >8'/km descartadas;
     sin FIT → ritmos parseados del comentario) · **sugerencia automática** (heurística adherencia+molestia; NO reemplaza

@@ -255,8 +255,17 @@ async function renewalForPlan(session, planId) {
         progSessions: prog, doneSessions: done, adherence: prog ? Math.round(100 * done / prog) : 0, sessions });
     }
   }
+  // nivel real del atleta: pico de volumen semanal programado en TODO el plan (no solo el meso actual)
+  // + disciplina oficial de ET (para no confundir a un fondista en receso con un iniciante).
+  let _peakM = 0;
+  for (const _m of mesos) for (const _mi of (_m.micros || [])) {
+    const _v = (_mi.prog_distance && _mi.prog_distance.magnitude) || 0;
+    if (_v > _peakM) _peakM = _v;
+  }
+  const discipline = plan.discipline ? (plan.discipline.name || plan.discipline.code || '') : ((plan.sport && plan.sport.name) || '');
   const data = { generatedAt: new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }),
     athlete, plan: { id: plan.id, title: plan.title, start: plan.start_date, end: plan.end_date, status: plan.get_status_display || plan.status },
+    discipline, planPeakKm: Math.round(_peakM / 100) / 10,
     periodMesos: period.map((m) => m.name || m.number), micros };
   fs.mkdirSync(OUT, { recursive: true });
   const f = path.join(OUT, `renewal-${planId}-data.json`);
