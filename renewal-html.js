@@ -52,7 +52,8 @@ function fbTable(d){
     let comment=s.comment||"";
     if(!(s.hasFit&&s.laps&&s.laps.length)){const mp=parseManual(comment);if(mp.paces.length)comment=mp.stripped;}
     const sr=(s.sRPE!=null)?`<span class="${s.sRPE>=6?"srpe-hi":""}">${esc(s.sRPE)}</span>`:(s.progRpe!=null?`<span class="dim">${esc(s.progRpe)}*</span>`:"—");
-    rows.push(`<tr><td class="c">${esc(s.date.slice(5))}</td><td>${s.key?"★ ":""}${esc(s.title||"")}</td><td class="c">${intChip(s.cat)}</td><td class="c">${sr}</td><td class="cm">${comment?esc(comment):'<span class="dash">—</span>'}</td><td class="c">${painChip(s.painClass)||'<span class="dash">—</span>'}</td><td class="fitc">${ritmoCell(s)}</td></tr>`);
+    const dcell=`${esc(s.date.slice(5))}${(s.execDate&&s.execDate!==s.date)?`<div class="exec">ejec. ${esc(s.execDate.slice(5))}</div>`:""}`;
+    rows.push(`<tr><td class="c">${dcell}</td><td>${s.key?"★ ":""}${esc(s.title||"")}</td><td class="c">${intChip(s.cat)}</td><td class="c">${sr}</td><td class="cm">${comment?esc(comment):'<span class="dash">—</span>'}</td><td class="c">${painChip(s.painClass)||'<span class="dash">—</span>'}</td><td class="fitc">${ritmoCell(s)}</td></tr>`);
   }
   if(!rows.length) return `<div class="nofb">Sin feedback cargado en el último mesociclo.</div>`;
   return `<div class="fbwrap"><table class="fb"><thead><tr><th>Fecha</th><th>Sesión</th><th>Tipo</th><th>sRPE</th><th>Comentario del atleta</th><th>Dolor</th><th>Ritmo obj → real</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
@@ -179,6 +180,7 @@ td.fitc{min-width:150px;font-size:10.8px}.obj{font-weight:700;color:#1f5fae;whit
 .dash{color:#c3ccd6}
 .sug{margin-top:8px;background:#0f1b2b;color:#fff;border-radius:6px;padding:7px 11px;font-size:12.5px}.sug b{color:#8fd0ff}
 .disc{background:#eef2f7;color:#44505d;border-radius:4px;padding:0 5px;font-size:11px;font-weight:600}.receso{background:#fdf3e6;color:#b5641a;border-radius:4px;padding:0 5px;font-size:11px;font-weight:700}
+.exec{font-size:9.5px;color:#b5641a;font-weight:600;white-space:nowrap}
 .nofb{font-size:12px;color:#b5641a;background:#fff6ec;border-radius:6px;padding:6px 10px}
 .card.alta{border-left-color:#b5641a}.card.alta.warn{border-left-color:var(--red)}
 .pill.newp{background:#fbf0e4;color:#b5641a;border-color:#f0d9bf}.pill.alertp{background:#fbe0dd;color:#c0392b;border-color:#f3c9c3}

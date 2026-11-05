@@ -171,6 +171,83 @@ function selectPeriod(mesos) {
   return sel;
 }
 
+// --- Emparejado de FITs ejecutados en OTRO día (mismo criterio que fb-fit del feedback) ---
+const d10 = (s) => String(s || '').slice(0, 10);
+function dayDiff(a, b) { return Math.round((Date.parse(d10(a) + 'T00:00:00Z') - Date.parse(d10(b) + 'T00:00:00Z')) / 86400000); }
+// reloj GPS real (da laps) vs app de teléfono (Nike/Strava genérico = solo resumen)
+function realDevice(dev) {
+  const n = ((dev && dev.device_name) || '').toLowerCase(), o = ((dev && dev.origin) || '').toLowerCase();
+  if (/garmin|amazfit|coros|polar|suunto|apple ?watch|wahoo|fitbit|huawei|forerunner|fenix|instinct|venu|vivoactive|epix|enduro|galaxy watch/.test(n)) return true;
+  return o === 'garmin';
+}
+// laps + ritmo de un resume_id (mismo shape que el loop principal)
+async function fitLaps(resumeId, auth) {
+  let r; try { r = await call('session_resume', { resume_id: resumeId }, auth); } catch (_) { return null; }
+  const rz = (r && (r.resume || r)) || null;
+  if (!rz || !Array.isArray(rz.laps) || !rz.laps.length) return null;
+  const km = (rz.total_distance || 0) / 1000, durMin = (rz.total_timer_time || rz.total_elapsed_time || 0) / 60;
+  const laps = rz.laps.map((l, i) => {
+    const t = l.total_elapsed_time || l.total_timer_time || 0, d = l.total_distance || 0;
+    return { n: i + 1, time: `${Math.floor(t / 60)}'${String(Math.round(t % 60)).padStart(2, '0')}"`, timeSec: t, distKm: +d.toFixed(2),
+      pace: (l.avg_speed && l.avg_speed.format) || paceFrom(d, t / 60), hrA: l.avg_heart_rate || '', hrM: l.max_heart_rate || '' };
+  }).filter((l) => l.timeSec > 0 || l.distKm > 0);
+  return { laps, realPace: paceFrom(km, durMin), realDist: km ? km.toFixed(2) + ' km' : '',
+    realDur: durMin ? `${Math.floor(durMin)}'${String(Math.round((durMin % 1) * 60)).padStart(2, '0')}"` : '' };
+}
+// Enriquecer las sesiones de un micro con FITs reales que ET no pegó (ejecutados en otro día).
+// `sessions` se muta; devuelve cuántas sesiones pasaron a ejecutadas (para sumar a `done`).
+async function pairCrossDayFits(session, microId, sessions, rawRun) {
+  let extraDone = 0;
+  let gm; try { gm = await call('get_micro', { micro_id: String(microId) }, session); } catch (_) { return { extraDone, loose: [] }; }
+  const micro = (gm && (gm.micro || gm)) || {};
+  let fits = [];
+  for (const slot of (micro.fits || [])) if (Array.isArray(slot)) for (const f of slot) if (f && f.id) {
+    const dev = f.device_info || {};
+    if (!realDevice(dev) || !/run/i.test(f.sport_code || '')) continue;
+    fits.push({ id: f.id, date: d10(f.session_date), km: parseFloat(dev.distance) || 0 });
+  }
+  // de-dup (misma corrida subida por 2 fuentes: misma fecha ±1 y distancia ~igual)
+  const kept = [];
+  for (const f of fits.sort((a, b) => a.date.localeCompare(b.date))) {
+    const dup = kept.some((k) => Math.abs(dayDiff(f.date, k.date)) <= 1 && (!f.km || !k.km || Math.abs(k.km - f.km) / Math.max(k.km, f.km) <= 0.2));
+    if (!dup) kept.push(f);
+  }
+  const assigned = new Set(), usedFit = new Set();
+  for (const f of kept) {
+    // si ya hay una sesión con FIT en esa fecha, ese fit ya está representado (ET lo pegó)
+    if (sessions.some((ss) => ss.date === f.date && ss.hasFit)) { usedFit.add(f.id); continue; }
+    let best = null, bs = 1e9;
+    for (const x of rawRun) {
+      const ss = sessions[x.idx];
+      if (ss.hasFit || assigned.has(x.idx)) continue;
+      const dd = Math.abs(dayDiff(f.date, ss.date)); if (dd > 4) continue;
+      const pk = x.progM / 1000;
+      if (f.km && pk && dd > 0 && Math.abs(f.km - pk) > Math.max(2.5, pk * 0.6)) continue; // rechaza mismatch de distancia (salvo mismo día)
+      const score = dd + ((f.km && pk) ? Math.abs(f.km - pk) * 0.6 : 0);
+      if (score < bs) { bs = score; best = x; }
+    }
+    if (!best) continue;
+    const fl = await fitLaps(f.id, session);
+    if (!fl) continue;
+    const ss = sessions[best.idx];
+    if (!ss.executed) { ss.executed = true; extraDone++; }
+    ss.hasFit = true; ss.laps = fl.laps; ss.realPace = fl.realPace; ss.realDist = fl.realDist; ss.realDur = fl.realDur; ss.source = 'FIT';
+    if (ss.date !== f.date) ss.execDate = f.date;
+    assigned.add(best.idx); usedFit.add(f.id);
+  }
+  // fits que no matchean ninguna sesión -> filas "(actividad sin sesión programada)"
+  const loose = [];
+  for (const f of kept) {
+    if (usedFit.has(f.id)) continue;
+    const fl = await fitLaps(f.id, session); if (!fl) continue;
+    loose.push({ date: f.date, moment: '', title: '(actividad sin sesión programada)', due: true, future: false, cat: '', key: false,
+      status: 'Finished', executed: true, hasFit: true, strength: false, progRpe: null, sRPE: null, progDist: '', progDur: '',
+      targetPace: '', targets: [], realDist: fl.realDist, realDur: fl.realDur, realPace: fl.realPace, source: 'FIT', laps: fl.laps,
+      pain: false, painClass: 'none', comment: '', execDate: null });
+  }
+  return { extraDone, loose };
+}
+
 async function renewalForPlan(session, planId) {
   const tp = await ET.getTrainingPlan(session, planId);
   const plan = tp.plan || {};
@@ -182,6 +259,7 @@ async function renewalForPlan(session, planId) {
   for (const meso of period) {
     for (const mi of (meso.micros || [])) {
       const sessions = [];
+      const rawRun = [];                         // sesiones de running vencidas, para emparejar FITs de otros días
       let prog = 0, done = 0, future = 0;        // adherencia = solo sesiones vencidas (fecha <= hoy)
       const slots = mi.sessions || {};
       for (const mom of ['am', 'pm']) for (const s of (slots[mom] || [])) {
@@ -237,6 +315,7 @@ async function renewalForPlan(session, planId) {
           }
         }
         const it = (s.type && s.type.intensity_type) || '';
+        const idx = sessions.length;
         sessions.push({
           date: s.date, moment: mom.toUpperCase(), title: s.title, due, future: !due,
           cat: it === 'THT' ? 'ThT' : it === 'LIT' ? 'LIT' : it === 'HIT' ? 'HIT' : (it || ''),
@@ -244,12 +323,18 @@ async function renewalForPlan(session, planId) {
           progRpe: s.rpe != null ? s.rpe : null, sRPE: s.athlete_rpe != null ? s.athlete_rpe : null,
           progDist: fmtMag(s.distance), progDur: fmtMag(s.duration),
           targetPace: mainTarget ? mainTarget.target : '', targets,
-          realDist, realDur, realPace, source: due ? source : '', laps,
+          realDist, realDur, realPace, source: due ? source : '', laps, execDate: null,
           pain: ET.detectPain ? ET.detectPain((s.athlete_comment || '').trim()) : false,
           painClass: ET.classifyPain ? ET.classifyPain((s.athlete_comment || '').trim()) : 'none',
           comment: (s.athlete_comment || '').replace(/\s+/g, ' ').trim().slice(0, 600),
         });
+        if (due && !strength) rawRun.push({ idx, date: s.date, progM: (s.distance && s.distance.magnitude) || 0 });
       }
+      // Emparejar FITs ejecutados en OTRO día (ET no los pegó): get_micro + match por fecha±4 + distancia.
+      const paired = await pairCrossDayFits(session, mi.id, sessions, rawRun);
+      done += paired.extraDone;
+      for (const l of paired.loose) sessions.push(l);
+      sessions.sort((a, b) => String(a.date).localeCompare(String(b.date)));
       micros.push({ meso: meso.name || `Meso ${meso.number || ''}`, number: mi.number, start: mi.start_date, end: mi.end_date, future,
         progVol: fmtMag(mi.prog_distance), realVol: fmtMag(mi.real_distance),
         progSessions: prog, doneSessions: done, adherence: prog ? Math.round(100 * done / prog) : 0, sessions });

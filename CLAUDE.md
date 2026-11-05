@@ -176,6 +176,12 @@ carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPU
     mesociclo** (fecha, tipo LIT/ThT/HIT, sRPE, comentario, dolor, **ritmo obj→real**; laps de pausa >8'/km descartadas;
     sin FIT → ritmos parseados del comentario) · **sugerencia automática** (heurística adherencia+molestia; NO reemplaza
     al coach; los objetivos de destino los define el coach).
+  - **FITs ejecutados en OTRO día** (pedido del coach 2026-11-05): `renewal.js` empareja solo los FITs que ET no pegó a
+    la sesión (el atleta entrenó otro día) — mismo criterio que el pipeline de feedback: `pairCrossDayFits` llama
+    `get_micro(micro_id)`, junta los FITs de reloj real (`realDevice`), de-dup, y empareja cada uno con la sesión de
+    running más cercana sin FIT (fecha ±4 días + distancia); trae las laps con `session_resume(fit.id)` y marca la
+    **fecha de ejecución real** (`execDate` → "ejec. DD-MM" en la ficha). Los FITs sin sesión → fila "(actividad sin
+    sesión programada)". Evita tener que mover los FITs a mano en ET.
   - **Formulario conciso** (pedido del coach: "lo clave de cada respuesta sin ensuciar con texto"): Molestia (rojo si
     reporta dolor) · Estado (Sueño·Estrés·Energía/10·Motivación/10) · Carreras · Cambios · Peso · Sensación · Nota;
     cada campo truncado, se omiten los triviales (no/nada/ninguno). Lee `report/form-responses.json`.
