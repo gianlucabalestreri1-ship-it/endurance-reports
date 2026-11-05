@@ -140,7 +140,7 @@ en otra cláusula). `classifyPain` devuelve:
 
 ### "Asistente de informes" (guía 2026-10-11) — estado 2026-10-12: TODO DESPLEGADO
 - **Marcar leído** ✅ `markNotificationsRead` en el cliente + `mark-read.js` (ver §3). Probado: marcó 83 → 0 sin leer.
-- **Informe de renovación** ✅ `renewal.js` + `make_renewal_xlsx.py` (ver §3).
+- **Informe de renovación** ✅ `renewal.js` → `renewal-html.js` (HTML, entregable oficial; Excel legacy) (ver §3).
 - **Alerta de adherencia** ✅ `alert.js` + `make_alert_xlsx.py` (ver §3).
 - **Ritmo real vs objetivo** ✅ resuelto a nivel sesión (ritmo objetivo del bloque vs laps del FIT / ritmos del comentario).
   Pendiente opcional: alinear lap↔bloque para un "real por bloque" quirúrgico (hoy es aproximado + tabla de laps completa).
@@ -155,11 +155,27 @@ Y para cerrar el ciclo: **`node mark-read.js`** marca como leídas las notificac
 carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPUÉS de entregar el reporte**.
 `--dry` previsualiza; `node mark-read.js <id> <id>` marca puntuales.
 
-**Informe de renovación a demanda** (`renewal.js` + `make_renewal_xlsx.py`):
+**Informe de renovación a demanda** (`renewal.js` → **`renewal-html.js`**):
 - `node renewal.js --names "Nombre Apellido" ...` | `--file lista.txt` | `--dry` (previsualiza el match) | `<plan_id>`.
   Resuelve nombre→atleta→plan vigente con `athlete_list` (fuzzy: acentos + tokens + Levenshtein; match flojo se
   marca "⚠ revisar", nombre-de-pila solo en consulta multi-palabra NO matchea). → `report/renewal-<plan>-data.json`.
-- `python3 make_renewal_xlsx.py report/renewal-*-data.json` → **`report/Renovacion.xlsx`** (se regenera; 1 pestaña/atleta).
+- **ENTREGABLE OFICIAL = HTML (decisión coach 2026-11-05: se reemplazó el Excel por el HTML).**
+  `node renewal-html.js ["etiqueta del lote"]` → **`report/Informe-Renovacion.html`** (una ficha por atleta).
+  - **Los que respondieron el formulario van PRIMERO** (sección aparte), dentro por adherencia asc.; después el resto.
+  - Cada ficha: **adherencia** (pill de color, solo runs) · **formulario conciso** (ver abajo) · **feedback del último
+    mesociclo** (fecha, tipo LIT/ThT/HIT, sRPE, comentario, dolor, **ritmo obj→real**; laps de pausa >8'/km descartadas;
+    sin FIT → ritmos parseados del comentario) · **sugerencia automática** (heurística adherencia+molestia; NO reemplaza
+    al coach; los objetivos de destino los define el coach).
+  - **Formulario conciso** (pedido del coach: "lo clave de cada respuesta sin ensuciar con texto"): Molestia (rojo si
+    reporta dolor) · Estado (Sueño·Estrés·Energía/10·Motivación/10) · Carreras · Cambios · Peso · Sensación · Nota;
+    cada campo truncado, se omiten los triviales (no/nada/ninguno). Lee `report/form-responses.json`.
+  - **Altas / nuevos ingresos** (opcional): si existe `report/altas.json` (`[{n,s,warn,acc,dat},…]`, gitignored, datos
+    de intake), agrega al final una sección con la acción por atleta. Se arma leyendo el **formulario de inicio** (intake,
+    Sheet `1etcgQ_o77y7yyEb40cBO9Y2dpNopi9nyxBeEKfz1OOw`) de cada ingreso nuevo.
+  - **Frescura:** los atletas cargan feedback/formularios a lo largo del día → correr `renewal.js` **tarde** (o re-correr)
+    antes de generar el HTML; si se corre temprano, la adherencia y los feedbacks salen incompletos.
+- **Alternativa (legacy):** `python3 make_renewal_xlsx.py report/renewal-*-data.json` → **`report/Renovacion.xlsx`** (1 pestaña/atleta;
+  también ordena respondedores-primero). Se mantiene por si hace falta la vista semanal del mesociclo, pero el entregable por defecto es el HTML.
   - Período = mesociclo que contiene HOY (+ el anterior si es corto ≤2 micros o si el actual aún no tiene ejecución).
   - **Vista semanal**: 1 tabla por microciclo, columnas Lunes→Domingo, filas = atributos; banner combinado con el
     rango de fechas y "X sesiones ejecutadas vs Y programadas". Fila **"Realizada"** (semáforo): verde=hecha como
