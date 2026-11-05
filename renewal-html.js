@@ -58,6 +58,18 @@ function fbTable(d){
   return `<div class="fbwrap"><table class="fb"><thead><tr><th>Fecha</th><th>Sesión</th><th>Tipo</th><th>sRPE</th><th>Comentario del atleta</th><th>Dolor</th><th>Ritmo obj → real</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
 }
 function adh(d){let t=0,done=0;for(const m of d.micros){t+=m.progSessions;done+=m.doneSessions;}return{t,done,pct:t?Math.round(100*done/t):0};}
+// ---- clasificación por TIPO DE CORREDOR (batching de contexto, Newport) ----
+const cacoRe=/camin|caco|trote\s*\d+.?\s*[-·x].?\s*camin/i;
+function weeklyKm(d){let mx=0;for(const m of d.micros){if(m.future)continue;const v=parseFloat(String(m.progVol||"").replace(/[^\d.]/g,""))||0;if(v>mx)mx=v;}return mx/1000;}
+function isCaco(d){let c=0;for(const m of d.micros)for(const s of (m.sessions||[])){if(s.strength)continue;if(cacoRe.test(s.title||""))c++;}return c>=2;}
+function tierOf(d){if(d._caco)return "t1";const k=d._km;if(k<30)return "t2";if(k<50)return "t3";if(k<70)return "t4";return "t5";}
+const TIERS=[
+ {id:"t1",label:"Iniciantes · caminar-correr"},
+ {id:"t2",label:"Consolidando al corredor · 15-30 km/sem"},
+ {id:"t3",label:"Desarrollo · 30-50 km/sem"},
+ {id:"t4",label:"Fondo · 50-70 km/sem"},
+ {id:"t5",label:"Alto volumen · +70 km/sem"},
+];
 function fdate(iso){const m=String(iso||"").match(/(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}/${m[2]}`:esc(iso||"");}
 function trivial(a){const n=norm(a).replace(/[^a-z0-9 ]/g,"").trim();return !n||(n.length<=12&&/^(no|nada|ningun|ninguna|ninguno|sin|nop)/.test(n));}
 function trunc(a,n){a=String(a||"").replace(/\s+/g," ").trim();if(a.length<=n)return a;let c=a.slice(0,n);const sp=c.lastIndexOf(" ");if(sp>n*0.6)c=c.slice(0,sp);return c+"…";}
@@ -94,7 +106,7 @@ function card(d){
   const apill=`<span class="pill adh ${a.pct===0?"a0":a.pct<40?"alo":a.pct>=80?"ahi":"amid"}">${a.pct}% · ${a.done}/${a.t}</span>`;
   return `<div class="card">
     <h3>${esc(d.athlete)} ${apill} ${pill}</h3>
-    <div class="plan">${esc(d.plan.title)} · período ${d.periodMesos.join(" + ")} · ${esc(d.plan.start)}→${esc(d.plan.end)}</div>
+    <div class="plan">${esc(d.plan.title)} · período ${d.periodMesos.join(" + ")} · ${esc(d.plan.start)}→${esc(d.plan.end)}${(d._km>=1&&!d._caco)?` · ~${Math.round(d._km)} km/sem`:""}</div>
     ${formBlock(fr)}
     <div class="fblabel">Feedback del último mesociclo</div>
     ${fbTable(d)}
@@ -103,8 +115,16 @@ function card(d){
 }
 // ---- cargar y ordenar ----
 const plans=files.map(f=>JSON.parse(fs.readFileSync(f,"utf8")));
-const withForm=plans.filter(p=>matchForm(p.athlete)).sort((x,y)=>adh(x).pct-adh(y).pct);
-const without=plans.filter(p=>!matchForm(p.athlete)).sort((x,y)=>adh(x).pct-adh(y).pct);
+for(const p of plans){p._caco=isCaco(p);p._km=weeklyKm(p);p._form=!!matchForm(p.athlete);}
+const nForm=plans.filter(p=>p._form).length;
+// dentro de cada tier: los que respondieron el formulario primero, luego por adherencia asc.
+function tierSort(a,b){return (a._form?0:1)-(b._form?0:1) || adh(a).pct-adh(b).pct;}
+function tierSection(t){
+  const grp=plans.filter(p=>tierOf(p)===t.id).sort(tierSort);
+  if(!grp.length) return "";
+  const nf=grp.filter(p=>p._form).length;
+  return `<h2 class="sec ${t.id}">${esc(t.label)} <span class="count">— ${grp.length}${nf?` · ${nf} con formulario`:""}</span></h2>\n`+grp.map(card).join("\n");
+}
 // ---- Altas / nuevos ingresos (opcional): report/altas.json = [{n,s,warn,acc,dat}, ...] ----
 const ALTAS=(()=>{try{return JSON.parse(fs.readFileSync(DIR+"/altas.json","utf8"));}catch(e){return [];}})();
 function altaCard(x){return `<div class="card alta ${x.warn?"warn":""}"><h3>${esc(x.n)} <span class="pill ${x.warn?"alertp":"newp"}">${esc(x.s)}</span></h3><div class="acc"><b>Acción →</b> ${esc(x.acc)}</div><div class="dat"><b>Formulario de inicio:</b> ${esc(x.dat)}</div></div>`;}
@@ -116,7 +136,7 @@ header.top{border-bottom:3px solid var(--ink);padding-bottom:12px}h1{font-size:2
 .meta{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:8px;font-size:12.5px;color:var(--muted)}.meta b{color:var(--ink)}
 .howto{background:#eef2f7;border-left:4px solid var(--ink);padding:10px 14px;border-radius:6px;margin:14px 0;font-size:12.7px}
 h2.sec{font-size:15.5px;margin:26px 0 4px;padding:7px 12px;border-radius:7px;border:1px solid var(--line);background:#fff}
-h2.s-form{background:#e9f5ee;color:#2f7d4f}h2.s-rest{background:#eef2f7;color:var(--navy)}h2.s-alta{background:#fbf0e4;color:#b5641a}
+h2.t1{background:#eaf5ee;color:#2f7d4f}h2.t2{background:#fbf3e0;color:#b07d16}h2.t3{background:#e9f1fb;color:#1f5fae}h2.t4{background:#f0e8fb;color:#7a3fc0}h2.t5{background:#fbe9e7;color:#c0392b}h2.s-alta{background:#fbf0e4;color:#b5641a}
 h2 .count{font-weight:400;color:var(--muted);font-size:12.5px}
 .card{background:#fff;border:1px solid var(--line);border-left:5px solid #9fb2c8;border-radius:10px;padding:12px 15px;margin:11px 0;box-shadow:0 1px 2px rgba(20,30,45,.04)}
 .card h3{margin:0 0 5px;font-size:15.5px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
@@ -161,14 +181,12 @@ const OUT=DIR+"/Informe-Renovacion.html";
 const html=`<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Informe de renovación</title><style>${css}</style></head><body><div class="wrap">
 <header class="top"><h1>Informe de renovación${titleExtra}</h1>
 <div class="sub">Una ficha por atleta con su feedback del último mesociclo · los que respondieron el formulario van primero</div>
-<div class="meta"><span><b>Fecha:</b> ${todayStr}</span><span><b>Atletas:</b> ${total}</span><span><b>Respondieron formulario:</b> ${withForm.length}</span>${ALTAS.length?`<span><b>Altas nuevas:</b> ${ALTAS.length}</span>`:""}<span><b>Fuente:</b> Endurance Tool + formulario de renovación/inicio</span></div></header>
-<div class="howto"><b>Cómo leerlo:</b> primero los que <b>respondieron el formulario</b> de renovación (con sus respuestas arriba de la ficha), después el resto. Cada ficha trae el <b>feedback del último mesociclo</b> (con ritmo obj→real; laps de pausa &gt;8'/km descartadas), la <b>adherencia</b> (solo runs) y una <b>sugerencia automática</b> (heurística: adherencia + molestia). Los objetivos de destino los define el coach.${ALTAS.length?" Al final, las <b>altas / nuevos ingresos</b> con qué hacer con cada uno.":""}</div>
-<h2 class="sec s-form">Respondieron el formulario de renovación <span class="count">— ${withForm.length}</span></h2>
-${withForm.map(card).join("\n")}
-<h2 class="sec s-rest">Sin formulario — pendientes <span class="count">— ${without.length}</span></h2>
-${without.map(card).join("\n")}
+<div class="meta"><span><b>Fecha:</b> ${todayStr}</span><span><b>Atletas:</b> ${total}</span><span><b>Respondieron formulario:</b> ${nForm}</span>${ALTAS.length?`<span><b>Altas nuevas:</b> ${ALTAS.length}</span>`:""}<span><b>Fuente:</b> Endurance Tool + formulario de renovación/inicio</span></div></header>
+<div class="howto"><b>Cómo leerlo:</b> agrupado por <b>tipo de corredor</b> (volumen semanal) para trabajar en bloques afines y bajar el cambio de contexto. Dentro de cada bloque, los que <b>respondieron el formulario</b> van primero (con sus respuestas arriba de la ficha). Cada ficha trae el <b>feedback del último mesociclo</b> (ritmo obj→real; laps de pausa &gt;8'/km descartadas), la <b>adherencia</b> (solo runs) y una <b>sugerencia automática</b> (heurística: adherencia + molestia). Los objetivos de destino los define el coach.${ALTAS.length?" Al final, las <b>altas / nuevos ingresos</b> con qué hacer con cada uno.":""}</div>
+${TIERS.map(tierSection).filter(Boolean).join("\n")}
 ${altasSec}
 <footer>Generado desde Endurance Tool (último mesociclo del plan vigente) + formulario de renovación (Google Form) + formulario de inicio (intake). Adherencia = solo runs, sesiones vencidas. Sugerencia = heurística (no reemplaza el criterio del coach). Objetivos de destino: los define el coach.</footer>
 </div></body></html>`;
 fs.writeFileSync(OUT,html);
-console.log("OK ->",OUT,"| conForm:",withForm.length,"| sinForm:",without.length,"| altas:",ALTAS.length,"| bytes:",html.length);
+console.log("OK ->",OUT,"| atletas:",total,"| conForm:",nForm,"| altas:",ALTAS.length,"| bytes:",html.length);
+TIERS.forEach(t=>{const n=plans.filter(p=>tierOf(p)===t.id).length;if(n)console.log("   ",t.label,"->",n);});

@@ -161,7 +161,10 @@ carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPU
   marca "⚠ revisar", nombre-de-pila solo en consulta multi-palabra NO matchea). → `report/renewal-<plan>-data.json`.
 - **ENTREGABLE OFICIAL = HTML (decisión coach 2026-11-05: se reemplazó el Excel por el HTML).**
   `node renewal-html.js ["etiqueta del lote"]` → **`report/Informe-Renovacion.html`** (una ficha por atleta).
-  - **Los que respondieron el formulario van PRIMERO** (sección aparte), dentro por adherencia asc.; después el resto.
+  - **Agrupado por TIPO DE CORREDOR** (batching de contexto, Newport): Iniciantes (caminar-correr, detectado por títulos
+    de sesión CaCo) · Consolidando 15-30 · Desarrollo 30-50 · Fondo 50-70 · Alto volumen +70 km/sem. El tier sale del
+    **volumen semanal programado** (`micro.progVol`, máx de micros no futuros). **Dentro de cada tier, los que respondieron
+    el formulario van PRIMERO** (luego por adherencia asc.). Los tiers vacíos no se muestran.
   - Cada ficha: **adherencia** (pill de color, solo runs) · **formulario conciso** (ver abajo) · **feedback del último
     mesociclo** (fecha, tipo LIT/ThT/HIT, sRPE, comentario, dolor, **ritmo obj→real**; laps de pausa >8'/km descartadas;
     sin FIT → ritmos parseados del comentario) · **sugerencia automática** (heurística adherencia+molestia; NO reemplaza
