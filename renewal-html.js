@@ -64,6 +64,15 @@ function adh(d){let t=0,done=0;for(const m of d.micros){t+=m.progSessions;done+=
 // un PISO por disciplina (un fondista en receso NO es un iniciante) + override manual opcional.
 const cacoRe=/camin|caco|trote\s*\d+.?\s*[-·x].?\s*camin/i;
 const OVERRIDE=(()=>{try{return JSON.parse(fs.readFileSync(DIR+"/tier-overrides.json","utf8"));}catch(e){return {};}})();
+// Notas del coach por atleta (planificación / recordatorios para la próxima renovación).
+// report/athlete-notes.json = { <nombre_norm>: {updated, title, text(\n-separado)} }  (gitignored)
+const NOTES=(()=>{try{return JSON.parse(fs.readFileSync(DIR+"/athlete-notes.json","utf8"));}catch(e){return {};}})();
+function noteOf(name){const nt=norm(name).split(" ").filter(w=>w.length>=3);let best=null,bo=0;
+  for(const k of Object.keys(NOTES)){const kt=k.split(" ").filter(w=>w.length>=3);let sc=0;for(const a of kt)if(nt.some(b=>a===b||(a.length>=3&&b.length>=3&&(a.startsWith(b)||b.startsWith(a)))))sc++;if(sc>bo){bo=sc;best=NOTES[k];}}
+  return bo>=2?best:null;}
+function noteBlock(d){const n=noteOf(d.athlete);if(!n)return "";
+  const body=String(n.text||"").split("\n").map(l=>l.trim()?`<div>${esc(l)}</div>`:"").join("");
+  return `<div class="cnote"><div class="cnoteh">Nota del coach${n.updated?` · ${esc(n.updated)}`:""}${n.title?` — ${esc(n.title)}`:""}</div><div class="cnotebody">${body}</div></div>`;}
 // volumen semanal de referencia = pico del plan (planPeakKm) o, si falta, pico del meso actual
 function weeklyKm(d){let mx=0;for(const m of d.micros){if(m.future)continue;const v=parseFloat(String(m.progVol||"").replace(/[^\d.]/g,""))||0;if(v>mx)mx=v;}return Math.max(mx/1000, d.planPeakKm||0);}
 function isCaco(d){let c=0;for(const m of d.micros)for(const s of (m.sessions||[])){if(s.strength)continue;if(cacoRe.test(s.title||""))c++;}return c>=2;}
@@ -123,6 +132,7 @@ function card(d){
   return `<div class="card">
     <h3>${esc(d.athlete)} ${apill} ${pill}</h3>
     <div class="plan">${esc(d.plan.title)} · período ${d.periodMesos.join(" + ")} · ${esc(d.plan.start)}→${esc(d.plan.end)}${(d._km>=1&&!d._caco)?` · ~${Math.round(d._km)} km/sem`:""}${d.discipline?` · <span class="disc">${esc(d.discipline)}</span>`:""}${d._receso?` · <span class="receso">en receso · tier por nivel/disciplina</span>`:""}${d._overNote?` · <span class="receso">${esc(d._overNote)}</span>`:""}</div>
+    ${noteBlock(d)}
     ${formBlock(fr)}
     <div class="fblabel">Feedback del último mesociclo</div>
     ${fbTable(d)}
@@ -181,6 +191,9 @@ td.fitc{min-width:150px;font-size:10.8px}.obj{font-weight:700;color:#1f5fae;whit
 .sug{margin-top:8px;background:#0f1b2b;color:#fff;border-radius:6px;padding:7px 11px;font-size:12.5px}.sug b{color:#8fd0ff}
 .disc{background:#eef2f7;color:#44505d;border-radius:4px;padding:0 5px;font-size:11px;font-weight:600}.receso{background:#fdf3e6;color:#b5641a;border-radius:4px;padding:0 5px;font-size:11px;font-weight:700}
 .exec{font-size:9.5px;color:#b5641a;font-weight:600;white-space:nowrap}
+.cnote{background:#fff8ec;border:1px solid #f0dcb8;border-left:4px solid #d98a2b;border-radius:7px;padding:9px 12px;margin:6px 0 9px}
+.cnoteh{font-size:11px;font-weight:800;color:#9a5a12;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.cnotebody{font-size:12px;color:#4a3b22;line-height:1.5}.cnotebody div{margin:1px 0}
 .nofb{font-size:12px;color:#b5641a;background:#fff6ec;border-radius:6px;padding:6px 10px}
 .card.alta{border-left-color:#b5641a}.card.alta.warn{border-left-color:var(--red)}
 .pill.newp{background:#fbf0e4;color:#b5641a;border-color:#f0d9bf}.pill.alertp{background:#fbe0dd;color:#c0392b;border-color:#f3c9c3}

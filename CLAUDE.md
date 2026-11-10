@@ -188,6 +188,11 @@ carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPU
   - **Altas / nuevos ingresos** (opcional): si existe `report/altas.json` (`[{n,s,warn,acc,dat},…]`, gitignored, datos
     de intake), agrega al final una sección con la acción por atleta. Se arma leyendo el **formulario de inicio** (intake,
     Sheet `1etcgQ_o77y7yyEb40cBO9Y2dpNopi9nyxBeEKfz1OOw`) de cada ingreso nuevo.
+  - **Notas del coach por atleta** (planificación / recordatorios que deben reaparecer en la próxima renovación):
+    `report/athlete-notes.json` = `{ <nombre_norm>: {updated, title, text(\n-separado)} }` (gitignored). Si existe una
+    nota para el atleta (match por tokens ≥2), se muestra un bloque destacado **"Nota del coach"** (ámbar) ARRIBA de
+    la ficha (antes del formulario y el feedback). Úsalo cuando el coach piensa en voz alta una estrategia/periodización
+    a futuro y quiere "no olvidarla en su próxima renovación" (ej. Leandro Berdayes → periodización inversa a 21K Pinamar).
   - **Frescura:** los atletas cargan feedback/formularios a lo largo del día → correr `renewal.js` **tarde** (o re-correr)
     antes de generar el HTML; si se corre temprano, la adherencia y los feedbacks salen incompletos.
 - **Alternativa (legacy):** `python3 make_renewal_xlsx.py report/renewal-*-data.json` → **`report/Renovacion.xlsx`** (1 pestaña/atleta;
