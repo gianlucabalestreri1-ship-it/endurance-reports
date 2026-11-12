@@ -150,10 +150,29 @@ en otra cláusula). `classifyPain` devuelve:
 
 Pipeline diario: **`node feedback-table.js`** → `report/feedback-table.html` + `report/feedback-data.json`
 (incluye `upcoming`: próximas competencias = agenda con fecha + countdowns con semanas).
-Luego **`python3 make_xlsx.py`** (necesita `pip install -q openpyxl`) → `report/Endurance-Feedback.xlsx`.
+**ENTREGABLE = HTML (decisión coach 2026-11-12: feedback SOLO HTML, igual que renovación; el Excel `make_xlsx.py`
+quedó legacy, NO se genera más para el feedback diario).**
 Y para cerrar el ciclo: **`node mark-read.js`** marca como leídas las notificaciones sin leer (feedbacks +
 carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPUÉS de entregar el reporte**.
 `--dry` previsualiza; `node mark-read.js <id> <id>` marca puntuales.
+
+**Formato de la tabla de feedback (rediseño 2026-11-12):**
+- **Agrupado por ATLETA** (fila-separador azul con el nombre; alfabético sin acentos) para evitar el switch de
+  contexto (§0). Sin columna Atleta.
+- **Columna "Sesión" = PROGRAMADO → EJECUTADO por bloque** (B1, B2…), reemplaza a la vieja columna FIT (todo de
+  un pantallazo). Cada bloque: dosis (series×reps o distancia/tiempo, respeta `workout_measure`) · zona + rango
+  objetivo · **ejecutado** (ritmo por km/vuelta en running, **potencia + FC por lap en ciclismo**) · FC media.
+  "— (no ejecutado)" en rojo cuando no se llegó al bloque. Lógica en **`lib/session-blocks.js`** (`sessionBreakdown`).
+- **Pausas:** PASIVA no informa ritmos; **ACTIVA sí** (cuenta como parcial) — misma regla que renovación. Detección
+  por `value.format`/inicio de nota "Pausa activa|pasiva" (no una mención suelta en medio del texto).
+- **Sin dispositivo → ritmos del comentario:** se parsean ORDENADOS y con repetidos y se alinean a los bloques de
+  trabajo por nº de reps (`commentPacesOrdered`+`assignCommentPaces`); se limpian del comentario para no duplicar.
+- **Cross-day FITs:** si la sesión no tiene FIT pegado, se busca en el micro (`get_micro`) un FIT real de dispositivo
+  (`realDevice`) ejecutado en OTRO día y se empareja por fecha±4 + distancia (`crossDayLaps`), marcando "ejec. DD-MM".
+  Misma lógica que renovación.
+- **CICLISMO = otra cuenta de coach:** multi-cuenta por env **`ET_EMAIL2`/`ET_PASSWORD2`** (NUNCA hardcodear — repo
+  público). `feedback-table.js` procesa ambas cuentas (`processAccount`) y mergea; los ciclistas salen con su tag 🚲
+  y potencia. Correr: `ET_EMAIL2=... ET_PASSWORD2=... node feedback-table.js`.
 
 **Informe de renovación a demanda** (`renewal.js` → **`renewal-html.js`**):
 - `node renewal.js --names "Nombre Apellido" ...` | `--file lista.txt` | `--dry` (previsualiza el match) | `<plan_id>`.
