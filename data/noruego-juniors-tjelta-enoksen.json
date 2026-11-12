@@ -1,0 +1,33 @@
+{
+  "id": "noruego_juniors_tjelta_enoksen",
+  "titulo": "Training Characteristics of Male Junior Cross Country and Track Runners on European Top Level",
+  "fuente": "Tjelta, L. I., & Enoksen, E. (2010). International Journal of Sports Science & Coaching, 5(2), 193-203. 4 juniors noruegos varones (17.8±1 año, solo 4±1.9 años de entrenamiento serio) que fueron 2º por equipos en el Europeo de Cross 2008 (uno, el que NO testeó VO2máx, es Henrik Ingebrigtsen; el grupo = Moen/Buraas/Maide/Ingebrigtsen). Diarios 2008. Cargado 2026-11-12 a pedido del coach.",
+  "uso": "El ángulo de DESARROLLO/JUVENILES del corpus noruego: muestra que YA de juniors (y con poca edad de entrenamiento) se entrena con alto volumen a baja intensidad + umbral, y que ese volumen aeróbico correlaciona con el éxito a largo plazo. Base para asesorar la progresión de corredores jóvenes/en desarrollo. Complementa los dos casos Ingebrigtsen + Enoksen + doble-umbral-review. Todo en modelo base Z1-Z8.",
+  "OJO_escala_de_zonas_del_paper": "Escala de 5 zonas lactato/FC (Tabla 1, Centro Olímpico Noruego): Z1 fácil/moderado (0.7-2.0 mmol, 62-82% FCmáx, economía); Z2 = ritmo MARATÓN y MEDIO MARATÓN (2.0-4.5 mmol, 82-92% FCmáx, umbral anaeróbico); Z3 ritmo 10000-3000 (4.5-8.0 mmol, 92-97% FCmáx, VO2máx/cap. aeróbica); Z4 ritmo 1500-400 (>8 mmol, 97-100% FCmáx, cap. anaeróbica); Z5 sprint/rectas. → su 'Z2 umbral' = base Z3-Z4; su Z3 = base Z5-Z6; su Z4 = base Z7; Z5 = base Z8.",
+  "ANCLA_umbral": "Repite el ancla del corpus: umbral (vAT) ≈ 90% FCmáx = 85% VO2máx, lactato 2.0-4.5 mmol. 'Entrenar a 82-92% FCmáx (80-87% VO2máx) es favorable para mejorar en fondo'. (Coherente con noruego-enoksen-distribucion y con la respuesta del %vVO2máx al coach.)",
+  "numeros_clave": {
+    "edad": "17.8±1 año; solo 4±1.9 años de entrenamiento serio (edad de entrenamiento BAJA).",
+    "volumen_buildup": "132.5±25.9 km/sem, 11±2 sesiones. Más alto que estudios previos de juniors/cadetes y que los regionales españoles (~70 km).",
+    "volumen_pista": "115 km/sem. Volumen_cross: 145 km/sem (más que el build-up).",
+    "distribucion_buildup": "Z1 78.3% · Z2 (umbral) 19.6% · Z3 1.3% · Z5 0.5% · Z4=0. Sesiones de Z2: 2-4/sem, 8-14 km de intervalos (26-47 min). ≈80/20.",
+    "distribucion_pista": "Z1 81.4% · Z2 11.7% · Z3 4.8% · Z4 0.9% · Z5 1.2%. (Más ritmo específico 10-3K y aparece algo de Z4.)",
+    "distribucion_cross": "Z1 78.1% · Z2 17.9% · Z3 2.9% · Z5 1%. Muy parecido al build-up (el cross de 5-8 km cae en Z3).",
+    "VO2max": "79.2±4.8 ml/kg/min (3 de 4; el mejor —2º en el Europeo de Cross— no testeó = Ingebrigtsen).",
+    "PRs_2008": "1500 3:55.10 · 3000 8:19.01 · 5000 14:29.98 (≈87% del récord mundial)."
+  },
+  "clave_del_desarrollo": {
+    "Z4_recien_en_competencia": "En el build-up el trabajo anaeróbico (Z4 del paper) es CERO: la base juvenil es casi pura Z1 + umbral (Z2). El anaeróbico específico aparece solo en temporada de competencia. → No apurar la intensidad anaeróbica en el desarrollo.",
+    "volumen_aerobico_temprano": "El volumen alto a baja intensidad —más que en estudios previos de juniors— se asocia con mejor rendimiento, incluso siendo más jóvenes y con menos años de entrenamiento que otros grupos. El número de km a baja intensidad es 'la gran diferencia'.",
+    "progresion_a_largo_plazo": "VO2máx, utilización fraccional y economía mejoran como resultado de un GRAN volumen sostenido en el tiempo, con progresión de cargas año a año (coherente con el caso longitudinal de Henrik 17→21)."
+  },
+  "semanas_modelo": {
+    "Runner_A_5000_pista_comp": "~130-140 km. Mar PM 16 km progresivo (75-90% FCmáx); Jue PM rectas + 20×400 m (ritmo 10-5K) r100m; Sáb 12 km progresivo (80-90%) + PM 7×2000 m (90% FCmáx) r60\". Resto Z1.",
+    "Runner_D_1500_pista_comp": "Lun-Vie Z1 + rectas; Jue PM 3×2x2000 m; Dom PM 8×1000 m (90% FCmáx, 3:33-3:19) r60\"; Mar competencia 1500 (PB 3:51.56)."
+  },
+  "lecciones_para_el_proyecto": [
+    "Desarrollo juvenil/base: casi todo Z1 + umbral (Z2), CERO anaeróbico en período base; la intensidad anaeróbica entra solo en competencia → regla de progresión para corredores jóvenes o en construcción de base.",
+    "Volumen aeróbico alto y sostenido (con progresión anual) es el predictor; aplica a recreativos escalando (coherente con microciclos-recreativos).",
+    "Refuerza el ancla del umbral (85% VO2máx / 82-92% FCmáx) desde otra muestra noruega.",
+    "El grupo incluye a Henrik Ingebrigtsen de junior → continuidad con el caso longitudinal (misma filosofía desde los 17)."
+  ]
+}

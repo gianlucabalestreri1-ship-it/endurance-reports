@@ -439,6 +439,10 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   / 82-92% FCmáx / 3-4.5 mmol** (responde la pregunta del %vVO2máx). Incluye la **transformación de Bakken** (bajo vol/alta
   int → alto vol/umbral: vAT 16.3→19.3 km/h, 5000 14:45→13:22) y el caso de individualizar volumen (runner F mejoró bajándolo).
   Mapeo de su escala al base en el JSON).
+  **`noruego-juniors-tjelta-enoksen`** (paper Tjelta/Enoksen 2010, *Int J Sports Sci Coach* 5(2):193-203 — 4 juniors noruegos
+  (incl. Henrik Ingebrigtsen de 17a) 2º por equipos en el Europeo de Cross 2008. El ángulo de DESARROLLO/JUVENILES: 132 km/sem
+  ya de junior con poca edad de entrenamiento, ~80/20, y **CERO anaeróbico en período base** (la intensidad anaeróbica entra
+  solo en competencia) → regla de progresión para jóvenes/base. VO2máx 79.2. Reafirma el ancla umbral = 85% VO2máx / 82-92% FCmáx).
   **`noruego-doble-umbral-review`** (revisión sistemática Kelemen/Benczenleitner/Tóth 2024, *Sci J Sport Perf* 3(1):38-46,
   doi 10.55860/NBXV4075 — **es el paper del "método de doble umbral"** que el coach buscaba: 7 estudios, n=13 élite noruega.
   120-180 km/sem, 75-80% baja intensidad, 15-20% umbral (30-40 km), 1-2 sesiones/sem de alta; el **día de doble umbral**
