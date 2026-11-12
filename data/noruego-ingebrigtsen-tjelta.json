@@ -1,0 +1,43 @@
+{
+  "id": "noruego_ingebrigtsen_tjelta",
+  "titulo": "Three Norwegian brothers all European 1500 m champions: What is the secret? — caso de los hermanos Ingebrigtsen",
+  "fuente": "Tjelta, L. I. (2019). International Journal of Sports Science & Coaching, 14(5), 694-700. doi 10.1177/1747954119872321. Estudio de caso (análisis de diarios de entrenamiento, observación y entrevistas) de Henrik (HI), Filip (FI) y Jakob (JI) Ingebrigtsen, los tres campeones europeos de 1500 m. Cargado 2026-11-12 a pedido del coach ('agregá estos dos papers a la base, más sobre el entrenamiento noruego').",
+  "uso": "Fuente PRIMARIA del método noruego aplicado a mediofondo/fondo de élite. Da los números reales (volumen, distribución, estructura de sesión, control por lactato) y el desarrollo a largo plazo (talento, progresión, entorno). Complementa noruego-sistema + noruego-bakken-ama + noruego-doble-umbral-review + noruego-best-practice. Todo ritmo/zona se expresa SIEMPRE en el modelo base Z1-Z8.",
+  "OJO_escala_de_zonas_del_paper": "El paper usa una escala de 5 zonas por LACTATO/FC propia (Tabla 2) que NO es nuestro modelo base. En ELLOS: Z1 continuo fácil/moderado (0.7-2.0 mmol, 62-82% FCmáx); Z2 = ENTRENAMIENTO DE UMBRAL (2.0-4.0 mmol, 82-92% FCmáx, 'aumenta vAT y VO2máx'); Z3 intervalos aeróbicos intensos (4.0-8.0 mmol, 92-97% FCmáx, VO2máx); Z4 anaeróbico a ritmo 800-1500 (>8 mmol, >97% FCmáx); Z5 sprint. → Su 'Z2 umbral' = base Z3-Z4 (Tempo/Umbral); su 'Z3' = base Z5-Z6; su 'Z4' = base Z7. NO confundir con nuestras zonas.",
+  "mapeo_zonas_paper_a_base": {
+    "paper Z1 (fácil/moderado, <2 mmol)": "base Z1-Z2 (Recuperación/Endurance)",
+    "paper Z2 (umbral, 2-4 mmol)": "base Z3-Z4 (Tempo/Umbral) — el 'sub-umbral' noruego vive en el piso de esta banda",
+    "paper Z3 (intervalos aeróbicos intensos, 4-8 mmol)": "base Z5-Z6 (Supraumbral/VO2max)",
+    "paper Z4 (anaeróbico 800-1500, >8 mmol)": "base Z7 (Glucolítico)",
+    "paper Z5 (sprint)": "base Z8 (Neuromuscular)"
+  },
+  "numeros_clave": {
+    "volumen_prep": "140-160 km/sem en el período preparatorio (nov-marzo) rumbo a 2018/2019; JI arrancó más abajo (130-140) y se igualó a los hermanos.",
+    "frecuencia": "13-14 sesiones/semana (desde los 16-17 años, 10-14).",
+    "alta_intensidad": "23-25% del volumen semanal como intervalos AL y POR ENCIMA del umbral anaeróbico (apenas por encima del 80/20 de Seiler; GI remarca que ese % alto SOLO es sostenible con control estricto de intensidad en cada sesión).",
+    "sesion_umbral_volumen": "8-12 km por sesión de 'Z2 umbral' (del paper).",
+    "sesiones_manana": "continuo o intervalos más largos en umbral (base Z3-Z4).",
+    "control": "lactato (Lactate Pro 1/2) + FC en TODAS las sesiones de intervalos. El padre/entrenador GI registró FC toda la carrera deportiva."
+  },
+  "definicion_umbral_y_ritmos": {
+    "umbral": "Pace que un corredor de élite sostiene ~1 h ≈ ritmo de medio maratón (Billat & Lepretre). Repeticiones de 2000-3000 m a ESE ritmo.",
+    "matiz_clave": "Cuando hacen repeticiones MÁS CORTAS (1000 m a 400 m) PERO manteniendo lactato y FC en la zona de umbral (su Z2), corren a ritmo de 10K-5K: la pausa corta permite ritmo más rápido con el MISMO costo metabólico. (= la lógica del fraccionado sub-umbral / densidad que ya tenemos en el catálogo.)"
+  },
+  "periodizacion": {
+    "preparatorio": "foco en capacidad aeróbica; mayoría del trabajo de calidad como umbral (base Z3-Z4) en formato intervalo; volumen anaeróbico MUY limitado.",
+    "precompetitivo_competitivo": "entra más 'Z3' (ritmo 3000, = base Z5-Z6) y 'Z4' (ritmo 800-1500, = base Z7); baja el volumen de umbral; entrenan sobre un RANGO AMPLIO de ritmos a lo largo del año (Martin & Coe).",
+    "taper": "la reducción de volumen a cambio de más alta intensidad en las semanas previas a las grandes competencias coincide con la literatura de taper (Shepley). Ratio bajo:alto pasa de ~75:25 a 80:20 en semanas de carrera."
+  },
+  "desarrollo_a_largo_plazo": {
+    "infancia_activa": "los tres multideporte de chicos (fútbol, esquí de fondo, atletismo); JI especializó temprano, HI/FI más tarde — ambos caminos llevan a la élite.",
+    "progresion_volumen": "aumento GRADUAL año a año del volumen semanal (HI 100-110 → 156 km; FI 70-80 a los 17 → 120-130 a los 20; JI 130-140 a los 17-18).",
+    "aerobico_primero": "en la adolescencia el foco primario fue capacidad aeróbica; el trabajo anaeróbico intenso fue muy limitado.",
+    "factores_no_fisiologicos": "fuerte apoyo familiar, entrenar juntos (se empujan), dureza mental, metas altas pero realistas, 'no hay atajos a la cima' (entrenan todos los días, incluso el día de su boda)."
+  },
+  "lecciones_para_el_proyecto": [
+    "El umbral se corre CONTROLADO por lactato/FC, no por ego: el % alto de calidad (23-25%) solo funciona con control estricto de intensidad sesión a sesión → refuerza 'correr al piso de la zona' del catálogo.",
+    "Densidad > continuo: reps más cortas con pausa corta permiten ritmo más rápido al MISMO costo metabólico (base de la sesión de umbral fraccionado).",
+    "Progresión por VOLUMEN gradual año a año + aeróbico primero → aplicable a corredores recreativos escalando (coherente con microciclos-recreativos).",
+    "Rango amplio de ritmos a lo largo del año (periodización tradicional): base aeróbica → ritmo específico cerca de la competencia."
+  ]
+}

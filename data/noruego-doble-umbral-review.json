@@ -1,0 +1,44 @@
+{
+  "id": "noruego_doble_umbral_review",
+  "titulo": "The Norwegian double-threshold method in distance running — revisión sistemática",
+  "fuente": "Kelemen, B., Benczenleitner, O., & Toth, L. (2024). Scientific Journal of Sport and Performance, 3(1), 38-46. doi 10.55860/NBXV4075. Revisión sistemática (7 estudios, n=13 corredores noruegos de élite de 1500-10.000 m, >20 años de datos). Cargado 2026-11-12 a pedido del coach.",
+  "uso": "Da la SÍNTESIS cuantitativa del método de doble umbral a partir de muchos atletas (no un solo caso): volumen, distribución de intensidad, estructura del día de doble umbral y una semana modelo. Confirma y generaliza lo de noruego-sistema + noruego-ingebrigtsen-tjelta + noruego-bakken-ama. Todo ritmo/zona se expresa SIEMPRE en el modelo base Z1-Z8.",
+  "OJO_escala_de_zonas_del_paper": "Misma escala de 5 zonas por lactato/FC de Tjelta (ver noruego-ingebrigtsen-tjelta: su 'Z2 umbral' 2-4 mmol/82-92% FCmáx = base Z3-Z4; su 'Z3' 4-8 mmol = base Z5-Z6; su 'Z4' >8 mmol = base Z7). NO confundir con nuestras zonas.",
+  "atletas_del_corpus": "Hermanos Ingebrigtsen (Henrik/Filip/Jakob), Grete Waitz, Ingrid Kristiansen, Marius Bakken, Bjornar Kristensen, Susanne Wigene, Sondre Moen, Kalle Berglund (SWE), + mención de Narve Nordas y Andreas Almgren (SWE). El sistema noruego ya lo adoptaron suecos rompiendo récords.",
+  "numeros_clave": {
+    "volumen": "120-180 km/sem (promedio ~160/año; hasta 180 en pretemporada invernal, ~120 en temporada de carreras de verano); 10-14 sesiones/sem.",
+    "distribucion": "75-80% BAJA intensidad (paper Z1, 62-82% FCmáx, <2 mmol = base Z1-Z2). 15-20% en umbral (paper Z2, 82-92% FCmáx, 2-4 mmol = base Z3-Z4) = 30-40 km/sem. Resto (1-2 sesiones/sem) alta intensidad (>97% FCmáx, >8 mmol = base Z7): intervalos cortos (>800 m) o sprints cortos. 80:20 de Seiler.",
+    "raro_en_base": "intervalos LARGOS por encima del umbral (paper Z3, 92-97% FCmáx = base Z5-Z6 VO2max) casi NO se usan en período base — entran cerca de la competencia.",
+    "VO2max_ejemplos": "Henrik Ingebrigtsen 84.4 ml/kg/min (2010); Marius Bakken 87.4.",
+    "control": "lactato + FC en cada sesión de calidad; en muchos casos cinta para clima/estrés mecánico."
+  },
+  "dia_de_doble_umbral": {
+    "que_es": "2 sesiones de umbral el MISMO día (mañana y tarde), 2 veces por semana. Permite acumular mucho volumen de umbral sin el pico de fatiga de un continuo largo.",
+    "AM": "intervalos LARGOS (2-3 km o 6-10 min), lactato <2.5 mmol (≈ ritmo de maratón). Ej.: 5x6 min r1' · 5x2 km r1'.",
+    "PM": "5-6 h después; intervalos CORTOS con pausa corta (10-12x1000 m r1' · 25x400 m r30\" · 45\"/15\"). Ritmo 5-10K pero lactato <3.5 mmol la mayor parte (la pausa corta evita acumular lactato).",
+    "volumen_del_dia": "~2 x 10-12 km en umbral (paper Z2).",
+    "ancla_Bakken": "2'53\"/km a 3 mmol sobre reps de 1000 m antes de su PB de 5000 (2006)."
+  },
+  "semana_modelo_Kalle_Berglund_base": {
+    "Lun": "AM 10 km fácil · PM 10 km fácil + desarrollo de velocidad",
+    "Mar (doble umbral)": "AM 5x6' r1' @2.5 mmol · PM 10x1000 m r1' @3.5 mmol",
+    "Mié": "10 km fácil + fuerza/core",
+    "Jue (doble umbral)": "AM 5x2 km r1' @2.5 mmol · PM 25x400 m r30\" @3.5 mmol",
+    "Vie": "10 km fácil",
+    "Sáb": "AM cuestas 20x219 m (70\" trote de vuelta) @8 mmol · PM 10 km fácil",
+    "Dom": "AM 20 km fondo · PM fuerza/core",
+    "nota": "Mapeado al base: Mar/Jue = sesiones de umbral (base Z3-Z4 fraccionado, doble); Sáb cuestas @8 mmol = base Z7 (la sesión anaeróbica/economía semanal, 'Sesión X'); Dom fondo + Lun/Mié/Vie fácil = base Z1-Z2."
+  },
+  "periodizacion": {
+    "base": "domina bajo + umbral fraccionado doble; casi nada de VO2max largo (paper Z3).",
+    "especifico": "6-10 semanas antes de la carrera entran intervalos largos a ritmo de carrera y desarrollo de capacidad anaeróbica, bajando en paralelo las sesiones cercanas al umbral.",
+    "verano_competitivo": "umbral a menor frecuencia; semana más variable según calendario; en semanas sin carrera, volumen habitual (140-160 km)."
+  },
+  "lecciones_para_el_proyecto": [
+    "Confirma con N=13 lo que ya teníamos de Bakken/Ingebrigtsen: la clave NO es el volumen de umbral sino la ESTRUCTURA (doble umbral + control por lactato) que permite hacerlo sin sobrecarga.",
+    "Anclas de lactato operativas: AM umbral largo <2.5 mmol (≈maratón) · PM umbral corto <3.5 mmol (5-10K con pausa corta) · sesión anaeróbica/cuestas semanal ~8 mmol. Útil para fijar 'piso de zona' en nuestro catálogo.",
+    "La sesión de cuestas del sábado (20x200 m) = ejemplo canónico de 'Sesión X' (base Z7) y de economía/fuerza específica → coherente con noruego-catalogo-sesiones.",
+    "En recreativos SIN lactatómetro, la traducción es sensación/FC + 'terminar sintiendo que podías más' (Golden Zone de Bakken); el paper justifica POR QUÉ el control fino importa.",
+    "Semana modelo de Berglund = plantilla de microciclo de doble umbral lista para adaptar por nivel (bajar reps/volumen para recreativos)."
+  ]
+}

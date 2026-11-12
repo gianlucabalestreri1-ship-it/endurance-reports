@@ -422,6 +422,16 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   **`noruego-best-practice`** (paper Sandbakk/Tønnessen/Seiler/Haugen 2025, *Sports Med Open*, doi 10.1186/s40798-025-00848-3 —
   12 entrenadores noruegos de élite olímpica: periodización tradicional volumen→específico, calidad de sesión + control
   sistemático carga-recuperación, 2-3 días clave/sem, datos + mentalidad experimental; da la FILOSOFÍA de mejores prácticas).
+  **`noruego-ingebrigtsen-tjelta`** (paper Tjelta 2019, *Int J Sports Sci Coach* 14(5):694-700, doi 10.1177/1747954119872321 —
+  caso de los hermanos **Ingebrigtsen** (Henrik/Filip/Jakob): fuente PRIMARIA del método. 140-160 km/sem, 13-14 sesiones,
+  23-25% en/por encima de umbral, mayoría como umbral fraccionado controlado por LACTATO; umbral ≈ ritmo de ~1 h ≈ HM; reps
+  cortas con pausa corta a ritmo 5-10K al MISMO costo metabólico (densidad); progresión por volumen gradual + aeróbico primero.
+  **OJO:** usa escala de 5 zonas lactato/FC propia donde su 'Z2 umbral' = base Z3-Z4 — el JSON trae el mapeo a modelo base).
+  **`noruego-doble-umbral-review`** (revisión sistemática Kelemen/Benczenleitner/Tóth 2024, *Sci J Sport Perf* 3(1):38-46,
+  doi 10.55860/NBXV4075 — **es el paper del "método de doble umbral"** que el coach buscaba: 7 estudios, n=13 élite noruega.
+  120-180 km/sem, 75-80% baja intensidad, 15-20% umbral (30-40 km), 1-2 sesiones/sem de alta; el **día de doble umbral**
+  (AM largo <2.5 mmol ≈maratón · PM corto <3.5 mmol 5-10K) + **semana modelo de Kalle Berglund** + sesión de cuestas sábado
+  @8 mmol = 'Sesión X'. Anclas de lactato operativas para fijar el 'piso de zona'. Mismo mapeo de zonas al base).
   **`noruego-catalogo-sesiones`** (catálogo de sesiones noruegas por zona para la librería de ET, **SOLO running**, diseñado
   con el coach 2026-11-12): carpetas `NOR - Long run (Z1-Z2)` · `NOR - Tempo (Z3)` · `NOR - Umbral (Z4)` · `NOR - Supraumbral
   (Z5)` · `NOR - VO2max (Z6)` · `NOR - Glucolítico (Z7)`; cada sesión con bloques **configurados por ZONA** (ET auto-calcula
