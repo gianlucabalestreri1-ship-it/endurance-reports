@@ -419,7 +419,15 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   periodización plana vs natural (guiar por VFC/escaleras no calendario), cuestas/economía/fuerza, fibras rápidas
   (protocolo de prueba 4 sem), maratón (período específico 12→4 sem, taper manteniendo frecuencia), y cuándo cambiar
   el estímulo. Su 'sub-umbral controlado' = base Z3-Z4).
-  Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces + Noruego (+ AMA de Bakken),
+  **`noruego-best-practice`** (paper Sandbakk/Tønnessen/Seiler/Haugen 2025, *Sports Med Open*, doi 10.1186/s40798-025-00848-3 —
+  12 entrenadores noruegos de élite olímpica: periodización tradicional volumen→específico, calidad de sesión + control
+  sistemático carga-recuperación, 2-3 días clave/sem, datos + mentalidad experimental; da la FILOSOFÍA de mejores prácticas).
+  **`noruego-catalogo-sesiones`** (catálogo de sesiones noruegas por zona para la librería de ET, **SOLO running**, diseñado
+  con el coach 2026-11-12): carpetas `NOR - Long run (Z1-Z2)` · `NOR - Tempo (Z3)` · `NOR - Umbral (Z4)` · `NOR - Supraumbral
+  (Z5)` · `NOR - VO2max (Z6)` · `NOR - Glucolítico (Z7)`; cada sesión con bloques **configurados por ZONA** (ET auto-calcula
+  el ritmo por atleta → no hay que ajustar) + dosis en tiempo + indicaciones de ejecución + calentamiento/vuelta a la calma
+  + microciclo doble umbral + sesión X. Entregado como HTML y guardado para reusar al programar/sugerir plantillas.
+  Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces + Noruego (+ AMA de Bakken + best-practice),
   expresado SIEMPRE en el modelo base. (El coach irá sumando más guías —YouTube de Magness, etc.— a `data/`.)
 - **Librería (bookshop) de ET — NO editable por API** (solo lectura: `bookshops_list`/`folder_bookshops_list`; la
   única escritura del proyecto es marcar leído). Crear/renombrar/configurar sesiones de la librería se hace desde la

@@ -1,0 +1,21 @@
+{
+  "id": "noruego_best_practice_coaches",
+  "titulo": "Best-Practice Training Characteristics Within Olympic Endurance Sports — Norwegian World-Class Coaches",
+  "fuente": "Sandbakk, Tønnessen, Sandbakk S.B., Losnegard, Seiler, Haugen — Sports Medicine - Open (2025), doi 10.1186/s40798-025-00848-3 (PMC12031707). Estudio de casos múltiples con 12 entrenadores noruegos exitosos de deportes de resistencia olímpicos (cuestionario macro/meso/micro/sesión + logs históricos). Cargado 2026-11-12 a pedido del coach ('leé el paper para la filosofía completa').",
+  "uso": "Da la FILOSOFÍA/mejores prácticas que sostienen el catálogo de sesiones noruegas (ver noruego-catalogo-sesiones.json). Complementa noruego-sistema.json + noruego-bakken-ama.json + magness-sistema.json. Todo ritmo/zona se expresa en el modelo base Z1-Z8.",
+  "caracteristicas_clave": [
+    "Periodización TRADICIONAL: al acercarse la competencia bajan el VOLUMEN y suben el trabajo ESPECÍFICO de competencia. Construir base/volumen primero.",
+    "Enfoque PRAGMÁTICO: adaptan la organización del entrenamiento a las restricciones reales del atleta/contexto.",
+    "Priorizan la CALIDAD de la sesión (optimizar cada sesión) + control SISTEMÁTICO del balance carga-recuperación + preparación para las grandes competencias.",
+    "Recolectan datos del atleta de forma sistemática y ajustan con MENTALIDAD EXPERIMENTAL (probar y evaluar individualmente).",
+    "Semana anclada en 2-3 DÍAS CLAVE con varias sesiones exigentes; el resto baja intensidad. Monitoreo combinando medidas objetivas y subjetivas.",
+    "Mayoría del volumen en baja intensidad (LIT); en varios deportes el cross-training es parte importante del LIT (NO aplica a nuestro caso: el coach quiere las sesiones SOLO para running).",
+    "Hay rasgos COMPARTIDOS entre deportes + diferencias específicas de cada deporte."
+  ],
+  "nota_running_only": "El coach entrena corredores: las sesiones de la librería son SOLO running (no se traslada el cross-training que el paper reporta para esquí/remo/etc.).",
+  "integracion_con_las_otras_fuentes": {
+    "bakken (noruego-bakken-ama)": "controlá la intensidad (sub-umbral, Golden Zone conservadora); estructura plana y repetible para aficionados; guiá por recuperación (VFC/escaleras/tono muscular) no por calendario; entrenás los procesos, no el ritmo; doble umbral = recuperación predecible.",
+    "sistema (noruego-sistema)": "microciclo doble umbral + tabla de parámetros por zona (AWD, dur. intervalo, reps, rec, ratio) + sesión X del sábado.",
+    "magness (magness-sistema / magness-umbral-lactato)": "construir y mantener; fases base→precomp→comp→pico; volumen año a año; el umbral es un continuo (sub-umbral fraccionado = NOR Z3-4)."
+  }
+}
