@@ -460,11 +460,15 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   120-180 km/sem, 75-80% baja intensidad, 15-20% umbral (30-40 km), 1-2 sesiones/sem de alta; el **día de doble umbral**
   (AM largo <2.5 mmol ≈maratón · PM corto <3.5 mmol 5-10K) + **semana modelo de Kalle Berglund** + sesión de cuestas sábado
   @8 mmol = 'Sesión X'. Anclas de lactato operativas para fijar el 'piso de zona'. Mismo mapeo de zonas al base).
-  **`noruego-catalogo-sesiones`** (catálogo de sesiones noruegas por zona para la librería de ET, **SOLO running**, diseñado
-  con el coach 2026-11-12): carpetas `NOR - Long run (Z1-Z2)` · `NOR - Tempo (Z3)` · `NOR - Umbral (Z4)` · `NOR - Supraumbral
-  (Z5)` · `NOR - VO2max (Z6)` · `NOR - Glucolítico (Z7)`; cada sesión con bloques **configurados por ZONA** (ET auto-calcula
-  el ritmo por atleta → no hay que ajustar) + dosis en tiempo + indicaciones de ejecución + calentamiento/vuelta a la calma
-  + microciclo doble umbral + sesión X. Entregado como HTML y guardado para reusar al programar/sugerir plantillas.
+  **`noruego-catalogo-sesiones`** (catálogo de sesiones noruegas por zona para la librería de ET, **SOLO running** — **v2
+  refinada 2026-11-12** tras releer todo el corpus): carpetas `NOR - Long run (Z1-Z2)` · `NOR - Tempo (Z3)` · `NOR - Umbral
+  (Z4)` · `NOR - Supraumbral (Z5)` · `NOR - VO2max (Z6)` · `NOR - Glucolítico (Z7)`; bloques **configurados por ZONA** (ET
+  auto-calcula el ritmo → no hay que ajustar) + dosis en tiempo. La v2 agrega: **anclas lactato/%FCmáx/%vVO2máx por zona**
+  (umbral Z4=84-88% vVO2máx @3.5 · Tempo Z3=80-84% @2.5), **targets de lactato por sesión** (AM@2.5 / PM@3.5 / cuestas@8),
+  **principio de progresión** (más velocidad a IGUAL lactato → ET lo hace solo al recalcular zonas), la **ciencia de fatiga
+  del LT2** (3-5× más fatiga apenas arriba = el porqué del piso), **distribución 75-80/15-20 + fondo ≤21 km + base sin
+  anaeróbico**, **periodización piramidal→polarizada**, **intro gradual del 45/15** (3 pasos) y **monitoreo de tono muscular**
+  (test de escaleras, normaliza 3-4 días). Entregado como HTML (`nor-catalogo-v2.html`) y guardado para reusar al programar.
   Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces + Noruego (+ AMA de Bakken + best-practice),
   expresado SIEMPRE en el modelo base. (El coach irá sumando más guías —YouTube de Magness, etc.— a `data/`.)
 - **Librería (bookshop) de ET — NO editable por API** (solo lectura: `bookshops_list`/`folder_bookshops_list`; la

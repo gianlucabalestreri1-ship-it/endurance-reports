@@ -1,74 +1,123 @@
 {
   "id": "noruego_catalogo_sesiones",
-  "titulo": "Catálogo de sesiones noruegas por zona para la librería de ET (SOLO running)",
-  "fuentes": ["noruego-sistema (PMC11560996)", "noruego-bakken-ama", "noruego-best-practice (Sandbakk 2025)", "modelo-zonas-base"],
-  "nota": "Diseñado con el coach 2026-11-12. Objetivo: cargar UNA vez la librería noruega en ET y reusarla al programar, sin tener que ajustar cada sesión. SOLO running.",
+  "titulo": "Catálogo de sesiones noruegas por zona para la librería de ET (SOLO running) — v2 refinada académicamente",
+  "version": "2 (2026-11-12). Rehecha tras releer todo el corpus noruego. Agrega: anclas de lactato/%FCmáx/%vVO2máx por zona, targets de lactato por sesión, principio de progresión (más velocidad a igual lactato), ciencia de fatiga del LT2, periodización piramidal→polarizada, intro gradual del 45/15 y monitoreo de tono muscular.",
+  "fuentes": [
+    "noruego-lgtit-casado (Casado/Foster/Bakken/Tjelta 2023) — define LGTIT, escala 6 zonas con %vVO2máx, fatiga LT2, progresión, microciclo de Bakken con targets de lactato",
+    "noruego-enoksen-distribucion (Enoksen/Tjelta/Tjelta 2011) — escala 7 zonas, ancla umbral 80-88% vVO2máx, distribución",
+    "noruego-ingebrigtsen-2013-longitudinal (Tjelta 2013) — doble umbral 2012, progresión, razonamiento del control",
+    "noruego-ingebrigtsen-tjelta (Tjelta 2019) — los 3 hermanos",
+    "noruego-juniors-tjelta-enoksen (Tjelta/Enoksen 2010) — base sin anaeróbico, desarrollo",
+    "noruego-doble-umbral-review (Kelemen 2024) — síntesis N=13, semana modelo",
+    "noruego-best-practice (Sandbakk 2025) — filosofía de mejores prácticas",
+    "noruego-sistema (Bakken/SISU + PMC11560996) — parámetros por zona en tiempo",
+    "noruego-bakken-ama (AMA de Bakken) — Golden Zone, tono muscular, 45/15, terreno",
+    "modelo-zonas-base (Z1-Z8 canónico)"
+  ],
+  "nota": "Diseñado con el coach. Objetivo: cargar UNA vez la librería noruega en ET y reusarla al programar, sin ajustar cada sesión. SOLO running.",
   "config_ET": {
-    "regla_de_oro": "Configurar cada bloque por ZONA (Zona 1-7), NO por ritmo → ET calcula el ritmo objetivo desde las zonas de cada atleta (modelo MAS). Misma plantilla auto-ajustada a cualquier deportista.",
+    "regla_de_oro": "Configurar cada bloque por ZONA (Zona 1-8 del modelo base), NO por ritmo → ET calcula el ritmo objetivo desde las zonas de cada atleta (modelo MAS). Misma plantilla auto-ajustada a cualquier deportista.",
+    "guiado_por_carga_interna": "El método es GUIADO POR LACTATO / carga interna (LGTIT), no por ritmo. El ritmo es el RESULTADO de que funcionen los procesos internos (Bakken), no el objetivo. En la sesión: lactato (si hay) + FC + test de conversación + sensación. El lactato es indirecto (se mueve por dieta/calor/fatiga): ante la duda, A LA BAJA.",
     "dosis": "En TIEMPO (duración intervalo + nº reps + recuperación en seg/min). Distancia = referencia secundaria.",
-    "indicaciones": "Las notas de ejecución van en la nota del bloque (coach recommendations) → viajan con la sesión.",
+    "indicaciones": "Las notas de ejecución + el target de lactato van en la nota del bloque (coach recommendations) → viajan con la sesión.",
     "libreria_no_editable_por_API": "Se cargan a mano en la app de ET (la única escritura por API es marcar leído). El asistente entrega el catálogo; el coach lo crea una vez."
   },
-  "clave_del_metodo": "Umbral noruego = SUB-UMBRAL controlado (ligeramente por DEBAJO del umbral). La sesión no tiene que impresionar: el atleta termina sintiendo que PODRÍA haber hecho más (Golden Zone de Bakken). Correr en el PISO de la zona. Ante la duda, A LA BAJA.",
+  "clave_del_metodo": {
+    "sub_umbral": "Umbral noruego = SUB-UMBRAL controlado (ligeramente por DEBAJO del umbral). Correr en el PISO de la zona. La sesión no tiene que impresionar: el atleta termina sintiendo que PODRÍA haber hecho más (Golden Zone de Bakken, deliberadamente conservadora). Ante la duda, A LA BAJA.",
+    "por_que_el_piso_ciencia": "Fundamento duro (Burnley, vía LGTIT): ejercitar JUSTO POR ENCIMA del LT2 genera 3-5× MÁS fatiga central+periférica que justo por DEBAJO. Quedarse sub-umbral permite acumular volumen de calidad sin el salto de fatiga → por eso se corre al piso, no es cautela sino fisiología.",
+    "procesos_no_ritmo": "Entrenás los PROCESOS internos (aclaramiento de lactato, enzimas aeróbicas, densidad capilar, mitocondrias). El ritmo es el resultado. Perseguir el ritmo directo (con mucha repetición) sobrepasa la intensidad que desarrolla esos procesos y lo pagás en el músculo.",
+    "densidad": "Fraccionar con pausa corta permite velocidad absoluta ALTA con lactato BAJO: la rep es muy corta para que suba el lactato y la pausa alcanza para volver cerca de LT1. Ej.: 20-25×400 a ritmo más rápido que el de medio maratón con lactato <4 mmol."
+  },
+  "anclas_por_zona": {
+    "_nota": "Consolidado de LGTIT (6 zonas) + Enoksen (7 zonas), traducido al modelo base. %vVO2máx con el test de 5' como 100%. El lactato es orientativo e individual.",
+    "Z1_Recuperacion": {"ritmo_equiv": "muy suave/regenerativo", "lactato": "<2", "FCmax": "<70%", "vVO2max": "<65%", "rol": "recuperación, baja el tono muscular"},
+    "Z2_Endurance": {"ritmo_equiv": "fácil conversable", "lactato": "0.7-2.0", "FCmax": "62-82%", "vVO2max": "65-80%", "rol": "base aeróbica (~75-80% del volumen)"},
+    "Z3_Tempo": {"ritmo_equiv": "ritmo MARATÓN", "lactato": "2.0-3.5", "FCmax": "82-87%", "vVO2max": "80-84%", "target_sesion": "@2.5 mmol", "rol": "piso del umbral; sesión AM del doble umbral"},
+    "Z4_Umbral": {"ritmo_equiv": "ritmo 10K / MEDIO", "lactato": "3.5-4.5", "FCmax": "87-92%", "vVO2max": "84-88%", "target_sesion": "@3.5 mmol", "rol": "umbral estricto; sesión PM del doble umbral (reps cortas, pausa corta)"},
+    "Z5_Supraumbral": {"ritmo_equiv": "ritmo 5000", "lactato": "4.5-7", "FCmax": "92-95%", "vVO2max": "88-94%", "rol": "aclaramiento de lactato a ritmos altos; puente al específico"},
+    "Z6_VO2max": {"ritmo_equiv": "ritmo 3000-5000", "lactato": "7-11", "FCmax": "95-100%", "vVO2max": "94-100%", "rol": "techo aeróbico; 0-1/sem"},
+    "Z7_Glucolitico": {"ritmo_equiv": "ritmo 800-1500 / cuestas", "lactato": ">11 (cuestas ~8)", "FCmax": "~100%", "vVO2max": ">100% (hasta ~140%)", "rol": "velocidad/anaeróbico, economía, fuerza (cuestas)"},
+    "Z8_Neuromuscular": {"ritmo_equiv": "sprint / rectas", "rol": "velocidad pura, rectas de economía (en calentamiento o días suaves)"}
+  },
+  "progresion": {
+    "principio": "NO se progresa subiendo el lactato/la dureza, sino corriendo MÁS RÁPIDO al MISMO lactato y FC a lo largo de las semanas (LGTIT Fig 2: Bakken pasó de 18.5 → 20 → 21 km/h a 2.5-3.5 mmol en una temporada).",
+    "en_ET": "Automático: al mejorar el atleta, ET recalcula sus zonas → el ritmo objetivo de cada zona sube solo. Por eso configurar por ZONA (no por ritmo) hace la plantilla auto-progresiva.",
+    "de_la_dosis": "La dosis progresa por DURACIÓN / nº de reps / DENSIDAD (menos pausa), NO por subir la intensidad de la zona. La pausa se acorta antes que acelerar."
+  },
+  "distribucion_y_volumen": {
+    "intensidad": "~75-80% en Z1-Z2 (fácil) · 15-20% en umbral (Z3-Z4) · 1-2 sesiones/sem de alta (Z5-Z7). 80/20 de Seiler.",
+    "umbral_por_semana": "2-4 sesiones de umbral/sem en élite; para recreativos 2-3.",
+    "fondo": "El fondo largo NO pasa de ~21 km (ni en élite).",
+    "desarrollo_base": "En período BASE / corredores jóvenes o construyendo base: CERO trabajo anaeróbico (Z6-Z7). Casi todo Z1-Z2 + umbral. El anaeróbico entra solo cerca de competencia (juniors Tjelta/Enoksen)."
+  },
+  "periodizacion": {
+    "forma": "PIRAMIDAL en preparación (mucho Z1-Z2 + bastante umbral + poco de alto) → POLARIZADA en competencia.",
+    "en_competencia": "Sacar los 2 LGTIT de umbral y meter pista a RITMO DE CARRERA (Z5, 5-10 mmol); dejar la dosis MÍNIMA de umbral para sostener la base aeróbica. Tradicional: base aeróbica → ritmo específico.",
+    "taper": "Bajar la carga total pero MANTENER la frecuencia de sesiones (la elasticidad/tono depende de la frecuencia, no solo del volumen). Mucha gente descansa de más y rinde mejor la semana siguiente a la carrera."
+  },
   "calentamiento_intervalos": {
     "b1": "Zona 2, 15-20' continuo, del piso al techo de Z2 (nunca entra a la zona de trabajo).",
     "b2": "Zona 1, 3' + movilidad/drills (opcional).",
-    "b3_activacion": "4-6 × 20-30\" rectas/strides progresivas (60\" trote). Para Z5/Z6/Z7 las últimas 1-2 tocan el ritmo de la sesión; para Z4 alcanza 3-4 de soltura.",
+    "b3_activacion": "4-6 × 20-30\" rectas/strides progresivas (60\" trote). Para Z5/Z6/Z7 las últimas 1-2 tocan el ritmo de la sesión; para Z3/Z4 alcanza 3-4 de soltura.",
     "ejecucion": "Arrancar muy suave; sin fatiga; terminar fresco y con ganas. Más intensa la sesión → activación más completa."
   },
   "vuelta_a_la_calma": {
     "b1": "Zona 1, 8-15' trote muy suave, bajando progresivo.",
-    "b2_opcional": "3-4 × 20\" rectas relajadas para normalizar el tono muscular tras sesión dura (Bakken).",
+    "b2_tono": "3-4 × 20\" rectas relajadas para NORMALIZAR el tono muscular tras sesión dura (Bakken). Las rectas ayudan a normalizar el músculo DESPUÉS de sesiones intensas → meterlas acá o en días suaves.",
     "ejecucion": "Normalizar FC/respiración/tono, no sumar trabajo. No saltearlo en Z4-Z7."
   },
-  "parametros_por_zona": {
-    "Tempo_Z3": {"AWD_min": "20-40", "int": "continuo o 5-12'", "reps": "1-6", "rec": "1-2'", "rec_tipo": "activa"},
-    "Umbral_Z4_subumbral": {"AWD_min": "20-40", "int": "3-12'", "reps": "5-12", "rec": "1-2'", "ratio_w_r": "5-3:1", "rec_tipo": "activa/pasiva"},
-    "Supraumbral_Z5": {"AWD_min": "15-35", "int": "1-6'", "reps": "4-25", "rec": "30\"-3'", "ratio_w_r": "2-1.5:1", "rec_tipo": "pasiva"},
-    "VO2max_Z6": {"AWD_min": "10-20", "int": "30\"-3'", "reps": "4-20", "rec": "1-2'", "ratio_w_r": "1.5-0.5:1", "rec_tipo": "activa/pasiva"},
-    "Glucolitico_Z7": {"AWD_min": "3-6", "int": "20-40\"", "reps": "5-12", "rec": "30\"-5'", "ratio_w_r": "1-0.1:1", "rec_tipo": "pasiva"}
+  "tono_muscular_y_recuperacion": {
+    "monitoreo": "Tono en REPOSO = el más práctico de seguir a diario. Test de ESCALERAS cada mañana (sentir pesadez/respuesta del cuádriceps) + palpar cuádriceps (vasto lateral/medial, recto femoral). Si cuesta subir escaleras / piernas pesadas / VFC de 7 días < promedio de 60 → BAJAR intensidad.",
+    "normalizacion": "Tras una sesión por encima del umbral, el tono normaliza en 3-4 días (más si fue un tipo de sesión nuevo → la carga RELATIVA importa).",
+    "manejo": "Correr MUY suave en días fáciles baja el tono; intensidad controlada en días duros. El problema de tono es más común en corredores de 3-4 sesiones/sem SIN control de intensidad que en experimentados de 7-10 CON control → el problema no es el volumen, es el control de la intensidad."
   },
   "carpetas_y_sesiones": {
     "NOR - Long run (Z1 - Z2)": {
-      "para_que": "Base aeróbica (mitocondrias/capilares), recuperación (Z1), durabilidad. ~80% del volumen.",
+      "para_que": "Base aeróbica (mitocondrias/capilares), recuperación (Z1), durabilidad. ~75-80% del volumen. Fondo ≤21 km.",
+      "anclas": "Z1 <2 mmol / <70% FC / <65% vVO2 · Z2 0.7-2 mmol / 62-82% FC / 65-80% vVO2.",
       "sesiones": [
         {"nombre": "NOR Z1 Recuperación · 40-60'", "bloques": "Zona 1 × 40-60' (<70% FCmáx)", "ejec": "muy suave, baja el tono, charlable."},
         {"nombre": "NOR Z2 Fácil · 40-60'", "bloques": "Zona 2 × 40-60'"},
-        {"nombre": "NOR Z2 Fondo · 70-100'", "bloques": "Zona 2 × 70-100' (opcional cierre 10-15' techo Z2 o toque Z3)"}
+        {"nombre": "NOR Z2 Fondo · 70-100'", "bloques": "Zona 2 × 70-100' (opcional cierre 10-15' techo Z2 o toque Z3). ≤21 km."}
       ],
       "ejec_comun": "Conversacional (frases completas). Sensación sobre ritmo; terminar con frescura. El fácil es FÁCIL (no convertirlo en carrera → sube el tono)."
     },
     "NOR - Tempo (Z3)": {
-      "para_que": "Parte baja del espectro de umbral (maratón/medio aeróbico). Base del sub-umbral y de fondos con calidad.",
+      "para_que": "Ritmo de MARATÓN. Piso del espectro de umbral y SESIÓN AM del doble umbral (intervalos largos a lactato bajo). Base del sub-umbral y de fondos con calidad.",
+      "anclas": "2.0-3.5 mmol · 82-87% FC · 80-84% vVO2 · TARGET @2.5 mmol.",
       "sesiones": [
+        {"nombre": "NOR Z3 Tempo · 5-6×6'/1' (AM doble)", "bloques": "Zona 3 × (5-6 de 6') · pausa 1' Z1", "target": "@2.5 mmol"},
+        {"nombre": "NOR Z3 Tempo · 3×10'/90\" (AM doble)", "bloques": "Zona 3 × (3 de 10') · pausa 90\" Z1", "target": "@2.5 mmol"},
         {"nombre": "NOR Z3 Tempo continuo · 20-40'", "bloques": "Zona 3 × 20-40' (o 2×15-20' / 3' Z1)"},
-        {"nombre": "NOR Z3 Tempo fraccionado · 4-6×8-10'/1-2'", "bloques": "Zona 3 × (4-6 de 8-10') · pausa 1-2' Z1"},
         {"nombre": "NOR Z3 Largo+cierre tempo · 60-80' Z2 + 15-25' Z3", "bloques": "Zona 2 × 60-80' progresivo + Zona 3 × 15-25'"}
       ],
-      "ejec_comun": "Moderado sostenible (RPE 4-5), frases cortas, no ahogo. Mitad de zona, no techo. 'Que salga fácil'."
+      "ejec_comun": "Moderado sostenible (RPE 4-5), frases cortas, no ahogo. 'Que salga fácil'. Piso de zona, no techo."
     },
     "NOR - Umbral (Z4)": {
-      "para_que": "EL estímulo central (doble umbral). Fraccionar con pausa corta = acumular 20-40' de umbral sin la fatiga del tempo continuo (densidad). Correr SUB-UMBRAL = PISO de Z4 (validar que 'salga fácil').",
+      "para_que": "Ritmo 10K / MEDIO. SESIÓN PM del doble umbral (reps CORTAS con pausa corta = acumular 20-40' de umbral sin la fatiga del tempo continuo). Correr SUB-UMBRAL = piso de Z4.",
+      "anclas": "3.5-4.5 mmol · 87-92% FC · 84-88% vVO2 · TARGET @3.5 mmol.",
       "sesiones": [
-        {"nombre": "NOR Z4 Umbral · 5-6×6'/1' (AM doble)", "bloques": "Zona 4 (piso) × (5-6 de 6') · micro-pausa 1' Z1 pasiva"},
-        {"nombre": "NOR Z4 Umbral · 3×10'/90\" (AM doble)", "bloques": "Zona 4 (piso) × (3 de 10') · pausa 90\" Z1"},
-        {"nombre": "NOR Z4 Umbral · 6×5'/1'", "bloques": "Zona 4 (piso) × (6 de 5') · pausa 1'"},
-        {"nombre": "NOR Z4 Umbral · 20-25×1'/30\" (PM doble)", "bloques": "Zona 4 (piso) × (20-25 de 1') · micro-pausa 30\" Z1"},
-        {"nombre": "NOR Z4 Umbral · 15×90\" progresivo/30\" (PM doble)", "bloques": "Zona 4 (piso) × (15 de 90\", progresivas) · pausa 30\""}
+        {"nombre": "NOR Z4 Umbral · 20-25×1'/30\" (PM doble)", "bloques": "Zona 4 (piso) × (20-25 de 1') · micro-pausa 30\" Z1", "target": "@3.5 mmol"},
+        {"nombre": "NOR Z4 Umbral · 25×400/30\" (PM doble)", "bloques": "Zona 4 (piso) × (25 de ~400m/75-90\") · pausa 30\"", "target": "@3.5 mmol"},
+        {"nombre": "NOR Z4 Umbral · 10-12×1000/1' (PM doble)", "bloques": "Zona 4 (piso) × (10-12 de ~1000m/3-4') · pausa 1'", "target": "@3.5 mmol"},
+        {"nombre": "NOR Z4 Umbral · 15×90\" progresivo/30\" (PM doble)", "bloques": "Zona 4 (piso) × (15 de 90\", progresivas) · pausa 30\"", "target": "@3.5 mmol"},
+        {"nombre": "NOR Z4 Umbral · 6×5'/1'", "bloques": "Zona 4 (piso) × (6 de 5') · pausa 1'"}
       ],
-      "ejec_comun": "NO tiene que impresionar: terminás sintiendo que podrías haber hecho más. Piso de zona. Controlá el ego (si la 1ª sale fácil, no aceleres; tras la pausa corta 'podés seguir'). Si forzás o te agitás, bajá. Ritmo constante. Guía: sensación+FC+conversación (el ritmo es el resultado, no el objetivo)."
+      "ejec_comun": "NO tiene que impresionar: terminás sintiendo que podrías haber hecho más. Piso de zona. Controlá el ego (si la 1ª sale fácil, no aceleres). Si forzás o te agitás, bajá. Ritmo constante. Guía: lactato (@3.5) + FC + conversación — el ritmo es el resultado."
     },
     "NOR - Supraumbral (Z5)": {
-      "para_que": "Aclaramiento de lactato a ritmos altos (~10K / velocidad crítica). Puente al ritmo específico.",
+      "para_que": "Aclaramiento de lactato a ritmos altos (~5000 / velocidad crítica). Puente al ritmo específico. En competencia reemplaza en parte al umbral (ritmo de carrera).",
+      "anclas": "4.5-7 mmol · 92-95% FC · 88-94% vVO2.",
       "sesiones": [
         {"nombre": "NOR Z5 Supra · 6-8×~3'/1:30", "bloques": "Zona 5 × (6-8 de ~3') · pausa 1:30 Z1 pasiva (≈1000m)"},
         {"nombre": "NOR Z5 Supra · 4-6×6'/2'", "bloques": "Zona 5 × (4-6 de 6') · pausa 2' (≈2000m)"},
         {"nombre": "NOR Z5 Supra · 25-30×45\"/15\" progresivo", "bloques": "Zona 5 × (25-30 de 45\") · micro-pausa 15\" Z1 (el 45/15)"}
       ],
-      "ejec_comun": "Exigente pero controlable, técnica limpia. 45/15: máx 20-30 reps; introducir GRADUAL (primero 5-7 al final de una sesión de umbral; después sesión aparte 'casi demasiado fácil')."
+      "ejec_comun": "Exigente pero controlable, técnica limpia. 45/15: máx 20-30 reps; INTRODUCIR GRADUAL (ver 'intro_45_15')."
     },
     "NOR - VO2max (Z6)": {
-      "para_que": "Techo aeróbico / vVO2máx (~3-5K). 0-1 por semana.",
+      "para_que": "Techo aeróbico / vVO2máx (~3-5K). 0-1 por semana. En período base: NO (el anaeróbico entra cerca de competencia).",
+      "anclas": "7-11 mmol · 95-100% FC · 94-100% vVO2.",
       "sesiones": [
         {"nombre": "NOR Z6 VO2 · 4-6×3'/2'", "bloques": "Zona 6 × (4-6 de 3') · pausa 2' Z1 (≈1000m)"},
         {"nombre": "NOR Z6 VO2 · 10-15×60-70\"/60-75\"", "bloques": "Zona 6 × (10-15 de 60-70\") · pausa 60-75\" (≈400m)"},
@@ -77,16 +126,41 @@
       "ejec_comun": "Respiración profunda sostenida. TIEMPO en VO2máx, no clavar ritmo. Que la última rep sea tan buena como la primera."
     },
     "NOR - Glucolítico (Z7)": {
-      "para_que": "Velocidad/anaeróbico corto, economía y fuerza (cuestas). En invierno/base mantiene el sistema anaeróbico. Reps cortas, pausa larga.",
+      "para_que": "Velocidad/anaeróbico corto, economía y fuerza (cuestas). En invierno/base las CUESTAS mantienen el sistema anaeróbico activo con menor salto de carga al pasar a ritmo de carrera en primavera. Reps cortas, pausa larga.",
+      "anclas": ">11 mmol (cuestas ~8) · ~100% FC · >100% vVO2.",
       "sesiones": [
         {"nombre": "NOR Z7 Velocidad · 5×35-40\"/3-5'", "bloques": "Zona 7 × (5 de 35-40\") · pausa 3-5' Z1 completa (≈300m)"},
         {"nombre": "NOR Z7 Velocidad · 10-12×25-30\"/30-60\"", "bloques": "Zona 7 × (10-12 de 25-30\") · pausa 30-60\" (≈200m)"},
-        {"nombre": "NOR Z7 Cuestas · 8-10×60-75\" cuesta/bajada trote (sesión X 5K)", "bloques": "Zona 7 × (8-10 de 60-75\" subida) · bajada trote ~60\""}
+        {"nombre": "NOR Z7 Cuestas · 8-10×60-75\" cuesta/bajada trote (sesión X 5K)", "bloques": "Zona 7 × (8-10 de 60-75\" subida) · bajada trote ~60\"", "target": "cuestas @~8 mmol"}
       ],
-      "ejec_comun": "Alta velocidad con técnica y SOLTURA (no rígido). Pausa larga/completa (calidad, no fatiga). Si hay dolores musculares/tendinosos, NO hacer el bloque."
+      "ejec_comun": "Alta velocidad con técnica y SOLTURA (no rígido). Pausa larga/completa (calidad, no fatiga). Si hay dolores musculares/tendinosos, NO hacer el bloque. CUIDADO al arrancar la temporada: si el anaeróbico sube muy rápido, corrés rápido enseguida pero no es sostenible."
     }
   },
-  "nomenclatura": "Carpeta = 'NOR - [Nombre zona] (Zxx)'. Sesión = 'NOR [Zona] [Nombre] · [dosis en tiempo]' → ordena alfabético y agrupa por zona. Las rectas/strides de economía van como bloque del calentamiento, no carpeta aparte.",
-  "microciclo_doble_umbral": "Lun Z1-Z2 fácil · Mar AM 5-6×6'/1' + PM 20-25×1'/30\" (doble) · Mié Z1 fácil/descanso · Jue AM 3×10'/90\" + PM 15×90'/30\" (doble) · Vie Z1 fácil/descanso · Sáb Sesión X · Dom Z2 fondo. Doble umbral > tarde+mañana siguiente (el sueño no restablece el tono); separación máx ~12h.",
-  "sesion_X_por_distancia": {"5K": "cuestas 8-10×60-75\" o 30/30", "10K": "2-3×10' progresivo + 6-8×30/30", "HM": "3×12-15' umbral o 40-60' continuo de umbral variado"}
+  "intro_45_15": {
+    "regla": "Transición GRADUAL (el error común es lanzarse de golpe → piernas doloridas/lesiones). Máx 20-30 reps.",
+    "paso_1": "5-7 reps al FINAL de una sesión de umbral conocida (p.ej. 5×6'). Las piernas se familiarizan dentro de algo conocido.",
+    "paso_2": "Sesión aparte MUY controlada: 15-20 reps, lactato MUY por debajo de un umbral normal, 'casi demasiado fácil'. El objetivo es acostumbrar las piernas al PATRÓN, no alcanzar un ritmo.",
+    "paso_3": "Recién ahí: sesión pura sub-umbral (25-30 reps al nivel de lactato o justo por debajo) o como sesión X (superando el umbral a propósito). Si te saltás el paso, funciona unas semanas antes de que algo falle."
+  },
+  "nomenclatura": "Carpeta = 'NOR - [Nombre zona] (Zxx)'. Sesión = 'NOR [Zona] [Nombre] · [dosis en tiempo]' → ordena alfabético y agrupa por zona. Las rectas/strides de economía van como bloque del calentamiento/vuelta a la calma, no carpeta aparte.",
+  "microciclo_doble_umbral": {
+    "subtitulo": "AM = umbral largo @2.5 (base Z3) · PM = umbral corto @3.5 (base Z4). Doble umbral > tarde+mañana siguiente (el sueño no restablece el tono; separación máx ~12h).",
+    "semana": {
+      "Lun": "Z1-Z2 fácil (+ rectas)",
+      "Mar_doble_umbral": "AM NOR Z3 5-6×6'/1' @2.5 · PM NOR Z4 20-25×1'/30\" @3.5",
+      "Mié": "Z1 fácil / descanso",
+      "Jue_doble_umbral": "AM NOR Z3 3×10'/90\" @2.5 · PM NOR Z4 15×90' progresivo/30\" @3.5",
+      "Vie": "Z1 fácil / descanso",
+      "Sáb": "Sesión X (rotar) + PM Z1 fácil",
+      "Dom": "Z2 fondo ≤21 km"
+    },
+    "nota": "Semana modelo tipo Bakken (~180 km en élite; escalar reps/volumen para recreativos). Terreno LLANO y controlado para recuperación predecible."
+  },
+  "sesion_X_por_distancia": {
+    "5K": "cuestas 8-10×60-75\" (@~8 mmol) o 30/30",
+    "10K": "2-3×10' progresivo + 6-8×30/30",
+    "HM": "3×12-15' umbral o 40-60' continuo de umbral variado",
+    "trail_desnivel": "carrera con desnivel positivo POR DEBAJO del umbral con tramos ligeramente por encima + 2 días suaves después (el desnivel añade incertidumbre de recuperación)."
+  },
+  "salvedad": "El método se apoya en evidencia OBSERVACIONAL (sin ensayo controlado que pruebe eficacia). Los targets de lactato son orientativos; cada atleta necesita sus valores por test, y el lactato es indirecto (combinar con FC + conversación + tono). Descrito en 1500-5000 m; maratón, por extensión. Para recreativos: traducir la DOSIS, no copiar el volumen de élite."
 }
