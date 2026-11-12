@@ -427,6 +427,12 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   23-25% en/por encima de umbral, mayoría como umbral fraccionado controlado por LACTATO; umbral ≈ ritmo de ~1 h ≈ HM; reps
   cortas con pausa corta a ritmo 5-10K al MISMO costo metabólico (densidad); progresión por volumen gradual + aeróbico primero.
   **OJO:** usa escala de 5 zonas lactato/FC propia donde su 'Z2 umbral' = base Z3-Z4 — el JSON trae el mapeo a modelo base).
+  **`noruego-ingebrigtsen-2013-longitudinal`** (paper Tjelta 2013, *Int J Appl Sports Sci* 25(1):11-18 — estudio LONGITUDINAL
+  de 5 temporadas de **Henrik Ingebrigtsen 17→21 años**: la fuente más detallada del linaje y la que **documenta el doble
+  umbral ya en 2012** (AM 5×6' + PM 12×1000/25×400, 2 días/sem). Progresión 100→156 km, 80:20 que sube a 33% de calidad desde
+  los 19 SIN subir intensidad; VO2máx 84.4, vAT 18.2 km/h, mejor economía de 34 élites noruegos. **Razonamiento central:**
+  el umbral controlado permite tolerar carga alta en CADA sesión — más intensidad habría dado sobreentrenamiento (el 'por qué'
+  del piso de zona). Mismo mapeo de su escala al base).
   **`noruego-doble-umbral-review`** (revisión sistemática Kelemen/Benczenleitner/Tóth 2024, *Sci J Sport Perf* 3(1):38-46,
   doi 10.55860/NBXV4075 — **es el paper del "método de doble umbral"** que el coach buscaba: 7 estudios, n=13 élite noruega.
   120-180 km/sem, 75-80% baja intensidad, 15-20% umbral (30-40 km), 1-2 sesiones/sem de alta; el **día de doble umbral**

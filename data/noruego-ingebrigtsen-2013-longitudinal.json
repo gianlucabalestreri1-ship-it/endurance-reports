@@ -1,0 +1,37 @@
+{
+  "id": "noruego_ingebrigtsen_2013_longitudinal",
+  "titulo": "A Longitudinal Case Study of the Training of the 2012 European 1500 m Track Champion — Henrik Ingebrigtsen 17→21 años",
+  "fuente": "Tjelta, L. I. (2013). International Journal of Applied Sports Sciences, 25(1), 11-18. Estudio de caso LONGITUDINAL (5 temporadas 2008-2012, diarios de entrenamiento + FC en toda sesión + lactato en todo intervalo desde 2010) de Henrik Ingebrigtsen, de los 17 a los 21 años, cuando ganó el Europeo de 1500 m 2012. Cargado 2026-11-12 a pedido del coach.",
+  "uso": "Fuente PRIMARIA más detallada y antigua del linaje noruego: documenta el DOBLE UMBRAL ya en 2012, la progresión de volumen 17→21, las semanas modelo (prep y carrera), la fisiología (VO2max/vAT/economía) y —clave— el RAZONAMIENTO de por qué se corre controlado/sub-umbral. Complementa noruego-ingebrigtsen-tjelta (los 3 hermanos, 2019), noruego-doble-umbral-review, noruego-sistema, noruego-bakken-ama. Todo ritmo/zona se expresa SIEMPRE en el modelo base Z1-Z8.",
+  "OJO_escala_de_zonas_del_paper": "Escala de 5 zonas lactato/FC propia (Tabla 1, misma familia que el paper de los hermanos, con cortes un pelín distintos): Z1 fácil/moderado continuo (0.7-2.0 mmol, 62-82% FCmáx, restitución/economía); Z2 = INTERVALOS DE UMBRAL (2.0-4.0 mmol, 82-92% FCmáx, ritmo de umbral anaeróbico); Z3 intervalos aeróbicos más duros (4.0-6.0 mmol, 92-97% FCmáx, VO2máx/capacidad aeróbica); Z4 reps rápidas cortas / CUESTAS o pista a ritmo 800-1500 (>6.0 mmol, >97% FCmáx, anaeróbico lactácido); Z5 sprint/rectas (60-100 m). Su 'vAT' (FC en umbral) cae en 82-92% FCmáx (~90%).",
+  "mapeo_zonas_paper_a_base": {
+    "paper Z1 (<2 mmol, 62-82% FC)": "base Z1-Z2",
+    "paper Z2 (umbral, 2-4 mmol, 82-92% FC)": "base Z3-Z4 (el sub-umbral vive en el piso)",
+    "paper Z3 (4-6 mmol, 92-97% FC, VO2máx)": "base Z5-Z6",
+    "paper Z4 (>6 mmol, >97% FC, cuestas/800-1500)": "base Z7",
+    "paper Z5 (sprint/rectas)": "base Z8"
+  },
+  "numeros_clave": {
+    "progresion_volumen": "100-110 km/sem (2008, 17a) → ~130 (2009, 18a) → 140 (2010, 19a) → build-up 2012: 146 (nov-dic), 156 (ene-med.marzo), 150 (med.marzo-fin mayo). Rango temporada 100-155.",
+    "frecuencia": "8-10 sesiones/sem a los 17; ~5 sesiones de calidad/sem en 2012. Fuerza/drills/estabilidad 1-2×/sem aparte.",
+    "distribucion_2012_buildup": "68.5% a FC 65-75% FCmáx (Z1 profunda) · 26.1% umbral (Z2) · 3.8% aeróbico alto (Z3) · 1.5% anaeróbico (Z4-5). En competencia la baja intensidad sube a 73%.",
+    "80_20_evoluciona": "80:20 a los 17-18 años; desde los 19 el trabajo EN/por encima del umbral sube a 33% en el build-up 2012 (por más sesiones de umbral, NO por subir intensidad).",
+    "fisiologia_2010": "VO2máx 84.4 ml/kg/min · vAT 18.2 km/h · MEJOR economía de carrera entre 34 corredores de élite noruegos en 25 años (VO2 0.190 ml/kg/m a 16 km/h, 1.7% pendiente).",
+    "test_vAT": "5×5 min incrementales en cinta a 1.7% de pendiente (velocidad creciente).",
+    "PB_1500": "3:50.63 (2008) → 3:44.53 → 3:38.61 → 3:39.50 → 3:35.43 (2012)."
+  },
+  "doble_umbral_ya_en_2012": {
+    "estructura": "ene-feb 2012: DOS sesiones de umbral (Z2 del paper) el MISMO día, 2 días/semana. Ej.: AM 5×6 min · PM 12×1000 m o 25×400 m. + 1 sesión semanal de Z3 (20×200 m cuestas).",
+    "ejemplo_17a_2008": "semana tipo: 10×1000 m r1' a FC 85-90% FCmáx, lactato 2.5-4 mmol.",
+    "importancia": "Es la documentación científica más temprana del doble umbral en este linaje (predata al paper de los 3 hermanos). Confirma que el método no es nuevo: ya estaba sistematizado en 2012."
+  },
+  "semana_de_carrera_taper_2012": "Semana del Europeo (26 jun-1 jul): 100 km totales, solo 18.2% en/por encima de umbral (vs 27.9% la semana previa). Reducción de volumen + algo de alta intensidad la semana previa a la gran competencia (Shepley). Mié AM en cinta 4×6 min a 18.5/19/19.5/20 km/h, lactato 1.5-2.9 mmol = Z2.",
+  "razonamiento_central_sub_umbral": "El atleta y su entrenador REMARCAN: la ventaja del entrenamiento de umbral frente a intervalos más intensos es que PODÍA TOLERAR UNA CARGA ALTA EN CADA SESIÓN; afirman que intensidades más altas HABRÍAN LLEVADO A SOBREENTRENAMIENTO (coincide con Billat 1999: 3 sesiones intensas/sem dispararon estrés y síntomas de sobreentrenamiento en mediofondistas). → Es el 'por qué' fisiológico de correr al PISO de la zona (Golden Zone de Bakken) y de la pregunta del %vVO2máx: el umbral se mantiene controlado justamente para poder repetir volumen de calidad sin romperse.",
+  "lecciones_para_el_proyecto": [
+    "El doble umbral + control por lactato permite subir el trabajo de calidad a ~33% SIN subir la intensidad: más densidad, no más dureza → refuerza 'piso de zona' del catálogo y la respuesta del %vVO2máx (correr controlado para poder repetir).",
+    "Progresión por VOLUMEN gradual 17→21 (100→156 km) con aeróbico primero: modelo de desarrollo a largo plazo escalable a recreativos (coherente con microciclos-recreativos y con el caso de los hermanos).",
+    "Taper = bajar volumen y mantener/subir algo de intensidad la semana previa (semana de carrera a ~65% del volumen de build-up).",
+    "Economía de carrera excepcional + VO2máx alto surgen de años de alto volumen aeróbico, no de machaque anaeróbico.",
+    "Da semanas modelo concretas (prep y carrera) para armar/validar microciclos."
+  ]
+}
