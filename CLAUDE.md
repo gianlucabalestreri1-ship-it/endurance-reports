@@ -433,6 +433,12 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   los 19 SIN subir intensidad; VO2máx 84.4, vAT 18.2 km/h, mejor economía de 34 élites noruegos. **Razonamiento central:**
   el umbral controlado permite tolerar carga alta en CADA sesión — más intensidad habría dado sobreentrenamiento (el 'por qué'
   del piso de zona). Mismo mapeo de su escala al base).
+  **`noruego-enoksen-distribucion`** (paper Enoksen/Tjelta/Tjelta 2011, *Int J Sports Sci Coach* 6(2):273-293 — 6 élites
+  noruegos, 3 pista + 3 MARATÓN, varones y mujeres, incluido **Marius Bakken**. La fuente MÁS útil del corpus: trae la
+  **escala de 7 zonas** (ritmo+lactato+FC, la que mejor mapea al modelo base) y el **ancla citable del umbral = 80-87% VO2máx
+  / 82-92% FCmáx / 3-4.5 mmol** (responde la pregunta del %vVO2máx). Incluye la **transformación de Bakken** (bajo vol/alta
+  int → alto vol/umbral: vAT 16.3→19.3 km/h, 5000 14:45→13:22) y el caso de individualizar volumen (runner F mejoró bajándolo).
+  Mapeo de su escala al base en el JSON).
   **`noruego-doble-umbral-review`** (revisión sistemática Kelemen/Benczenleitner/Tóth 2024, *Sci J Sport Perf* 3(1):38-46,
   doi 10.55860/NBXV4075 — **es el paper del "método de doble umbral"** que el coach buscaba: 7 estudios, n=13 élite noruega.
   120-180 km/sem, 75-80% baja intensidad, 15-20% umbral (30-40 km), 1-2 sesiones/sem de alta; el **día de doble umbral**

@@ -1,0 +1,53 @@
+{
+  "id": "noruego_enoksen_distribucion",
+  "titulo": "Distribution of Training Volume and Intensity of Elite Male and Female Track and Marathon Runners",
+  "fuente": "Enoksen, E., Tjelta, A. R., & Tjelta, L. I. (2011). International Journal of Sports Science & Coaching, 6(2), 273-293. Estudio descriptivo de 6 corredores noruegos de élite (una temporada c/u de diarios de entrenamiento): 3 de PISTA (A=Marius Bakken 5000 13:06.39, B=Bjornar Kristensen 3000SC 8:16.75, C=Susanne Wigene 10000 30:32, mujer) + 3 de MARATÓN (D varón 2:14:00, E mujer 2:27:06, F mujer 2:29:12). Cargado 2026-11-12 a pedido del coach.",
+  "uso": "La fuente MÁS útil del corpus para (1) la escala de 7 ZONAS (la que mejor mapea a nuestro modelo base Z1-Z8) y (2) los ANCLAS de %VO2máx/%FCmáx del umbral (responde la pregunta del coach). Incluye MARATONISTAS (fondistas) y mujeres, y la transformación de Bakken (bajo volumen/alta intensidad → alto volumen/umbral). Complementa los dos casos Ingebrigtsen + doble-umbral-review + sistema + bakken-ama. Todo ritmo/zona se expresa SIEMPRE en el modelo base.",
+  "escala_7_zonas_del_paper": {
+    "nota": "Zonas estandarizadas del Centro Olímpico Noruego, definidas por RITMO de carrera + lactato + %FCmáx. Es la escala que más se parece a nuestro modelo base (7-8 zonas).",
+    "Z1": {"ritmo": "fácil/moderado", "lactato": "0.7-2.0", "FCmax": "62-82%", "adaptacion": "economía de carrera"},
+    "Z2": {"ritmo": "ritmo de MARATÓN (continuo duro o intervalos 5000-2000 m)", "lactato": "2.0-3.0", "FCmax": "82-87%", "adaptacion": "ritmo de umbral anaeróbico"},
+    "Z3": {"ritmo": "ritmo de MEDIO MARATÓN (continuo duro + intervalos largos 1000-3000 m)", "lactato": "3.0-4.5", "FCmax": "87-92%", "adaptacion": "ritmo de umbral anaeróbico"},
+    "Z4": {"ritmo": "ritmo de 10.000 m (intervalos 1000-2000 m)", "lactato": "4.5-7.0", "FCmax": "92-95%", "adaptacion": "VO2máx / capacidad aeróbica"},
+    "Z5": {"ritmo": "ritmo 5000-3000 m (intervalos 400-1000 m)", "lactato": "7.0-11.0", "FCmax": "95-100%", "adaptacion": "VO2máx, mix aeróbico/anaeróbico"},
+    "Z6": {"ritmo": "ritmo 1500-800 m (200-400 m)", "lactato": ">11", "FCmax": "100%", "adaptacion": "capacidad anaeróbica"},
+    "Z7": {"ritmo": "sprint / rectas", "adaptacion": "velocidad"}
+  },
+  "mapeo_7zonas_paper_a_base": {
+    "paper Z1 (fácil, <2 mmol, 62-82% FC)": "base Z1-Z2",
+    "paper Z2 (maratón, 2-3 mmol, 82-87% FC)": "base Z3 (Tempo / piso del umbral)",
+    "paper Z3 (medio maratón, 3-4.5 mmol, 87-92% FC)": "base Z4 (Umbral)",
+    "paper Z4 (10K, 4.5-7 mmol, 92-95% FC)": "base Z5 (Supraumbral)",
+    "paper Z5 (5-3K, 7-11 mmol, 95-100% FC)": "base Z6 (VO2max)",
+    "paper Z6 (1500-800, >11 mmol)": "base Z7 (Glucolítico)",
+    "paper Z7 (sprint/rectas)": "base Z8 (Neuromuscular)"
+  },
+  "ANCLA_umbral_vVO2max": {
+    "afirmacion_del_paper": "El umbral anaeróbico (vAT) está a ~90% FCmáx = 85% VO2máx. Y explícito: 'entrenar justo por debajo y en el vAT (80-87% de VO2máx / 82-92% FCmáx) es lo MÁS probable que desarrolle la capacidad aeróbica y la resistencia específica'.",
+    "traduccion_al_proyecto": "CONFIRMA desde fuente primaria noruega lo que le respondí al coach: la zona de umbral (base Z4) vive en ~80-87% VO2máx (≈82-92% FCmáx). Con su test de 5' como 100% vVO2máx, el umbral queda en ~85% (piso-centro de la banda). El método corre en el PISO (sub-umbral) → cerca de 82-85%.",
+    "ritmos_reales": "Umbral: mujeres ~3:25/km, varones ~3:00/km. Fácil (Z1): mujeres 4:00-4:20, varones 3:50-4:00. (Son élites; para cada atleta usar sus zonas reales de ET.)"
+  },
+  "numeros_clave": {
+    "frecuencia": "13±1 sesiones/sem (prep); 12±2 (precomp y comp).",
+    "volumen_pista": "161±11 km/sem (prep y precomp); ~148 km/sem (comp).",
+    "volumen_maraton": "186.6±25.7 km/sem (prep); 173.3 (comp).",
+    "distribucion_pista_prep": "Z1 76.4% · Z2 (maratón) 12.5% · Z3 (HM) 7.1% · Z5 2.7% · Z7 1.3%. ~80% baja + ~20% en/cerca del umbral (Z2-Z3).",
+    "distribucion_maraton_prep": "Z1 83.6% · Z2 (maratón) 12.7% · Z4 (10K) 2.5% · Z7 1.2%. Los maratonistas NO hacen Z3 (HM) en prep; aparece (4.1%) recién en competencia.",
+    "80_20": "~80% por debajo del ritmo de maratón + 20% en ritmo maratón/HM (cerca del umbral), 2-4 sesiones/sem; en competencia sube el ritmo específico (Z4-Z5)."
+  },
+  "dos_modelos_de_maraton": "Modelo 1: 200-260 km/sem con MUCHO volumen a baja intensidad (<60-75% VO2máx). Modelo 2: 150-200 km/sem con mayor proporción a intensidad alta (80-87% VO2máx). Ambos funcionan a nivel internacional (Ferreira & Rolim).",
+  "caso_Bakken_transformacion": "Marius Bakken (runner A) entrenó con modelo 'bajo volumen / alta intensidad' HASTA los 21 años. Luego CAMBIÓ: subió el volumen de ~80 a 160 km/sem incluyendo 2-3 sesiones de umbral por lactato/sem. Tras 14 semanas (ene-abril) su vAT subió de 16.3 a 19.3 km/h, con VO2máx 86.7; fue 2º en el Europeo U23 de 5000 y bajó su PB de 14:45 a 13:22.58. → Evidencia primaria del salto al pasar a alto volumen + umbral controlado.",
+  "caso_runner_F_individualizacion": "La maratonista F MEJORÓ al REDUCIR volumen de ~270 a ~200 km/sem metiendo más ritmo de maratón (Billat: más VO2máx con trabajo a ritmo de maratón). → El volumen óptimo es individual; más no siempre es mejor.",
+  "periodizacion_y_taper": {
+    "prep": "base aeróbica enorme (Z1) + 2-4 sesiones/sem cerca del umbral (Z2-Z3). Altura frecuente (Bakken/Kristensen) 2000-2400 m.",
+    "competencia": "más ritmo específico (Z4-Z5); la distribución varía más semana a semana según el calendario.",
+    "ultima_sesion_dura": "3-4 días antes de la competencia importante (Bakken la hacía 3 días antes)."
+  },
+  "lecciones_para_el_proyecto": [
+    "ANCLA citable para el catálogo/fichas: umbral (base Z4) = 80-87% VO2máx / 82-92% FCmáx / ~3-4.5 mmol — fuente primaria noruega (responde la pregunta del %vVO2máx).",
+    "La escala de 7 zonas (ritmo+lactato+FC) es la que mejor calza con nuestro modelo base: útil para traducir cualquier sesión noruega descrita por 'ritmo de maratón/HM/10K/5K'.",
+    "El 'ritmo de maratón' (su Z2, base Z3) y el 'ritmo de medio maratón' (su Z3, base Z4) son los dos caballos de batalla del umbral noruego → nombrar/configurar sesiones de la librería por ESE ritmo tiene respaldo.",
+    "Caso Bakken = argumento para mover a un atleta estancado en 'bajo volumen/alta intensidad' hacia alto volumen + umbral controlado (conecta con magness-umbral-lactato push/pull).",
+    "Caso runner F + los dos modelos de maratón = recordatorio de individualizar el volumen (no todos rinden más subiéndolo)."
+  ]
+}
