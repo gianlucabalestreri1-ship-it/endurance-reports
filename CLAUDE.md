@@ -439,6 +439,14 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   / 82-92% FCmáx / 3-4.5 mmol** (responde la pregunta del %vVO2máx). Incluye la **transformación de Bakken** (bajo vol/alta
   int → alto vol/umbral: vAT 16.3→19.3 km/h, 5000 14:45→13:22) y el caso de individualizar volumen (runner F mejoró bajándolo).
   Mapeo de su escala al base en el JSON).
+  **`noruego-lgtit-casado`** (paper Casado/Foster/**Bakken**/Tjelta 2023, *IJERPH* 20(5):3782, doi 10.3390/ijerph20053782 —
+  **LA PIEZA CENTRAL del corpus**, co-escrito por el propio Bakken: define el **LGTIT** (entrenamiento de umbral GUIADO POR
+  LACTATO/carga interna, no por ritmo). Trae: (1) escala de 6 zonas con **%vVO2máx** → ancla citable **umbral Z4 = 84-88%
+  vVO2máx** (10K/medio, 3.5-4.5 mmol) y **sub-umbral = 80-84%** (maratón, 2-3.5 mmol); (2) la **ciencia de fatiga del LT2**
+  (Burnley: 3-5× más fatiga apenas por encima = el 'por qué' duro del piso de zona); (3) **progresión = más velocidad a IGUAL
+  lactato/FC**, no más dureza (encaja con el recálculo de zonas de ET); (4) el **microciclo de Bakken con targets de lactato**
+  por sesión (umbral largo @2.5 · corto @3.5 · cuestas @8); periodización piramidal→polarizada, fondo ≤21 km. Linaje Bakken→
+  Gjert→hermanos + Blummenfelt. Salvedad: review observacional, individualizar zonas).
   **`noruego-juniors-tjelta-enoksen`** (paper Tjelta/Enoksen 2010, *Int J Sports Sci Coach* 5(2):193-203 — 4 juniors noruegos
   (incl. Henrik Ingebrigtsen de 17a) 2º por equipos en el Europeo de Cross 2008. El ángulo de DESARROLLO/JUVENILES: 132 km/sem
   ya de junior con poca edad de entrenamiento, ~80/20, y **CERO anaeróbico en período base** (la intensidad anaeróbica entra

@@ -1,0 +1,52 @@
+{
+  "id": "noruego_lgtit_casado",
+  "titulo": "Does Lactate-Guided Threshold Interval Training within a High-Volume Low-Intensity Approach Represent the 'Next Step' in the Evolution of Distance Running Training? — el paper del LGTIT",
+  "fuente": "Casado, A., Foster, C., Bakken, M., & Tjelta, L. I. (2023). International Journal of Environmental Research and Public Health, 20(5), 3782. doi 10.3390/ijerph20053782. Review co-escrito por el PROPIO Marius Bakken (creador del método) + Carl Foster (referente de sRPE/monitoreo) + Leif Inge Tjelta. Define formalmente el LGTIT (Lactate-Guided Threshold Interval Training). Cargado 2026-11-12 a pedido del coach.",
+  "uso": "LA PIEZA CENTRAL del corpus noruego: define el método (entrenamiento guiado por LACTATO/carga interna, no por ritmo), da la escala de 6 zonas con %vVO2máx (ancla citable del umbral), la ciencia de fatiga del LT2 (el 'por qué' del piso de zona), el principio de progresión (más velocidad a igual lactato) y el microciclo de Bakken con targets de lactato. Base teórica de noruego-catalogo-sesiones. Complementa todas las demás fuentes noruegas. Todo en modelo base Z1-Z8.",
+  "definicion_LGTIT": "Entrenamiento de intervalos a intensidad de umbral GUIADO POR LACTATO: el ritmo de la sesión lo dicta un TARGET de lactato en sangre ([BLa] 2-4.5 mmol/L según el objetivo de la sesión) = carga INTERNA, no externa (ritmo/distancia). 3-4 sesiones LGTIT + 1 de VO2máx por semana, dentro de un modelo de alto volumen (150-180 km/sem) a baja intensidad. El carácter de INTERVALO permite correr a velocidades absolutas altas (máximo reclutamiento de unidades motoras) manteniendo intensidad metabólica baja (zona de umbral).",
+  "escala_6_zonas": {
+    "nota": "Escala de 6 zonas (Tabla 1) con lactato + %FCmáx + %vVO2máx (velocidad; la columna llega a 140% → es % de velocidad en vVO2máx, no consumo) + RPE + método. OJO el paper rotula la columna 'VO2max %' pero los valores >100% confirman que es velocidad/vVO2máx.",
+    "LIT_z1": {"ritmo": "fácil/moderado continuo", "lactato": "0.7-2.0", "FCmax": "62-82%", "vVO2max": "55-80%", "RPE": "9-12", "base": "Z1-Z2"},
+    "MIT_z2": {"ritmo": "ritmo MARATÓN (continuo/intervalo >1000 m)", "lactato": "2.0-3.5", "FCmax": "82-87%", "vVO2max": "80-84%", "RPE": "12-14", "base": "Z3 (piso del umbral)"},
+    "MIT_z3": {"ritmo": "ritmo 10.000 m / medio maratón (intervalo umbral)", "lactato": "3.5-4.5", "FCmax": "87-92%", "vVO2max": "84-88%", "RPE": "14-16", "base": "Z4 (UMBRAL estricto)"},
+    "HIT_z4": {"ritmo": "ritmo 5000 (intervalo aeróbico intensivo)", "lactato": "4.5-8.0", "FCmax": "92-97%", "vVO2max": "88-94%", "RPE": "16-18", "base": "Z5 (Supraumbral)"},
+    "VHIT_z5": {"ritmo": "ritmo 800-1500 (tolerancia láctica)", "lactato": "8-18", "FCmax": ">97%", "vVO2max": "94-140%", "RPE": "18-20", "base": "Z6-Z7"},
+    "SST_z6": {"ritmo": "sprint", "base": "Z8"}
+  },
+  "ANCLA_umbral_vVO2max": {
+    "respuesta": "UMBRAL estricto (base Z4) = 84-88% de vVO2máx (su z3, ritmo 10K/medio, 3.5-4.5 mmol). Trabajo SUB-umbral a ritmo de maratón (su z2) = 80-84% vVO2máx (2-3.5 mmol). → La banda de umbral vive en ~80-88% vVO2máx.",
+    "para_el_coach": "Con el test de 5' como 100% vVO2máx: Z4 umbral al 84-88% (centro-techo) y el piso sub-umbral noruego al 80-84%. Confirma y AFINA el ~85-90% que le respondí antes; el número citable es 84-88% (umbral) / 80-84% (sub-umbral)."
+  },
+  "mecanismo_fatiga_LT2": "Burnley et al.: ejercitar JUSTO POR ENCIMA del LT2 (z4/base Z5) genera 3-5× MÁS fatiga central+periférica que justo por DEBAJO (z3/base Z4). → Fundamento fisiológico del 'correr al piso / sub-umbral': no es cautela, es evitar el salto de fatiga. Conviene cubrir la calidad en z3 a velocidad alta (fraccionado) en vez de en z4.",
+  "por_que_fraccionado": "Fraccionar con pausa corta permite velocidad absoluta ALTA con lactato BAJO: el tiempo/distancia de la rep es muy corto para que suba el lactato y la pausa alcanza para volver cerca de LT1 (pero no por debajo). Ej. documentado: 20-25×400 m a 62-64 s (más rápido que ritmo de medio maratón) con [BLa] <4 mmol. Es la lógica de densidad del catálogo.",
+  "principio_de_progresion": "La META del LGTIT = MEJORAR LA VELOCIDAD manteniendo lactato y FC ESTABLES a lo largo de la temporada (NO empujar el lactato más arriba). Datos reales de Bakken 2003-04 (Fig 2): a igual lactato (2.5-3.5 mmol) y misma FC, la velocidad subió de 18.5 → 20 → 21 km/h (prep media → prep tardía → competencia). → Encaja con que ET RECALCULA las zonas al mejorar el atleta: se progresa por ritmo a carga interna constante.",
+  "microciclo_Bakken_con_targets": {
+    "Lun": "AM 15 km z1 · PM 12 km z1 + sprints (z5) + técnica",
+    "Mar_doble_umbral": "AM 5×6' @2.5 mmol (z2) r1' + 2 km z1 · PM 10×1000 m @3.5 mmol (z3) r1' + 2 km z1",
+    "Mié": "AM 16 km z1 · PM fuerza",
+    "Jue_doble_umbral": "AM 5×2 km @2.5 mmol (z2) r1' + 2 km z1 · PM 25×400 m @3.5 mmol (z3) r30\" + 2 km z1",
+    "Vie": "15 km z1",
+    "Sáb": "AM 5 km z1 + 20×200 m cuesta @8 mmol (z5) r70\" trote + 2 km z1 · PM 10 km z1",
+    "Dom": "21 km z1",
+    "nota": "~180 km/sem. Targets de lactato POR tipo de sesión: umbral largo AM @2.5 (base Z3) · umbral corto PM @3.5 (base Z4) · cuestas @8 (base Z7, 'Sesión X'). El fondo NO pasa de 21 km."
+  },
+  "periodizacion": "PIRAMIDAL en preparación → POLARIZADA en competencia. En competencia: la sesión de cuestas z5 se reemplaza parcialmente por pista a RITMO DE CARRERA (z4, 5-10 mmol) y se SACAN los dos LGTIT; objetivo = dosis mínima de umbral para sostener la base aeróbica + volumen a ritmo de carrera por encima de z3. Periodización tradicional.",
+  "cuatro_ventajas_del_LGTIT": [
+    "Permite MÁS sesiones de calidad por semana que el enfoque de intervalos z4 (menos fatiga por sesión).",
+    "Pegás objetivos pre-establecidos de CARGA INTERNA durante la sesión.",
+    "Individualizás y monitoreás la adaptación SIN test de laboratorio (solo lactato en sesión), mes a mes y año a año.",
+    "Protege el entrenamiento en ALTURA: el lactato asegura que la carga interna no se dispare por la baja presión de O2."
+  ],
+  "linaje": "Bakken lo desarrolló SOBRE SÍ MISMO (fines de los 90, por ensayo-error; PB 5000 13:06.39) → lo transmitió a Gjert Ingebrigtsen (padre/entrenador) → los hermanos Ingebrigtsen. También lo usó Kristian Blummenfelt (campeón olímpico de triatlón Tokio 2021) y Gustav Iden. EVOLUTIVO, no revolucionario: Gerschler (control por FC) + Zatopek (intervalo submáximo) + Lydiard/Van Aaken (base aeróbica de alto volumen) + Bowerman (hard/easy).",
+  "dato_maestro": "Tjelta et al.: VO2máx + economía + %VO2máx explican el 89% de la variación en vLT2 (velocidad al umbral) entre corredores de nivel nacional-internacional. vLT2 ≈ ritmo de medio maratón en élites → la velocidad al umbral es la variable maestra.",
+  "salvedad": "Es una REVISIÓN de datos observacionales (sin ensayo controlado que pruebe eficacia). Los rangos de lactato son sugerencias; cada atleta necesita sus valores por test. Descrito solo en corredores de 1500-5000 m; aplicabilidad al maratón, incierta. Dedicado a la memoria de Leif Inge Tjelta (fallecido).",
+  "lecciones_para_el_proyecto": [
+    "ANCLA citable definitiva del umbral: Z4 = 84-88% vVO2máx (10K/medio, 3.5-4.5 mmol); sub-umbral = 80-84% vVO2máx (maratón, 2-3.5 mmol). Usar en fichas/catálogo.",
+    "El método es GUIADO POR CARGA INTERNA (lactato/FC/sensación), no por ritmo → respalda 'configurar por ZONA, correr al piso' del catálogo; ET pone el ritmo desde las zonas del atleta.",
+    "La ciencia de fatiga del LT2 (3-5× más fatiga apenas arriba) = el 'por qué' duro del piso de zona / sub-umbral.",
+    "Progresión = más velocidad a igual lactato/FC (no más dureza) → reencuadre para fichas y coherente con el recálculo de zonas de ET.",
+    "Microciclo de Bakken con targets de lactato = plantilla para configurar la librería NOR (umbral largo @2.5 base Z3 · umbral corto @3.5 base Z4 · cuestas @8 base Z7).",
+    "Periodización piramidal→polarizada; en competencia sacar LGTIT y meter ritmo de carrera; fondo ≤21 km.",
+    "Las 4 ventajas = argumentos de coaching; y el linaje Bakken→Gjert→hermanos + Blummenfelt da respaldo autoritativo."
+  ]
+}
