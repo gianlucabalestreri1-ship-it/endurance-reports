@@ -167,34 +167,36 @@
   "especificos_por_distancia": {
     "_que_son": "Sesiones a RITMO DE CARRERA, propias del PERÍODO COMPETITIVO (reemplazan en parte al umbral; TID polariza). Configurar por la zona que corresponde al ritmo objetivo (ver mapeo). Reps largas con pausa corta para sostener ritmo de carrera acumulando volumen específico.",
     "_mapeo_zona": "5K ≈ Z5-Z6 · 10K ≈ Z5 (parte alta de umbral/supra) · HM ≈ Z4 (umbral) · Maratón ≈ Z3 (tempo). El ritmo objetivo es el de la CARRERA, no el de la zona pura.",
+    "_orden": "Listas ORDENADAS por progresión: de reps más CORTAS a reps más LARGAS y/o mayor volumen. Dentro de una misma distancia de rep, de menor a mayor volumen.",
     "5K_ritmo_carrera": [
-      "NOR 5K · 5-6×1000 @5K / 1-1:30'",
       "NOR 5K · 8-10×400 @5K / 100m trote",
-      "NOR 5K · 3×1600 @5K / 2'",
       "NOR 5K · 2×(5-6×400) @5K / 100m trote · 3' entre series",
-      "NOR 5K · 12-16×400 @5K / 30-45\" (variante densa)"
+      "NOR 5K · 12-16×400 @5K / 30-45\" (densa)",
+      "NOR 5K · 5-6×1000 @5K / 1-1:30'",
+      "NOR 5K · 3×1600 @5K / 2'"
     ],
     "10K_ritmo_carrera": [
+      "NOR 10K · 25×400 @10K / 30\" (estilo PM noruego, densa)",
       "NOR 10K · 6-8×1000 @10K / 1'",
-      "NOR 10K · 3-4×2000 @10K / 2'",
+      "NOR 10K · 2×(3×1000) @10K / 1' · 3' entre series",
       "NOR 10K · 5×1200 @10K / 90\"",
       "NOR 10K · 4-5×1600 @10K / 90\"",
-      "NOR 10K · 2×(3×1000) @10K / 1' · 3' entre series",
-      "NOR 10K · 25×400 @10K / 30\" (estilo PM noruego, densa)"
+      "NOR 10K · 3-4×2000 @10K / 2'"
     ],
     "HM_ritmo_carrera": [
+      "NOR HM · 6×1600 @HM / 60-75\"",
       "NOR HM · 4-5×2000 @HM / 90\"",
       "NOR HM · 3×3000 @HM / 2-3'",
       "NOR HM · 2×5km @HM / 3'",
-      "NOR HM · 6×1600 @HM / 60-75\"",
       "NOR HM · 15-18km continuo @HM (progresivo)"
     ],
     "Maraton_ritmo_carrera": [
       "NOR MAR · 20-25×1000 @maratón / 1'",
-      "NOR MAR · 2×8-10km @maratón / 3-5'",
       "NOR MAR · 6-8×2000 @maratón / 90\"",
+      "NOR MAR · 2×8-10km @maratón / 3-5'",
       "NOR MAR · 25-32km con bloques @maratón (fondo específico; respeta el tope de fondo en base, acá sí sube)"
     ],
+    "sesion_X_en_periodo_especifico": "VALIDADO contra las fuentes: en el período ESPECÍFICO/competitivo, la 'Sesión X' (el espacio de calidad rotativo del sábado) se LLENA con estas sesiones de ritmo de carrera. noruego-sistema ya lista entre las opciones del sábado '5×1000 a ritmo 5K-10K' y 'fondo progresivo específico de maratón'. LGTIT: en competencia la sesión de cuestas/Z5 se reemplaza por pista a RITMO DE CARRERA (5-10 mmol) y se SACAN los 2 dobles umbral → TID piramidal (prep) → polarizado (competencia). En base la X es cuestas/30-30 (mantener VO2/anaeróbico/economía); en específico la X = estos race-pace (y en plena competencia la calidad polariza hacia ritmo de carrera, no solo la X).",
     "ejec_comun": "El dato es el RITMO: ¿sostuvo el ritmo objetivo de carrera a FC/RPE razonables y sin desmoronarse? Si se cae en las últimas reps → todavía no está listo o el objetivo es muy ambicioso. Si lo sostiene cómodo → afinar/competir."
   },
   "descripciones_libreria_por_zona": {
