@@ -1,0 +1,25 @@
+{
+  "id": "predictores_rendimiento_casado_2019",
+  "titulo": "Qué entrenamiento predice el rendimiento en fondo — estudio de cohorte (volumen fácil + tempo)",
+  "tipo": "Referencia de metodología GENERAL (evidencia de cohorte, NO caso noruego). Standalone: no forma parte del corpus noruego.",
+  "fuente": "Casado, A., Hanley, B., Santos-Concejero, J., & Ruiz-Pérez, L. M. (2019). World-Class Long-Distance Running Performances Are Best Predicted by Volume of Easy Runs and Deliberate Practice of Short-Interval and Tempo Runs. Journal of Strength & Conditioning Research. 85 corredores de élite/mundiales (5000-maratón), análisis retrospectivo de diarios de los primeros 7 años de carrera vs. marca (puntaje IAAF). Cargado 2026-11-12.",
+  "uso": "Respaldo empírico de gran N para la jerarquía de contenidos del entrenamiento de fondo: volumen total (sobre todo fácil) + tempo/umbral como calidad central. Sirve para asesorar qué priorizar; NO para el linaje noruego.",
+  "hallazgos": {
+    "volumen_total": "Predictor #1: r=0.75-0.77, explica ~59% de la variabilidad de rendimiento. >100 km/sem para nivel mundial. El volumen manda.",
+    "rodajes_faciles": "Mejor predictor entre los tipos de sesión (r=0.68-0.72) y ~2/3 del volumen acumulado. No es 'práctica deliberada' (bajo esfuerzo percibido) pero es crucial (aporte al volumen + adaptaciones metabólicas/tejido conectivo).",
+    "tempo_umbral": "LA sesión de calidad que importa: r=0.50-0.58, único tipo de calidad que predice de forma independiente (junto al fácil). ~20% del volumen. Su peso CRECE con la carrera (β 0.258→0.293 del año 3 al 7) mientras el del fácil baja (0.532→0.366) = especialización progresiva (base fácil → tempo). Replica la carrera (alta intensidad, sin pausa).",
+    "intervalos_cortos": "Correlación grande (r=0.53-0.56); 'pueden marcar la diferencia entre atletas parejos' (sprint final). 200-1000 m, 95-100% FCmáx.",
+    "intervalos_largos": "El efecto MÁS BAJO (r=0.22-0.31, no significativo a 7 años). 1000-2000 m, 92-95% FCmáx (VO2 largo). → Priorizar tempo + cortos por encima de VO2 largo.",
+    "competencias": "NO correlacionan con el rendimiento (r≈0): competir no construye fitness; sirve para monitorear/táctica/pico.",
+    "edad_de_inicio": "Efecto moderado que crece a 7 años (r=0.52) pero no predictor independiente (correr es universal; casi todos ya traían base aeróbica)."
+  },
+  "definiciones_intensidad": "Fácil 62-82% FCmáx (8-40.5 km) · Tempo 82-92% FCmáx (45-70 min o intervalos 1000-5000 m) · Intervalos largos 92-95% FCmáx (1000-2000 m) · Intervalos cortos 95-100% FCmáx (200-1000 m).",
+  "nota_metodologica": "Los autores remarcan que sRPE (Foster) y TRIMP de Bannister son más precisos que el cuestionario de práctica deliberada para cuantificar carga (relevante: el proyecto ya usa sRPE del ET).",
+  "salvedad": "Cohorte sobre todo española/internacional (no noruega); retrospectivo autorreportado; correlación ≠ causación; solo varones de élite. Es evidencia de asociación de gran N, no un caso de entrenamiento.",
+  "para_el_proyecto": [
+    "Valida la estructura del catálogo: base fácil gigante (Z1-Z2) + tempo/umbral (Z3-Z4) como calidad central.",
+    "Jerarquía de calidad: tempo ≈ cortos > largos (VO2 largo es lo que menos aporta).",
+    "Progresión: base fácil primero, peso del tempo creciendo con los años → aplicable a la lógica de tiers/progresión.",
+    "El volumen (aunque sea fácil) es el gran predictor → no sacrificar km suaves por más calidad."
+  ]
+}

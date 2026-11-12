@@ -391,6 +391,10 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
 - **data/ (referencias de metodología, base de asesoramiento):** `baremo-perfil-fondo`, `progresion-volumen-anual`,
   `distribucion-carga-periodo`, `metodos-entrenamiento`, `microciclos-patron`, `sesiones-microciclos-jdc`
   (Juan del Campo), `modelo-zonas-base` (Z1-Z8 canónico — TRADUCIR zonas de otros autores a este),
+  **`predictores-rendimiento-casado-2019`** (evidencia de cohorte, NO noruego: 85 élites, qué entrena cada uno vs. marca.
+  Volumen total = predictor #1 (~59% var.); fáciles = mejor predictor por tipo + ~2/3 del volumen; tempo/umbral = la calidad
+  que importa y crece con la carrera; cortos > largos (VO2 largo es lo que menos aporta); competir no construye fitness.
+  Valida la estructura base fácil + tempo del catálogo),
   `libreria-et` (catálogo de plantillas del coach), **`magness-sistema`** (Steve Magness — periodización
   base/precomp/competición/pico, tabla de tipos, ejemplos de sesiones con progresión, semanas de descarga),
   **`noruego-sistema`** (SISTEMA NORUEGO / doble umbral — microciclo semanal de Bakken/SISU + sesiones por zona
