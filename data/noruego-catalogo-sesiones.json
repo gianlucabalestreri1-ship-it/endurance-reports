@@ -158,10 +158,120 @@
     "nota": "Semana modelo tipo Bakken (~180 km en élite; escalar reps/volumen para recreativos). Terreno LLANO y controlado para recuperación predecible."
   },
   "sesion_X_por_distancia": {
+    "_nota": "La 'Sesión X' es la sesión comodín/variable del sábado (factor X), NO el específico de carrera. Para el ritmo de carrera ver 'especificos_por_distancia'.",
     "5K": "cuestas 8-10×60-75\" (@~8 mmol) o 30/30",
     "10K": "2-3×10' progresivo + 6-8×30/30",
     "HM": "3×12-15' umbral o 40-60' continuo de umbral variado",
     "trail_desnivel": "carrera con desnivel positivo POR DEBAJO del umbral con tramos ligeramente por encima + 2 días suaves después (el desnivel añade incertidumbre de recuperación)."
+  },
+  "especificos_por_distancia": {
+    "_que_son": "Sesiones a RITMO DE CARRERA, propias del PERÍODO COMPETITIVO (reemplazan en parte al umbral; TID polariza). Configurar por la zona que corresponde al ritmo objetivo (ver mapeo). Reps largas con pausa corta para sostener ritmo de carrera acumulando volumen específico.",
+    "_mapeo_zona": "5K ≈ Z5-Z6 · 10K ≈ Z5 (parte alta de umbral/supra) · HM ≈ Z4 (umbral) · Maratón ≈ Z3 (tempo). El ritmo objetivo es el de la CARRERA, no el de la zona pura.",
+    "5K_ritmo_carrera": [
+      "NOR 5K · 5-6×1000 @5K / 1-1:30'",
+      "NOR 5K · 8-10×400 @5K / 100m trote",
+      "NOR 5K · 3×1600 @5K / 2'",
+      "NOR 5K · 2×(5-6×400) @5K / 100m trote · 3' entre series",
+      "NOR 5K · 12-16×400 @5K / 30-45\" (variante densa)"
+    ],
+    "10K_ritmo_carrera": [
+      "NOR 10K · 6-8×1000 @10K / 1'",
+      "NOR 10K · 3-4×2000 @10K / 2'",
+      "NOR 10K · 5×1200 @10K / 90\"",
+      "NOR 10K · 4-5×1600 @10K / 90\"",
+      "NOR 10K · 2×(3×1000) @10K / 1' · 3' entre series",
+      "NOR 10K · 25×400 @10K / 30\" (estilo PM noruego, densa)"
+    ],
+    "HM_ritmo_carrera": [
+      "NOR HM · 4-5×2000 @HM / 90\"",
+      "NOR HM · 3×3000 @HM / 2-3'",
+      "NOR HM · 2×5km @HM / 3'",
+      "NOR HM · 6×1600 @HM / 60-75\"",
+      "NOR HM · 15-18km continuo @HM (progresivo)"
+    ],
+    "Maraton_ritmo_carrera": [
+      "NOR MAR · 20-25×1000 @maratón / 1'",
+      "NOR MAR · 2×8-10km @maratón / 3-5'",
+      "NOR MAR · 6-8×2000 @maratón / 90\"",
+      "NOR MAR · 25-32km con bloques @maratón (fondo específico; respeta el tope de fondo en base, acá sí sube)"
+    ],
+    "ejec_comun": "El dato es el RITMO: ¿sostuvo el ritmo objetivo de carrera a FC/RPE razonables y sin desmoronarse? Si se cae en las últimas reps → todavía no está listo o el objetivo es muy ambicioso. Si lo sostiene cómodo → afinar/competir."
+  },
+  "descripciones_libreria_por_zona": {
+    "_uso": "Descripción corta para pegar en la DESCRIPCIÓN de cada carpeta/sesión de la librería ET. Objetivo: saber qué dato ir a buscar ANTES de abrir los 40 datos de la sesión. Basado en las fuentes (carácter/RPE/FC) + el modelo de datos de ET (§2 CLAUDE.md). RPE en sRPE 1-10 (lo que muestra ET) con el Borg 6-20 del LGTIT entre paréntesis.",
+    "Z1_Z2_LongRun": {
+      "para_que": "Base aeróbica + recuperación (~75-80% del volumen). Es el TERMÓMETRO de recuperación del atleta.",
+      "dato_1": "Que la haya hecho (duración/distancia real) + FC media BAJA (<82% FCmáx) + comentario de frescura.",
+      "rpe": "Muy bajo, sRPE 2-3 (Borg 9-12). Conversable.",
+      "sensaciones": "Charlable (frases completas), piernas sueltas, termina fresco. Si reporta cansancio/pesadez en un fácil → bandera roja de fatiga.",
+      "fc": "Estable y baja (62-82% FCmáx). Si la FC se va ARRIBA al ritmo fácil de siempre = fatiga / estrés / calor / poca recuperación.",
+      "decision": "Si el fácil le cuesta (FC o RPE altos) → BAJAR la carga de los días duros (el fácil delata el estado). Si está siempre muy fresco y la FC baja → se puede subir el volumen."
+    },
+    "Z3_Tempo": {
+      "para_que": "Ritmo maratón, piso del umbral, sesión AM del doble umbral. Sub-umbral controlado.",
+      "dato_1": "Ritmo real por lap vs objetivo Z3 + comentario ('salió fácil') + sRPE.",
+      "rpe": "Moderado, sRPE 4-5 (Borg 12-14).",
+      "sensaciones": "Sostenible, frases cortas, SIN ahogo, 'podría haber hecho más'. Si dice que terminó exigido → fue por encima del piso.",
+      "fc": "82-87% FCmáx, ESTABLE. No debe derivar hacia arriba con ritmo constante; si deriva mucho = fue rápido o poca recuperación.",
+      "decision": "Si fue fácil y FC/ritmo controlados → progresar la DOSIS (duración/reps). Si se agitó o la FC trepó → repetir más suave o revisar recuperación. NO acelerar."
+    },
+    "Z4_Umbral": {
+      "para_que": "Ritmo 10K/medio, el estímulo central, sesión PM del doble umbral (reps cortas, pausa corta).",
+      "dato_1": "FC y ritmo por lap — que NO DERIVEN rep a rep (constancia) + comentario + sRPE.",
+      "rpe": "Controlado-exigente, sRPE 5-6 (Borg 14-16). NO all-out.",
+      "sensaciones": "'Podría haber hecho más', controlado, sin forzar el final, ritmo parejo. Si terminó vaciado → se pasó del piso.",
+      "fc": "87-92% FCmáx. CLAVE: que se mantenga ESTABLE rep a rep. Escalada de FC con ritmo constante = corrió por encima del umbral (o venía cansado).",
+      "decision": "Si la FC subió rep a rep o quedó vaciado → bajar el piso/ritmo o la densidad la próxima. Si estable y 'podía más' → progresar por MÁS reps / MENOS pausa (densidad), no más rápido."
+    },
+    "Z5_Supraumbral": {
+      "para_que": "Ritmo ~5000, aclaramiento de lactato a ritmos altos, puente al específico. Incluye el 45/15.",
+      "dato_1": "Ritmo por lap (constancia) + que la ÚLTIMA rep sea tan buena como la primera + sRPE.",
+      "rpe": "Exigente, sRPE 7 (Borg 16-18).",
+      "sensaciones": "Exigente pero controlable, técnica limpia. Si la última rep se desmorona → demasiadas reps o muy rápido.",
+      "fc": "92-95% FCmáx. Alta pero no máxima.",
+      "decision": "Si colapsó el final → recortar reps / bajar ritmo. 45/15: respetar la intro gradual (máx 20-30 reps)."
+    },
+    "Z6_VO2max": {
+      "para_que": "Ritmo 3-5K, techo aeróbico. 0-1/sem. En período base: NO.",
+      "dato_1": "Ritmo por lap (que lo MANTENGA) + que la última sea como la primera. El objetivo es TIEMPO en VO2máx, no clavar un ritmo.",
+      "rpe": "Muy alto, sRPE 8-9 (Borg 18-20).",
+      "sensaciones": "Respiración profunda sostenida, exigente. Última rep tan buena como la primera.",
+      "fc": "95-100% FCmáx.",
+      "decision": "Si colapsó → menos reps. Buscar tiempo en zona, no ritmo. Dosificar: 0-1/sem y no en base."
+    },
+    "Z7_Glucolitico": {
+      "para_que": "Velocidad/anaeróbico corto, economía y fuerza (cuestas). En invierno mantiene el sistema anaeróbico.",
+      "dato_1": "CALIDAD y soltura (no el ritmo medio) + comentario de MOLESTIAS (osteo-tendinosas).",
+      "rpe": "Alto pero corto; la sesión no fatiga si la pausa es completa.",
+      "sensaciones": "Alta velocidad con técnica y SOLTURA (no rígido). Si hay dolor muscular/tendinoso → NO hacer el bloque.",
+      "fc": "No es el indicador (reps muy cortas); mirar calidad y molestia, no la FC.",
+      "decision": "Si molestia osteo-articular → sacar el bloque. Al arrancar temporada: no subir el anaeróbico muy rápido (corrés rápido enseguida pero no es sostenible)."
+    },
+    "Especificos_distancia": {
+      "para_que": "Ritmo de carrera (período competitivo). ¿Está listo para el objetivo?",
+      "dato_1": "El RITMO real = ¿sostuvo el ritmo objetivo de carrera? + FC + sensación + comentario.",
+      "rpe": "Según distancia (5K alto, maratón moderado). Debe poder sostener el ritmo meta a un RPE razonable.",
+      "sensaciones": "Ritmo meta 'bajo control' en las primeras reps; que no se desmorone en las últimas.",
+      "fc": "La del ritmo de carrera objetivo; mirar si deriva al final (señal de que el ritmo meta aún es alto).",
+      "decision": "Sostuvo el ritmo meta cómodo → listo para competir / afinar. Se cayó en las últimas → más trabajo específico o revisar el objetivo de marca."
+    }
+  },
+  "datos_ET_por_sesion": {
+    "_nota": "Qué datos devuelve ET por sesión (del §2 de CLAUDE.md: notificación + session_resume.laps + training_zones + métricas del día). Priorizados para no leer 40 por atleta.",
+    "mirar_SIEMPRE_primero": [
+      "sRPE (athlete_rpe / 'RPE' del body) — esfuerzo percibido 1-10.",
+      "Comentario del atleta (athlete_comment) — sensaciones, dolor/molestia, cómo se sintió.",
+      "Ritmo real por lap (laps[].avg_speed.format, ya formateado min/km) vs. el objetivo de la zona (work.details).",
+      "FC por lap (avg_heart_rate / max_heart_rate) — su COMPORTAMIENTO rep a rep (¿deriva?)."
+    ],
+    "mirar_si_hace_falta": [
+      "Duración/distancia real (athlete_duration / athlete_distance) vs. programado — adherencia.",
+      "Métricas del día (sueño, estrés, FC reposo, peso) — contexto de recuperación.",
+      "has_feedback / status — si la hizo.",
+      "Tiempo en fase (sport_lit/tht/hit_time), TSS/IF, potencia normalizada, cadencia — secundarios/afinado."
+    ],
+    "regla_de_lectura": "Por zona, el 'dato_1' de descripciones_libreria_por_zona dice cuál de estos mirar PRIMERO. El resto solo si hay una bandera (RPE alto, FC que deriva, comentario de molestia).",
+    "ojo_sRPE": "El 'RPE' de ET es sRPE (sesión completa, 1-10), NO el Borg 6-20 de las fuentes. Los rangos de las descripciones ya están en sRPE 1-10 con el Borg entre paréntesis."
   },
   "salvedad": "El método se apoya en evidencia OBSERVACIONAL (sin ensayo controlado que pruebe eficacia). Los targets de lactato son orientativos; cada atleta necesita sus valores por test, y el lactato es indirecto (combinar con FC + conversación + tono). Descrito en 1500-5000 m; maratón, por extensión. Para recreativos: traducir la DOSIS, no copiar el volumen de élite."
 }

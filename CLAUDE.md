@@ -476,6 +476,11 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   **test de lactato por escalones** = gold noruego LT1~2/LT2~4 mmol · **Critical Speed** con 2-3 TT sin sangre · TT de 30'
   de Friel). Validación en sesión midiendo lactato (@2.5/@3.5). Re-test cada meso/4-6 sem o ante la señal de progresión.
   Recomendación: camino mínimo = VAMEVAL+% ; gold = lactámetro (escalones) + VAMEVAL.
+  **Ampliación v2.1 (2026-11-12):** el catálogo suma `especificos_por_distancia` (sesiones a RITMO DE CARRERA del período
+  competitivo: 5K≈Z5-Z6, 10K≈Z5, HM≈Z4, Maratón≈Z3 — ej. 10K 6-8×1000/3-4×2000 @10K), `descripciones_libreria_por_zona`
+  (texto corto para pegar en la DESCRIPCIÓN de cada carpeta ET: para qué · **dato #1 a mirar** · RPE esperado (sRPE 1-10 +
+  Borg) · sensaciones a reportar · comportamiento de FC · **decisión p/ próxima sesión**), y `datos_ET_por_sesion` (mapa
+  priorizado: mirar SIEMPRE sRPE + comentario + ritmo real por lap vs objetivo + FC por lap; el resto solo ante bandera).
   Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces + Noruego (+ AMA de Bakken + best-practice),
   expresado SIEMPRE en el modelo base. (El coach irá sumando más guías —YouTube de Magness, etc.— a `data/`.)
 - **Librería (bookshop) de ET — NO editable por API** (solo lectura: `bookshops_list`/`folder_bookshops_list`; la
