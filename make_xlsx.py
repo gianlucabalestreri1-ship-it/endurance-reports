@@ -84,12 +84,14 @@ def build_daily():
     #                       combinada a lo ancho con el nombre centrado, y cierra con una
     #                       fila vacía de respiro; sin columna "Atleta")
     ws = wb.active; ws.title = "Feedback"
-    H = ["Fecha sesión", "Fecha feedback", "Mom.", "Sesión", "Deporte", "Tipo", "sRPE", "Feedback / comentario", "Dolor/molestia", "FIT (laps + métrica)"]
+    H = ["Fecha sesión", "Fecha feedback", "Mom.", "Sesión — programado → ejecutado (por bloque)", "Deporte", "Tipo", "sRPE", "Feedback / comentario", "Dolor/molestia"]
     NC = len(H)
-    ws.append(H); header(ws, NC); widths(ws, [12, 13, 7, 24, 11, 18, 7.43, 52, 12, 30])
+    ws.append(H); header(ws, NC); widths(ws, [12, 13, 7, 58, 11, 18, 7.43, 42, 12])
     SEP_FILL = PatternFill("solid", fgColor="C9D6E5")
     SEP_FONT = Font(name=A, bold=True, size=12, color="1F3A5F")
     CMID = Alignment(horizontal="center", vertical="center", wrap_text=True)   # contenido: centrado + medio + ajustado
+    LEFTTOP = Alignment(horizontal="left", vertical="top", wrap_text=True)      # sesión/comentario: mejor lectura
+    SESFONT = Font(name=A, size=9)                                              # bloques: fuente chica
     cur = None
     for r in rows:
         ath = (r.get("athlete") or "—").strip()
@@ -106,25 +108,28 @@ def build_daily():
         pain = (pc == "active"); improving = (pc == "improving")
         inten = r.get("intensity", {}) or {}; cat = inten.get("cat", "OTRO")
         tipo = TIPO_LABEL.get(cat, cat) + ((" · " + r["sessionType"]) if r.get("sessionType") else "")
-        # FIT: resumen (km · dur · FC) + laps/vueltas
-        fit_lines = []
-        if r.get("hasFit"):
-            summ = [r.get("fitDistance") or "", r.get("fitDuration") or ""]
-            if r.get("fitHr"): summ.append("FC" + str(r.get("fitHr")))
-            summ = " · ".join(p for p in summ if p)
-            if summ: fit_lines.append(summ)
-            for L in (r.get("fitLaps") or []):
-                fit_lines.append("L%s %s %.2fkm %s %s/%s" % (L.get("n"), L.get("time", ""), L.get("distKm", 0),
-                                                             L.get("pace", ""), L.get("hrA", ""), L.get("hrM", "")))
-        fitv = "\n".join(fit_lines) if fit_lines else "—"
+        # Sesión = título + desglose de bloques (programado → ejecutado); sin dispositivo → nota
+        blk = r.get("blocks") or []
+        sesion_lines = [r.get("session") or "—"]
+        for L in blk:
+            t = (L.get("text") or "").strip()
+            if t: sesion_lines.append(t)
+        if blk and not r.get("hasFit"):
+            sesion_lines.append("(sin dispositivo — ejecutado en el comentario)")
+        sesion_val = "\n".join(sesion_lines)
         dolor_val = "SÍ" if pain else ("Mejora 🟣" if improving else "NO")
-        ws.append([r.get("date", ""), r.get("reportedAt", ""), r.get("moment", ""), r.get("session", ""), r.get("sport", ""), tipo,
-                   r.get("rpe"), (r.get("comment") or "").strip(), dolor_val, fitv])
+        ws.append([r.get("date", ""), r.get("reportedAt", ""), r.get("moment", ""), sesion_val, r.get("sport", ""), tipo,
+                   r.get("rpe"), (r.get("comment") or "").strip(), dolor_val])
         i = ws.max_row
         rf = F_PAIN if pain else (F_IMPROVE if improving else (F_HOT if hot else (F_UNREAD if r.get("unread") else None)))
         for c in range(1, NC + 1):
-            cell = ws.cell(row=i, column=c); cell.font = CELL if c != 10 else Font(name=A, size=8)
-            cell.border = BORDER; cell.alignment = CMID
+            cell = ws.cell(row=i, column=c); cell.border = BORDER
+            if c == 4:                                   # Sesión (bloques): izquierda + arriba + chica
+                cell.font = SESFONT; cell.alignment = LEFTTOP
+            elif c == 8:                                 # Comentario: izquierda + arriba (lectura)
+                cell.font = CELL; cell.alignment = LEFTTOP
+            else:
+                cell.font = CELL; cell.alignment = CMID
             if rf and c != 6: cell.fill = rf
         tipo_cell(ws.cell(row=i, column=6), inten)                                # Tipo
         ws.cell(row=i, column=7).font = HOT if hot else BOLD                      # sRPE

@@ -19,6 +19,7 @@
 const fs = require('fs');
 const path = require('path');
 const ET = require('./lib/endurance');
+const SB = require('./lib/session-blocks');
 
 const ONLY_UNREAD = !process.argv.includes('--all');
 const OUT_DIR = path.join(__dirname, 'report');
@@ -73,19 +74,27 @@ function buildHtml(model) {
       <td class="cmt">${nl2br(r.comment)}${r.pain ? ' <span class="flag pain">⚠ dolor/molestia</span>' : ''}</td>
     </tr>`;
 
+  const blocksHtml = (blocks) => {
+    if (!blocks || !blocks.length) return '';
+    return '<div class="blocks">' + blocks.map((l) => {
+      const cls = l.kind === 'pause' ? 'bpause' : l.kind === 'warm' ? 'bwarm'
+        : l.kind === 'rec' ? 'brec' : /no ejecutado/.test(l.text) ? 'bno' : 'bwork';
+      return `<div class="${cls}">${esc(l.text)}</div>`;
+    }).join('') + '</div>';
+  };
+
   const sessionRow = (r) => `
     <tr class="${r.unread ? 'unread' : 'read'} ${r.pain ? 'has-pain' : ''} ${r.rpe >= 6 ? 'has-hot' : ''}">
       <td>${r.unread ? '<span class="dot green"></span>' : '<span class="dot"></span>'}</td>
       <td>${esc(r.athlete)}</td>
       <td>${esc(r.date)} ${r.moment ? `<span class="mo">${r.moment}</span>` : ''}</td>
       <td>${esc(r.reportedAt || '—')}${r.reportedAt && r.date && r.reportedAt !== r.date ? ' <span class="mo" title="feedback cargado después de la sesión">tarde</span>' : ''}</td>
-      <td>${esc(r.session)}</td>
+      <td class="sesion"><div class="stitle">${esc(r.session || '—')}</div>${blocksHtml(r.blocks)}${(r.blocks && r.blocks.length && !r.hasFit) ? '<div class="nodev">sin dispositivo — ejecutado en el comentario</div>' : ''}</td>
       <td>${esc(r.sport)}</td>
       <td>${r.sessionType ? badge(r.intensity) + '<br><span class="sub">' + esc(r.sessionType) + '</span>' : ''}</td>
       <td class="rpe ${r.rpe >= 6 ? 'hot' : ''}">${r.rpe != null ? r.rpe : '—'}</td>
       <td class="cmt">${nl2br(r.comment) || '<span class="muted">sin comentario</span>'}</td>
       <td>${r.pain ? '<span class="flag pain">⚠ sí</span>' : '<span class="muted">—</span>'}</td>
-      <td class="fit">${r.hasFit ? `<span class="flag fit">FIT</span> ${esc(r.fitDistance || '')}${r.fitDuration ? ' · ' + esc(r.fitDuration) : ''}` : '<span class="muted">—</span>'}</td>
     </tr>`;
 
   const compRow = (r) => `
@@ -126,7 +135,12 @@ function buildHtml(model) {
   table{border-collapse:collapse;width:100%;min-width:720px} th,td{padding:8px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
   th{background:var(--head);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted);position:sticky;top:0}
   tr.unread{background:var(--unread)} tr.has-hot{box-shadow:inset 3px 0 0 #e5484d} tr.has-pain{background:var(--pain)}
-  td.cmt{max-width:440px;white-space:normal} td.rpe{font-weight:700;text-align:center;width:44px} td.rpe.hot{color:#e5484d}
+  td.cmt{max-width:360px;white-space:normal} td.rpe{font-weight:700;text-align:center;width:44px} td.rpe.hot{color:#e5484d}
+  td.sesion{min-width:320px;max-width:440px} .stitle{font-weight:600;margin-bottom:3px}
+  .blocks{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:normal}
+  .blocks>div{padding:1px 0;border-left:2px solid transparent;padding-left:6px}
+  .bwork{border-left-color:#3b82f6} .bno{color:#e5484d;border-left-color:#e5484d} .brec{color:var(--muted);font-size:11px}
+  .bpause,.bwarm{color:var(--muted)} .nodev{color:var(--muted);font-size:11px;margin-top:2px;font-style:italic}
   .sub{color:var(--muted);font-size:11px} .muted{color:var(--muted)} .mo{color:var(--muted);font-size:11px;border:1px solid var(--line);border-radius:4px;padding:0 4px}
   .badge{display:inline-block;font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:1px 6px}
   .badge.red{background:#e5484d} .badge.yellow{background:#d9a400} .badge.blue{background:#3b82f6} .badge.gray{background:#8a8f98}
@@ -154,13 +168,13 @@ function buildHtml(model) {
     <span><span class="badge yellow">ThT</span> tempo/umbral (amarillo)</span>
     <span><span class="badge red">HIT</span> alta intensidad (rojo)</span>
     <span><span class="dot green"></span> sin leer</span>
-    <span><span class="flag fit">FIT</span> archivo de dispositivo asociado</span>
+    <span>Sesión = bloques programados → ritmo/potencia ejecutado por lap (azul) · <span style="color:#e5484d">rojo</span> = no ejecutado</span>
   </div>
 
   <h2>🏃 Feedback por sesión — Atletas <span class="count">(${sessionRows.length})</span></h2>
-  <div class="scroll"><table>
-    <thead><tr><th></th><th>Atleta</th><th>Fecha sesión</th><th>Fecha feedback</th><th>Sesión</th><th>Deporte</th><th>Tipo</th><th>sRPE</th><th>Feedback / comentario</th><th>Dolor</th><th>FIT (métrica)</th></tr></thead>
-    <tbody>${sessionRows.map(sessionRow).join('') || emptyRow(11)}</tbody>
+  <div class="scroll"><table class="feedtable">
+    <thead><tr><th></th><th>Atleta</th><th>Fecha sesión</th><th>Fecha feedback</th><th>Sesión — programado → ejecutado (por bloque)</th><th>Deporte</th><th>Tipo</th><th>sRPE</th><th>Feedback / comentario</th><th>Dolor</th></tr></thead>
+    <tbody>${sessionRows.map(sessionRow).join('') || emptyRow(10)}</tbody>
   </table></div>
 
   <h2>⌚ FIT — Feedback de dispositivo <span class="count">(${fit.length})</span></h2>
@@ -249,8 +263,12 @@ async function main() {
   async function enrichFit(r) {
     if (!r.sessionId) return;
     try {
-      const fm = ET.fitMetric(await ET.getSession(session, r.sessionId));
-      if (fm) { r.hasFit = true; r.fitDistance = fm.distance || r.fitDistance; r.fitDuration = fm.duration || r.fitDuration; r.fitHr = fm.hr; r.fitLaps = fm.laps; }
+      const full = await ET.getSession(session, r.sessionId);
+      const bd = SB.sessionBreakdown(full);       // programado → ejecutado por bloque (sport-aware)
+      r.blocks = bd.lines;
+      r.hasFit = bd.hasFit || r.hasFit;
+      r.bike = bd.bike;
+      if (bd.sport) r.sport = bd.sport;
     } catch (_) { /* sesión sin detalle accesible */ }
   }
   for (let i = 0; i < sessionRows.length; i += 6) {
