@@ -16,7 +16,7 @@
   ],
   "nota": "Diseñado con el coach. Objetivo: cargar UNA vez la librería noruega en ET y reusarla al programar, sin ajustar cada sesión. SOLO running.",
   "config_ET": {
-    "regla_de_oro": "Configurar cada bloque por ZONA (Zona 1-8 del modelo base), NO por ritmo → ET calcula el ritmo objetivo desde las zonas de cada atleta (modelo MAS). Misma plantilla auto-ajustada a cualquier deportista.",
+    "regla_de_oro": "Configurar cada bloque por ZONA (Zona 1-8 del modelo base), NO por ritmo → ET calcula el ritmo objetivo desde las zonas de cada atleta (modelo MAS). Misma plantilla reutilizable para cualquier deportista. OJO: los VALORES de las zonas los carga/actualiza el coach por testeo (ET no los recalcula solo al mejorar el atleta) — ver data/protocolos-testeo-zonas.json.",
     "guiado_por_carga_interna": "El método es GUIADO POR LACTATO / carga interna (LGTIT), no por ritmo. El ritmo es el RESULTADO de que funcionen los procesos internos (Bakken), no el objetivo. En la sesión: lactato (si hay) + FC + test de conversación + sensación. El lactato es indirecto (se mueve por dieta/calor/fatiga): ante la duda, A LA BAJA.",
     "dosis": "En TIEMPO (duración intervalo + nº reps + recuperación en seg/min). Distancia = referencia secundaria.",
     "indicaciones": "Las notas de ejecución + el target de lactato van en la nota del bloque (coach recommendations) → viajan con la sesión.",
@@ -41,7 +41,8 @@
   },
   "progresion": {
     "principio": "NO se progresa subiendo el lactato/la dureza, sino corriendo MÁS RÁPIDO al MISMO lactato y FC a lo largo de las semanas (LGTIT Fig 2: Bakken pasó de 18.5 → 20 → 21 km/h a 2.5-3.5 mmol en una temporada).",
-    "en_ET": "Automático: al mejorar el atleta, ET recalcula sus zonas → el ritmo objetivo de cada zona sube solo. Por eso configurar por ZONA (no por ritmo) hace la plantilla auto-progresiva.",
+    "en_ET_OJO": "ET calcula el ritmo objetivo a partir de las zonas que EL COACH carga, pero NO actualiza las zonas solo: las zonas NO suben automáticamente al mejorar el atleta. El coach debe RE-TESTEAR y recargar los valores manualmente (ver data/protocolos-testeo-zonas.json). Configurar por zona evita reescribir cada sesión, pero la progresión real exige actualizar las zonas en cada re-test.",
+    "cuando_retestear": "Señal de progresión = la misma sesión se siente más fácil a igual FC/RPE, o (con lactámetro) el lactato lee más bajo al mismo ritmo. Ahí toca re-testear y recargar zonas. Cadencia típica: cada mesociclo / 4-6 semanas.",
     "de_la_dosis": "La dosis progresa por DURACIÓN / nº de reps / DENSIDAD (menos pausa), NO por subir la intensidad de la zona. La pausa se acorta antes que acelerar."
   },
   "distribucion_y_volumen": {

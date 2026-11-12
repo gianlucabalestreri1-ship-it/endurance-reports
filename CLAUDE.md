@@ -469,6 +469,13 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   del LT2** (3-5× más fatiga apenas arriba = el porqué del piso), **distribución 75-80/15-20 + fondo ≤21 km + base sin
   anaeróbico**, **periodización piramidal→polarizada**, **intro gradual del 45/15** (3 pasos) y **monitoreo de tono muscular**
   (test de escaleras, normaliza 3-4 días). Entregado como HTML (`nor-catalogo-v2.html`) y guardado para reusar al programar.
+  **OJO (corrección 2026-11-12):** ET calcula el ritmo desde las zonas que carga el coach, pero **NO actualiza las zonas solo**
+  al mejorar el atleta → el coach **testea y recarga los valores a mano**.
+  **`protocolos-testeo-zonas`** (cómo fijar/actualizar las zonas en ET — creado 2026-11-12): **vVO2máx/MAS** (test de 5'
+  actual · 6' · **VAMEVAL** recomendado, incremental +0.5 km/h/min · UMTT) y **umbral vLT2** (derivar a 84-88% vVO2máx ·
+  **test de lactato por escalones** = gold noruego LT1~2/LT2~4 mmol · **Critical Speed** con 2-3 TT sin sangre · TT de 30'
+  de Friel). Validación en sesión midiendo lactato (@2.5/@3.5). Re-test cada meso/4-6 sem o ante la señal de progresión.
+  Recomendación: camino mínimo = VAMEVAL+% ; gold = lactámetro (escalones) + VAMEVAL.
   Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces + Noruego (+ AMA de Bakken + best-practice),
   expresado SIEMPRE en el modelo base. (El coach irá sumando más guías —YouTube de Magness, etc.— a `data/`.)
 - **Librería (bookshop) de ET — NO editable por API** (solo lectura: `bookshops_list`/`folder_bookshops_list`; la

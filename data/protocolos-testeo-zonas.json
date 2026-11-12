@@ -1,0 +1,72 @@
+{
+  "id": "protocolos_testeo_zonas",
+  "titulo": "Protocolos de testeo para fijar y ACTUALIZAR las zonas en ET (MAS/vVO2máx y umbral)",
+  "nota": "Creado 2026-11-12 a pedido del coach. ET usa un modelo MAS: TODAS las zonas derivan de la vVO2máx/MAS. ET calcula el ritmo de cada zona a partir de los valores que carga el coach, pero NO actualiza las zonas solo al mejorar el atleta → hay que RE-TESTEAR y recargar manualmente. Fuentes: corpus noruego del proyecto (lgtit-casado, enoksen, ingebrigtsen-2013) + literatura de tests de campo (ver 'referencias').",
+  "que_hay_que_determinar": {
+    "1_vVO2max_MAS": "El ancla del modelo de ET. De ella salen todas las zonas por %. El coach hoy la estima con un test de 5'.",
+    "2_umbral_vLT2": "La zona clave del método (base Z4). Se puede DERIVAR de la vVO2máx (84-88%) o MEDIR directo (lactato / critical speed / TT de 30')."
+  },
+  "protocolos_vVO2max_MAS": {
+    "test_5min_actual": {
+      "que": "Distancia máxima recorrida en 5' (pista). La velocidad media = estimación de vVO2máx/MAS.",
+      "pro": "Simple, familiar (ya lo usa el coach), un solo esfuerzo.",
+      "contra": "Es MÁXIMO (depende del pacing/motivación/día). Un 5' all-out cae un pelín POR ENCIMA de la vVO2máx real (la vVO2máx se sostiene ~6 min) → el '100% = ritmo de 5'' queda levemente rápido. En validaciones de campo subestima la MAS de cinta ~0.45 m/s. Sirve si SIEMPRE se hace igual (mismo protocolo = comparable en el tiempo).",
+      "cuando": "Mantenerlo por continuidad / si no hay otra opción."
+    },
+    "test_6min": {
+      "que": "Igual que el de 5' pero en 6' (distancia en 6' = MAS).",
+      "pro": "6' está más cerca del Tlim real de la vVO2máx → estimación un toque más limpia y conservadora (bueno para el enfoque sub-umbral).",
+      "contra": "Mismo problema de pacing que el de 5'."
+    },
+    "VAMEVAL_recomendado": {
+      "que": "Test incremental CONTINUO en pista (conos cada 20 m). Arranca ~8-8.5 km/h y sube +0.5 km/h cada minuto, guiado por audio/beep, hasta el agotamiento. MAS = velocidad de la última etapa completada.",
+      "pro": "PROGRESIVO (mucho menos dependiente del pacing que un all-out), bien validado, estándar de campo para MAS; también permite estimar VO2máx. Reutilizable y reproducible.",
+      "contra": "Necesita app/pista de audio con la cadencia + conos cada 20 m. Logística un poco mayor.",
+      "cuando": "Mejor upgrade para una MAS confiable y comparable entre tests."
+    },
+    "UMTT": {
+      "que": "Incremental, +1 km/h cada 2 min; MAS = última etapa.",
+      "contra": "Escalones grandes → tiende a SOBREESTIMAR la MAS vs. VAMEVAL/cinta. Preferir VAMEVAL."
+    }
+  },
+  "protocolos_umbral_vLT2": {
+    "A_derivar_de_MAS": {
+      "que": "Fijar Z4 umbral a 84-88% de vVO2máx (Z3 tempo 80-84%), según el corpus.",
+      "pro": "Cero gear extra; inmediato una vez que tenés la MAS.",
+      "contra": "Es un PROMEDIO poblacional: el umbral individual varía (~80-90% vVO2máx). Punto de partida, no verdad."
+    },
+    "B_lactato_por_escalones_GOLD": {
+      "que": "Test de escalones (step test) con lactámetro: 4-6' por escalón a velocidad creciente, pinchazo de lactato (oreja/dedo) al final de cada uno; identificar LT1 (~2 mmol / primer quiebre) y LT2 (~4 mmol / segundo quiebre).",
+      "pro": "GOLD STANDARD noruego: mide el umbral DIRECTO e individual, y es coherente con el método lactato-guiado. Fija LT1/LT2 reales (no un %).",
+      "contra": "Necesita lactámetro + tiras (ya accesible) y manejo del test. Protocolo a estandarizar (mismos escalones siempre).",
+      "cuando": "El ideal si el coach quiere hacer el método bien (es un método lactato-guiado)."
+    },
+    "C_critical_speed_sin_sangre": {
+      "que": "2-3 time trials máximos en una sesión (ventana 3-15 min; ej. 1200 m + 2400 m + 3600 m, o 3' + un esfuerzo más largo), con recuperación entre ellos; de la relación distancia-tiempo sale la Critical Speed (CS) + D' (reserva anaeróbica).",
+      "pro": "Robusto, SIN lactámetro, solo reloj y pista. Da un ancla de umbral sólida + la reserva anaeróbica.",
+      "contra": "Exige 2-3 esfuerzos MÁXIMOS (taxativo). La CS cae un pelín POR ENCIMA del MLSS/vLT2 → interpretar (umbral ≈ un toque por debajo de CS).",
+      "cuando": "Mejor opción de umbral si no hay lactámetro."
+    },
+    "D_TT_30min_Friel": {
+      "que": "30' máximo solo (contrarreloj). FC media de los últimos 20' ≈ FC de umbral (LTHR); ritmo medio ≈ ritmo de umbral.",
+      "pro": "Dead simple, un solo esfuerzo, da FC y ritmo de umbral a la vez.",
+      "contra": "Dependiente del pacing; aproximado (cerca del MLSS, no exacto)."
+    }
+  },
+  "validacion_en_sesion_lo_noruego": "El método noruego CONFIRMA/ajusta el umbral midiendo lactato DURANTE las sesiones (AM umbral largo @2.5 / PM umbral corto @3.5). O sea: las propias sesiones del catálogo generan datos de umbral si el coach mide. Es la forma más fiel: el test fija el punto de partida y las lecturas en sesión lo afinan semana a semana.",
+  "cadencia_retest": "Re-testear cada MESOCICLO / 4-6 semanas, o cuando aparece la SEÑAL de progresión (la misma sesión se siente más fácil a igual FC/RPE, o el lactato lee más bajo al mismo ritmo). Después de testear, RECARGAR las zonas en ET a mano (ET no lo hace solo).",
+  "recomendacion_para_el_proyecto": {
+    "camino_minimo_sin_gear": "VAMEVAL (o seguir con el test de 5' por continuidad) para la vVO2máx → ET arma las zonas por % → fijar Z4 umbral a 84-88%. Simple y reproducible.",
+    "camino_gold_con_lactametro": "Lactámetro: test de escalones para LT1/LT2 (umbral directo) + VAMEVAL para el tope (vVO2máx/Z6). Luego VALIDAR en sesión midiendo lactato en los umbrales. Es el método noruego completo.",
+    "umbral_sin_lactametro": "Si no hay lactámetro pero querés umbral medido (no derivado): Critical Speed con 2-3 TT.",
+    "constante": "Elegir UN protocolo y mantenerlo siempre (para que los re-tests sean comparables). Individualizar: el 84-88% es promedio; el lactato es indirecto → combinar con FC + conversación + tono."
+  },
+  "referencias": [
+    "Test de 5' como medida de velocidad aeróbica máxima (validación de campo; subestima MAS de cinta ~0.45 m/s; estima VO2máx ~+5%).",
+    "VAMEVAL (Cazorla) y UMTT (Léger-Boucher): incrementales en pista; VAMEVAL +0.5 km/h/min con conos cada 20 m; UMTT +1 km/h/2min (tiende a sobreestimar).",
+    "Critical Speed de campo (revisión sistemática PMC11933073): mín. 2 TT (3 mejoran precisión), ventana ~3-15 min, modelo de 2 parámetros.",
+    "Test de lactato por escalones: LT1 ~2 mmol / LT2 ~4 mmol; FC ~70% FCmáx (LT1) y ~87% (LT2); escalones ~4-6 min.",
+    "TT de 30' (Friel): FC media de los últimos 20' = LTHR (proxy de umbral de campo).",
+    "Corpus del proyecto: lgtit-casado (umbral 84-88% vVO2máx, lactato-guiado), enoksen-distribucion (umbral ~85% VO2máx / 82-92% FCmáx), ingebrigtsen-2013 (test vAT = 5×5' incrementales en cinta 1.7%)."
+  ]
+}
