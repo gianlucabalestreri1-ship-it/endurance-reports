@@ -153,8 +153,10 @@ Pipeline diario: **`node feedback-table.js`** → `report/feedback-table.html` +
 **ENTREGABLE = HTML (decisión coach 2026-11-12: feedback SOLO HTML, igual que renovación; el Excel `make_xlsx.py`
 quedó legacy, NO se genera más para el feedback diario).**
 Y para cerrar el ciclo: **`node mark-read.js`** marca como leídas las notificaciones sin leer (feedbacks +
-carreras; saltea servicios/otros) — **única escritura del flujo, correr DESPUÉS de entregar el reporte**.
-`--dry` previsualiza; `node mark-read.js <id> <id>` marca puntuales.
+carreras; saltea servicios/otros) — **única escritura del flujo, SIEMPRE correr DESPUÉS de generar/entregar el reporte**
+(instrucción del coach 2026-11-12: marcar leídos los feedbacks una vez generado el reporte). `--dry` previsualiza;
+`node mark-read.js <id> <id>` marca puntuales. **Multi-cuenta:** si `ET_EMAIL2`/`ET_PASSWORD2` están seteadas, marca
+TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL2=... ET_PASSWORD2=... node mark-read.js`.
 
 **Formato de la tabla de feedback (rediseño 2026-11-12):**
 - **Agrupado por ATLETA** (fila-separador azul con el nombre; alfabético sin acentos) para evitar el switch de
