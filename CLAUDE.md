@@ -175,6 +175,18 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
 - **CICLISMO = otra cuenta de coach:** multi-cuenta por env **`ET_EMAIL2`/`ET_PASSWORD2`** (NUNCA hardcodear — repo
   público). `feedback-table.js` procesa ambas cuentas (`processAccount`) y mergea; los ciclistas salen con su tag 🚲
   y potencia. Correr: `ET_EMAIL2=... ET_PASSWORD2=... node feedback-table.js`.
+- **Sección "Sin feedback ≥N días" (pedido coach 2026-11-12):** ARRIBA del feedback (lo urgente primero, §0) va la
+  lista de atletas con plan activo que NO dejaron señal (feedback manual NI dispositivo) hace > N días. Reusa la
+  lógica de `alert.js` (`lastActivityOfPlan` por plan vigente) embebida en `feedback-table.js` (`computeSilence`):
+  cruza el **roster completo** (`athlete_list` + `training_plan` por atleta activo de CADA cuenta), por eso capta a
+  los que no tienen ninguna notificación. Ordena de más a menos días; tag 🚲 ciclistas; marca "plan vencido"/"sin
+  actividad". Umbral `--silence-days N` (def. 7); `--no-silence` la desactiva (agrega 1 `athlete_list` + 1
+  `training_plan` por atleta activo por cuenta → la corrida tarda más). También va en `feedback-data.json` (`silence`).
+- **De 60 "feedbacks" a ~19 filas — NO se pierde nada (diagnóstico 2026-11-12):** el contador de notificaciones mezcla
+  cosas que NO son feedback de sesión: `competition_countdown` (cuenta regresiva) y `competition_feedback` van a sus
+  propias secciones, y `request_service`/`change_athlete_coach` se ignoran. Además el filtro de edad descarta las
+  FIT viejas >30 días (notifs de dispositivo que quedan `pending` meses) y **feedback+FIT de la MISMA sesión se
+  fusionan en una fila**. Para ver TODO sin filtro de edad: `--days 0` o `--all-dates`.
 
 **Informe de renovación a demanda** (`renewal.js` → **`renewal-html.js`**):
 - `node renewal.js --names "Nombre Apellido" ...` | `--file lista.txt` | `--dry` (previsualiza el match) | `<plan_id>`.

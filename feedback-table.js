@@ -24,6 +24,59 @@ const SB = require('./lib/session-blocks');
 const ONLY_UNREAD = !process.argv.includes('--all');
 const OUT_DIR = path.join(__dirname, 'report');
 
+// Sección "Sin feedback ≥N días": cruza el roster activo (athlete_list) contra la
+// última actividad de su plan vigente (igual que alert.js) y lista a quienes
+// llevan > umbral sin dejar señal. Es la parte URGENTE del reporte (§0). Cuesta
+// 1 athlete_list + 1 training_plan por atleta activo → desactivable con --no-silence.
+const DO_SILENCE = !process.argv.includes('--no-silence');
+function argNum(flag, def) { const i = process.argv.indexOf(flag); return i >= 0 ? (parseInt(process.argv[i + 1], 10) || def) : def; }
+const SILENCE_DAYS = argNum('--silence-days', 7);
+function todayAR() { return new Date(Date.now() - 3 * 3600 * 1000).toISOString().slice(0, 10); }
+function daysBetween(a, b) { return Math.round((new Date(b + 'T00:00:00Z') - new Date(a + 'T00:00:00Z')) / 86400000); }
+
+// Última actividad del plan: feedback manual (athlete_rpe/has_feedback/finished) o FIT (resume_fit).
+function lastActivityOfPlan(tp, today) {
+  const plan = tp.plan || {};
+  const mesos = (plan.macro && plan.macro.mesos) || [];
+  let lastActivity = null, nPast = 0;
+  for (const meso of mesos) for (const mi of (meso.micros || [])) {
+    const slots = mi.sessions || {};
+    for (const mom of ['am', 'pm']) for (const s of (slots[mom] || [])) {
+      if (!s || !s.id || !s.date || s.date > today) continue;
+      nPast++;
+      const act = (s.athlete_rpe != null || s.has_feedback || s.status === 'finished' || !!s.resume_fit);
+      if (act && (!lastActivity || s.date > lastActivity)) lastActivity = s.date;
+    }
+  }
+  return { lastActivity, notStarted: nPast === 0,
+    planTitle: plan.title, planExpired: plan.end_date ? plan.end_date < today : false };
+}
+
+// Devuelve las alertas de silencio (atletas activos con > thr días sin reportar) de una cuenta.
+async function computeSilence(session, thr, bike) {
+  const today = todayAR();
+  const al = await ET.call('athlete_list', {}, session);
+  const roster = Array.isArray(al) ? al : (al.athletes || al.athlete_list || Object.values(al));
+  const hasPlan = (a) => (a.active_plan || a.current_plan_id) && a.last_programmed_session;
+  const active = roster.filter(hasPlan);
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const out = [];
+  async function one(a) {
+    const planId = a.active_plan || a.current_plan_id;
+    let tp = null;
+    for (let i = 0; i < 3 && !tp; i++) { try { tp = await ET.getTrainingPlan(session, planId); } catch (_) { await sleep(500 * (i + 1)); } }
+    if (!tp) return;                                            // no se pudo leer → no es falsa alerta
+    const info = lastActivityOfPlan(tp, today);
+    if (info.notStarted) return;                                // plan futuro, aún no arrancó
+    const days = info.lastActivity ? daysBetween(info.lastActivity, today) : null;
+    if (days != null && days <= thr) return;                    // reportó dentro del umbral → ok
+    out.push({ athlete: a.full_name, daysSince: days, lastActivity: info.lastActivity,
+      planTitle: info.planTitle, planExpired: info.planExpired, bike: !!bike });
+  }
+  for (let i = 0; i < active.length; i += 6) await Promise.all(active.slice(i, i + 6).map(one));
+  return out;
+}
+
 // Stale-feedback guard: notifications left unread for a long time (old sessions
 // never marked read) otherwise surface in the daily report (e.g. 2025 feedbacks
 // in an Oct-2026 run). Default window: 30 days. Override with `--days N`
@@ -61,7 +114,22 @@ function badge(intensity) {
 }
 
 function buildHtml(model) {
-  const { generatedAt, coach, onlyUnread, counts, atletas, fit, sessionRows, competitions, countdowns } = model;
+  const { generatedAt, coach, onlyUnread, counts, atletas, fit, sessionRows, competitions, countdowns, silence = [], silenceDays = 7 } = model;
+
+  const silenceRow = (r) => `
+    <tr>
+      <td>${esc(r.athlete)}${r.bike ? ' <span class="biketag bk">🚲</span>' : ''}</td>
+      <td class="days">${r.daysSince == null ? '<span class="flag pain">sin actividad</span>' : (r.daysSince + ' días')}</td>
+      <td>${esc(r.lastActivity || '—')}</td>
+      <td>${esc(r.planTitle || '')}${r.planExpired ? ' <span class="flag pain">plan vencido</span>' : ''}</td>
+    </tr>`;
+  const silenceHtml = silence.length ? `
+  <h2>⚠ Sin feedback ≥${silenceDays} días — escribirles <span class="count">(${silence.length})</span></h2>
+  <div class="meta" style="margin:-4px 0 8px">Atletas con plan activo que no dejan señal (feedback manual ni dispositivo) hace más de ${silenceDays} días. Ordenado de mayor a menor.</div>
+  <div class="scroll"><table class="silencetable">
+    <thead><tr><th>Atleta</th><th>Sin reportar</th><th>Última actividad</th><th>Plan</th></tr></thead>
+    <tbody>${silence.map(silenceRow).join('')}</tbody>
+  </table></div>` : '';
 
   const notifRow = (r) => `
     <tr class="${r.unread ? 'unread' : 'read'}">
@@ -166,6 +234,7 @@ function buildHtml(model) {
   .prio{font-weight:700;border-radius:5px;padding:1px 7px} .prio.pA{background:#e5484d;color:#fff} .prio.pB{background:#d9a400;color:#fff} .prio.pC{background:#8a8f98;color:#fff}
   .count{font-size:12px;color:var(--muted);font-weight:400}
   .legend{display:flex;flex-wrap:wrap;gap:14px;margin:8px 0 0;color:var(--muted);font-size:12px}
+  .silencetable td.days{font-weight:700} .silencetable tbody tr{background:var(--pain)} .biketag.bk{background:#3b82f6;color:#fff}
 </style></head>
 <body><div class="wrap">
   <h1>Endurance Tool — Tabla de feedback</h1>
@@ -178,6 +247,7 @@ function buildHtml(model) {
     <div class="kpi"><div class="n">${counts.countdowns}</div><div class="l">Cuenta regresiva A</div></div>
     <div class="kpi"><div class="n" style="color:#e5484d">${counts.hot}</div><div class="l">sRPE ≥ 6</div></div>
     <div class="kpi"><div class="n" style="color:#e5484d">${counts.pain}</div><div class="l">Dolor / molestia</div></div>
+    <div class="kpi"><div class="n" style="color:#e5484d">${silence.length}</div><div class="l">Sin feedback ≥${silenceDays}d</div></div>
   </div>
   <div class="legend">
     <span><span class="badge blue">LIT</span> baja intensidad (azul)</span>
@@ -186,6 +256,8 @@ function buildHtml(model) {
     <span><span class="dot green"></span> sin leer</span>
     <span>Sesión = bloques programados → ritmo/potencia ejecutado por lap (azul) · <span style="color:#e5484d">rojo</span> = no ejecutado</span>
   </div>
+
+  ${silenceHtml}
 
   <h2>🏃 Feedback por sesión — agrupado por atleta <span class="count">(${sessionRows.length})</span></h2>
   <div class="scroll"><table class="feedtable">
@@ -225,7 +297,7 @@ const normA = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').to
 
 // Procesa UNA cuenta de coach (runners o ciclistas): login + notificaciones +
 // enriquecido por bloque (programado→ejecutado) + cross-day FITs. Devuelve los datos.
-async function processAccount(email, password) {
+async function processAccount(email, password, { bike } = {}) {
   const { session, profile } = await ET.login(email, password);
   const coach = (profile.full_name || `${profile.first_name || ''} ${profile.last_name || ''}`).trim() || `#${profile.id}`;
   const raw = await ET.listNotifications(session);
@@ -275,7 +347,14 @@ async function processAccount(email, password) {
   }
   for (let i = 0; i < sessionRows.length; i += 6) await Promise.all(sessionRows.slice(i, i + 6).map(enrichFit));
 
-  return { coach, records, atletas, fit, competitions, countdowns, upcoming, sessionRows, droppedStale };
+  // Sección URGENTE: atletas activos sin reportar hace > SILENCE_DAYS (roster completo, no solo quien tiene notificación).
+  let silence = [];
+  if (DO_SILENCE) {
+    try { silence = await computeSilence(session, SILENCE_DAYS, bike); }
+    catch (e) { console.error('  (aviso: no se pudo calcular silencios:', e.message + ')'); }
+  }
+
+  return { coach, records, atletas, fit, competitions, countdowns, upcoming, sessionRows, droppedStale, silence };
 }
 
 async function main() {
@@ -286,7 +365,7 @@ async function main() {
   // Cuenta secundaria opcional (p.ej. los CICLISTAS, que están en otra cuenta de coach):
   // credenciales por entorno ET_EMAIL2 / ET_PASSWORD2 (nunca hardcodear — repo público).
   if (process.env.ET_EMAIL2 && process.env.ET_PASSWORD2) {
-    try { accts.push(await processAccount(process.env.ET_EMAIL2, process.env.ET_PASSWORD2)); }
+    try { accts.push(await processAccount(process.env.ET_EMAIL2, process.env.ET_PASSWORD2, { bike: true })); }
     catch (e) { console.error('  (aviso: cuenta secundaria falló:', e.message + ')'); }
   }
 
@@ -298,6 +377,11 @@ async function main() {
   const competitions = accts.flatMap((a) => a.competitions);
   const countdowns = accts.flatMap((a) => a.countdowns);
   const droppedStale = accts.reduce((s, a) => s + a.droppedStale, 0);
+  // Silencios (sin feedback ≥ N días): urgentes primero (más días arriba, luego sin actividad).
+  const silence = accts.flatMap((a) => a.silence || []).sort((x, y) => {
+    const dx = x.daysSince == null ? 1e9 : x.daysSince, dy = y.daysSince == null ? 1e9 : y.daysSince;
+    return dy - dx;
+  });
 
   const upcoming = accts.flatMap((a) => a.upcoming).sort((a, b) => {
     const ka = a.source === 'agenda' ? 0 : 1, kb = b.source === 'agenda' ? 0 : 1;
@@ -324,17 +408,22 @@ async function main() {
   };
 
   const generatedAt = new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
-  const model = { generatedAt, coach, onlyUnread: ONLY_UNREAD, counts, atletas, fit, sessionRows, competitions, countdowns, upcoming };
+  counts.silence = silence.length;
+  const model = { generatedAt, coach, onlyUnread: ONLY_UNREAD, counts, atletas, fit, sessionRows, competitions, countdowns, upcoming, silence, silenceDays: SILENCE_DAYS };
 
   fs.mkdirSync(OUT_DIR, { recursive: true });
   fs.writeFileSync(path.join(OUT_DIR, 'feedback-table.html'), buildHtml(model));
-  fs.writeFileSync(path.join(OUT_DIR, 'feedback-data.json'), JSON.stringify({ generatedAt, coach, counts, sessionRows, fit, competitions, countdowns, upcoming }, null, 2));
+  fs.writeFileSync(path.join(OUT_DIR, 'feedback-data.json'), JSON.stringify({ generatedAt, coach, counts, sessionRows, fit, competitions, countdowns, upcoming, silence }, null, 2));
 
   console.log(`\nEndurance Tool — feedback (${ONLY_UNREAD ? 'sin leer' : 'todas'}) — ${coach}`);
   console.log(`  Cuentas: ${accts.length} · Atletas distintos: ${counts.athletes}`);
   console.log(`  Feedbacks de sesión: ${counts.atletasNotifs} (${counts.atletas} filas) · FIT: ${counts.fit} · Competencias: ${counts.competitions} · Próximas: ${counts.upcoming}`);
   console.log(`  sRPE>=6: ${counts.hot} · Dolor/molestia: ${counts.pain}`);
   if (droppedStale > 0) console.log(`  (filtradas ${droppedStale} notificaciones viejas > ${MAX_AGE_DAYS} días)`);
+  if (DO_SILENCE) {
+    console.log(`  Sin feedback ≥${SILENCE_DAYS}d: ${silence.length}`);
+    for (const s of silence) console.log(`    ⚠ ${s.athlete}${s.bike ? ' 🚲' : ''} — ${s.daysSince == null ? 'SIN actividad registrada' : s.daysSince + ' días'}${s.planExpired ? ' · plan vencido' : ''}`);
+  }
   console.log(`  -> report/feedback-table.html`);
   return model;
 }

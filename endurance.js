@@ -362,6 +362,7 @@ function groupBySession(records) {
 }
 
 module.exports = {
+  call,
   login, listNotifications, markNotificationsRead, parseNotification, groupBySession,
   classifyType, detectPain, classifyPain, decode, field, tailField, sectionOf,
   getUpcomingActivities, getTrainingPlan, getSession, fitMetric, flattenPlanSessions,
