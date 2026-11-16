@@ -1,0 +1,143 @@
+{
+  "id": "magness_amateur_volumen_limitado",
+  "titulo": "Masterclass: Entrenamiento de alto rendimiento para corredores AMATEURS con volumen limitado (<50 millas / 80 km por semana) — Steve Magness",
+  "fuente": "Clase magistral de Steve Magness (entrenador de alto rendimiento, exatleta de élite, autor), desglosada por el coach. Video original en YouTube. Cargado 2026-11-16.",
+  "uso": "PIEZA CENTRAL para la MAYORÍA de los atletas del coach: casi todos son amateurs con 30-50 millas (48-80 km) semanales y techo de volumen bajo. El coach lo marca como EL SISTEMA QUE YA UTILIZA, con mejoras para los casos que no encontraba respuesta. Prioridad alta al programar/renovar a un recreacional. Todo ritmo/zona se expresa en el modelo base Z1-Z8; los ritmos concretos salen de las zonas reales del atleta en ET. Complementa a magness-sistema, magness-umbral-lactato, microciclos-recreativos y el corpus noruego (NO reemplaza la decisión del coach).",
+  "tesis": "La literatura y los planes de redes están diseñados en torno a la élite que corre 100+ millas (160+ km)/sem. Copiar literalmente a Shorter o al sistema noruego a una realidad de 30-50 millas/sem produce ESTANCAMIENTO o LESIÓN. Los principios fisiológicos son universales, pero exigen una calibración estructural, mecánica y de gestión del estrés radicalmente distinta cuando el volumen tiene techo bajo. No hay plan mágico universal: hay resolución de ECUACIONES INDIVIDUALES.",
+
+  "modulo_1_diagnostico_y_restricciones": {
+    "idea": "Antes de prescribir una sola sesión: auditoría honesta de la realidad fisiológica y logística del corredor. El kilometraje bajo es el síntoma; debajo operan 3 restricciones REALES que definen el camino.",
+    "verdad_del_kilometraje": "En fondo (10K, media, maratón) el VOLUMEN es el factor limitante más evidente. El estadounidense promedio que corre maratón ~3h promedia ~40 millas (64 km)/sem; fisiológicamente nadie alcanza su máximo potencial de maratón con ese volumen. Pero subir km no siempre es posible → hay que leer la restricción real.",
+    "tres_restricciones_reales": [
+      {"tipo": "Riesgo de lesión (tolerancia tisular)", "cuando": "Hay tiempo libre (ej. hijos ya grandes) pero el sistema musculoesquelético/tendinoso colapsa > 35-40 millas/sem.", "solucion": "Mantener el km de CARRERA dentro del umbral seguro y sumar ENTRENAMIENTO CRUZADO (natación, aqua jogging, bici, elíptica, Arc Trainer) para el estímulo aeróbico central SIN impacto contra el suelo."},
+      {"tipo": "Tiempo y estilo de vida", "cuando": "La mayoría de los amateurs: trabajo exigente + familia. El recurso escaso son las HORAS, no el tejido → el cruzado no compensa.", "solucion": "Maximizar el RETORNO DE INVERSIÓN (bang for your buck) de cada minuto: densidad de estímulo, sesiones que rinden."},
+      {"tipo": "Carga alostática total (estrés global)", "cuando": "Siempre, pero crítico en amateurs.", "detalle": "El cuerpo NO distingue el estrés de una serie en pista del estrés laboral o la falta de sueño. El estrés extradeportivo consume parte de la capacidad de recuperación que el profesional dedica solo a asimilar el entrenamiento → el amateur tiene MENOS presupuesto de recuperación."}
+    ],
+    "cuello_de_botella": {
+      "metafora": "Kink in the pipe: identificar QUÉ frena el rendimiento para la distancia objetivo.",
+      "perfiles": [
+        {"perfil": "P1 — buena resistencia aeróbica, falta velocidad/potencia", "quien": "Años de fondo o veteranos con motor aeróbico sólido pero economía/reclutamiento neuromuscular perdidos para sostener un 5K rápido.", "foco": "velocidad moderada + economía + strides/cuestas."},
+        {"perfil": "P2 — buena velocidad natural, déficit aeróbico profundo", "quien": "Vienen de deportes de equipo (fútbol, básquet, tenis): fibras rápidas y explosividad, pero sin densidad capilar, biogénesis mitocondrial ni resistencia a la fatiga metabólica.", "foco": "construir base aeróbica (años de estímulo), sub-umbral."},
+        {"perfil": "Amateur promedio", "quien": "A diferencia del exélite, está LIMITADO AERÓBICAMENTE. El sistema aeróbico necesita AÑOS de estímulo constante.", "foco": "la arquitectura SIEMPRE prioriza construir capacidad aeróbica."}
+      ],
+      "caso_magness": "Al pasar de 80-100 millas/sem (élite) a 30-40 (entrenador), su base aeróbica residual era enorme → su cuello de botella era la resistencia específica a ritmos rápidos (el aeróbico se 'despertaba' con un par de sesiones de umbral). OJO: con los años lejos del alto volumen, incluso esa reserva aeróbica se erosiona y exige más atención."
+    }
+  },
+
+  "modulo_2_fase_base": {
+    "idea": "Base aeróbica + habilidad mecánica. Lydiard. La base es AÚN MÁS crítica para el amateur que para el pro: la principal causa de abandono/lesión son los cambios bruscos de volumen/intensidad/estrés con el tejido no preparado. Duración mínima ideal 6-8 semanas; varios meses si el calendario lo permite.",
+    "regla_45_60_min": {
+      "principio": "Con presupuesto limitado (30-50 millas/sem) la DENSIDAD DE FRECUENCIA importa enormemente.",
+      "error": "Correr 7 días sesiones cortas de 20-30 min.",
+      "solucion": "Agrupar el MISMO tiempo total en 4-5 días para que la mayoría de los rodajes suaves lleguen a la ventana de 45-60 MINUTOS continuos.",
+      "fisiologia": "Las adaptaciones aeróbicas periféricas (AMPK, PGC-1α → biogénesis mitocondrial y capilarización) se potencian cuando la sesión supera ~45 min continuos: agotamiento progresivo de glucógeno en fibras lentas + reclutamiento adicional de fibras oxidativas.",
+      "modelo_base": "Rodaje suave 45-60' = Z1-Z2 (LIT)."
+    },
+    "neuromuscular_feel_good_fast": {
+      "problema": "Correr lento todo el tiempo prepara el corazón pero deja músculos/tendones/SN desprevenidos para las fuerzas de reacción del suelo a ritmo de competición.",
+      "concepto": "Feel-Good Fast (rápido y sintiéndose BIEN): aceleraciones progresivas ~100 m, 2 veces/sem (durante o al final de un rodaje suave). NO son sprints máximos; son cambios de ritmo fluidos con buena mecánica, cadencia y elasticidad.",
+      "objetivos": ["Reclutar unidades motoras de umbral alto (fibras rápidas) inactivas en el trote.", "Acondicionar tendones (sobre todo Aquiles) y fascias para absorber/devolver energía elástica.", "Enseñar al SN la habilidad motora de correr rápido RELAJADO."],
+      "progresion_en_base": "Con las semanas, los strides evolucionan a pickups de 45-60\", repeticiones de 200 m en pista o CUESTAS CORTAS (de las mejores formas de fuerza/hipertrofia funcional específica para corredores).",
+      "regla_de_oro": "El objetivo NO es cansarse ni acumular lactato: el atleta termina MÁS fresco y coordinado que al empezar.",
+      "modelo_base": "Strides/feel-good-fast = neuromuscular aláctico (Z7-Z8 de ritmo pero NO fatigante, pausa amplia). Cuestas cortas = fuerza."
+    }
+  },
+
+  "modulo_3_fase_especifica": {
+    "idea": "Consolidada la base, el diseño surge del cruce entre el cuello de botella individual y las demandas metabólicas de la prueba (milla → maratón).",
+    "sub_umbral": {
+      "principio": "El mayor retorno aeróbico con poco volumen viene de la zona JUSTO POR DEBAJO del umbral de lactato (~2.3-3.0 mmol/L). Inspirado en el modelo noruego (Magness lo analizó con Marius Bakken).",
+      "por_que_sub_y_no_umbral_maximo": "En amateurs SIN control de lactato en sangre, entrenar en el límite exacto del umbral deriva en pasarse de ritmo → convierte una sesión aeróbica controlada en glucolítica agotadora. Quedar ligeramente por debajo crea un margen de seguridad (idiot-proofing) que permite acumular VOLUMEN DE CALIDAD sin comprometer la recuperación.",
+      "dosis": "Empezar con 15 min totales de trabajo efectivo (sin calentamiento/enfriamiento) y progresar hasta 25-30 min por sesión.",
+      "formas_de_fraccionar": [
+        "Umbral tradicional: bloques largos 15' + 10' con recuperación breve.",
+        "Fartlek corto: 10 × 3' sub-umbral con pausa corta (~1').",
+        "Progresión: 30' continuos arrancando a ritmo de maratón y acelerando hasta cerrar en sub-umbral."
+      ],
+      "frecuencia": "Iniciar 1 sesión/sem; según experiencia y objetivo avanzar a 2/sem o 3 cada dos semanas. Magness DESACONSEJA superar 2/sem (el doble umbral noruego) por alto riesgo de sobreentrenamiento/lesión en amateurs.",
+      "modelo_base": "Sub-umbral 2.3-3.0 mmol = base Z3-Z4 (sub-umbral, por debajo de LT2). Coincide con el 'sub-umbral noruego' del corpus (noruego-lgtit-casado: sub-umbral 80-84% vVO2máx @2-3.5 mmol)."
+    },
+    "velocidad_moderada_igloi": {
+      "error_clasico": "Recordar la secundaria y hacer series agónicas (ej. 4×1 milla al máximo) terminando exhausto.",
+      "principio": "La clave del éxito amateur es APILAR semanas/meses consistentes sin interrupciones por fatiga/lesión → la velocidad debe ser MODERADA (esfuerzo percibido 6-7/10, NO 9-10/10). Terminar sintiendo que trabajó, con energía de sobra.",
+      "metodo_igloi": "Velocidad aeróbica FRACCIONADA (Mihály Igloi): en vez de 15×200 m al ritmo agónico de 800, hacer 15×200 m con trote corto de recuperación (200 m), ARRANCANDO a ritmo 5K, bajando a 3K, y SOLO las últimas a ritmo de milla. Se reclutan fibras rápidas y se mejora la mecánica, pero la brevedad evita acumulación tóxica de H+/lactato → estímulo predominantemente AERÓBICO.",
+      "regla_corto_antes_que_largo": "Ante la moda del '4×4 noruego' o series largas de milla: los amateurs calculan mal el ritmo en reps largas y se 'pasan de rosca'. Intervalos CORTOS (100/150/200/300/400 m) o fartleks por tiempo (45\"on/15\"off, 1'/1', 90\"/30\") a ritmos de media/10K/5K/3K permiten CORREGIR el ritmo sobre la marcha si arrancó muy rápido.",
+      "modelo_base": "Reps cortas a ritmo 5K/3K/milla = Z5-Z6-Z7 (ritmo de carrera) pero mantenidas AERÓBICAS por la brevedad + recuperación."
+    },
+    "proporcion_aerobico_velocidad_por_distancia": [
+      {"distancia": "Milla / 1500 m", "ratio_aerobico_velocidad": "1:1", "logica": "Alta demanda de potencia aeróbica máxima, tolerancia glucolítica y economía a ritmos muy altos."},
+      {"distancia": "5K / 10K (estándar)", "ratio_aerobico_velocidad": "2:1", "logica": "Equilibrio óptimo entre desarrollo del umbral y mantenimiento de la eficiencia neuromuscular."},
+      {"distancia": "Media / Maratón", "ratio_aerobico_velocidad": "3:1 (hasta 4:1 o 5:1)", "logica": "La velocidad pasa a MANTENIMIENTO; el éxito depende casi solo de la capacidad aeróbica y la resistencia a la fatiga."}
+    ]
+  },
+
+  "modulo_4_fondo_largo_y_arquitectura": {
+    "tirada_larga_reality_check": {
+      "principio": "La tirada larga es una 'vaca sagrada'; Magness la somete a análisis riesgo vs. recompensa.",
+      "maraton_media": "Indispensable y específica: prepara estructuras osteoarticulares para el golpeteo repetitivo, entrena el metabolismo lipídico y la resistencia muscular local ante la depleción de glucógeno.",
+      "10k_5k_milla_amateurs": "Su valor CAE drásticamente frente a su costo. En un corredor de 35 millas/sem, correr 90-105' de golpe es casi el 40% del volumen semanal en un día → dispara riesgo de lesión por impacto y compromete la recuperación, sin ser biomecánicamente específico para un 5K.",
+      "recomendacion": "Para distancias cortas: rodajes de 60', una tirada media-larga (75-90') apenas 1 vez cada 2-3 semanas, o prescindir de ella si ya hay base sólida."
+    },
+    "densidad_y_ciclos_moviles": {
+      "elite_vs_amateur": "La élite (Frank Shorter) mete 3 estímulos de calidad/sem (2 intensos + 1 tirada larga exigente). El amateur con poco km rara vez absorbe esa densidad sin romperse.",
+      "ajuste_amateur": "2 estímulos de calidad MODERADA por semana (o 2 moderados + 1 rodaje medio-largo suave). Incluso en maratón Magness lleva atletas de alto nivel que rinden con SOLO 1 intenso + 1 tirada larga exigente/sem.",
+      "ciclos_moviles": "Abandonar la rigidez de los 7 días: pensar en CICLOS MÓVILES de 10-14 días. Elimina la presión psicológica, mejora la recuperación e integra todos los componentes sin sobrecargar una semana.",
+      "ejemplo_ciclo_2_semanas_ratio_3_1": ["Semana 1: sub-umbral + velocidad moderada (feel-good-fast).", "Semana 2: sub-umbral + tirada larga con cierre en progresión aeróbica."]
+    }
+  },
+
+  "modulo_5_afinamiento_y_combos": {
+    "fase_competicion": {
+      "cuando_no": "Si el corredor es propenso a lesiones o busca disfrutar/mantener forma estable todo el año → competir sobre la base/específico SIN añadir riesgos.",
+      "cuando_si": "Si quiere exprimir su máximo en una fecha clave → ventana ESTRICTA de 4-6 semanas.",
+      "transicion": "De sesiones moderadas (6-7/10) a exigentes 8-9/10 (SIN llegar al 10/10 extremo, 'ver a Dios'). Solo 2-3 sesiones de ese calibre en todo el bloque de 6 semanas (máx 1/sem).",
+      "ejemplos_por_distancia": [
+        {"distancia": "Milla", "sesion": "8×400 m (o bloques divididos de 400) a ritmo objetivo de milla."},
+        {"distancia": "5K", "sesion": "3×1 milla (1600 m) acercándose al ritmo objetivo de 5K."},
+        {"distancia": "10K / Media", "sesion": "3-4×2 millas (3200 m) a ritmo objetivo de media con recuperaciones breves."}
+      ]
+    },
+    "combo_workouts": {
+      "idea": "Alta eficiencia para amateurs con poco tiempo: combinar estímulos distintos en una misma sesión.",
+      "ejemplos": [
+        "Umbral + cuestas: 20' continuos sub-umbral + 5×200 m en cuesta a ritmo vivo (reclutar fibras rápidas bajo fatiga aeróbica).",
+        "Reps aeróbicas + escalera descendente (breakdown): series de 800 m a ritmo 10K/media + bloque corto 400-300-200 m progresando de ritmo 5K a milla."
+      ]
+    }
+  },
+
+  "modulo_6_caso_practico_milla_4_43_con_carrito": {
+    "contexto": "Magness preparó una milla empujando el cochecito (stroller) de su hija, bajo restricciones extremas, para demostrar que los principios funcionan en la vida real.",
+    "restricciones": ["Volumen 30-35 millas/sem (48-56 km).", "Tiempo por sesión dictado por la paciencia de la nena (45-60' con música de Frozen, pausas para snacks/toboganes).", "CERO tiradas largas.", "Historial reciente de lesión en Aquiles y sóleo/gemelo."],
+    "progresion": {
+      "base": "6 días/sem de rodajes suaves 45-60' hasta que los tendones toleraron el impacto. Luego cambios de ritmo de 15/20/30\" dentro de la carrera (parar con el carrito arruinaba la calma de la niña).",
+      "especifica": "1 día cambios de ritmo cortos (strides/pickups) + 1 día aeróbico sub-umbral 20-30' fraccionado según el humor de la hija (correr fuerte de un parque a otro, descansar mientras usaba el tobogán). Después: ciclos de 2 sesiones aeróbicas (una larga en progresión + otra de intervalos cortos 1-2-3' cerca del umbral) + strides un 3er día.",
+      "afinamiento": "1 sesión aeróbica/sem + 1 día de velocidad específica alternando semanas: una semana escaleras descendentes (cut-downs 1000-800-600 m desde ritmo 5K hacia abajo), la siguiente intervalos cortos (200-300 m). Últimas semanas: bloques a ritmo de milla (400+200, o 4×400 + 300 y 200 rápidos; logró 200 m <30\" empujando el carrito)."
+    },
+    "gestion_esfuerzo": "Casi todas las sesiones terminaron en 7/10. Apenas 1-2 pruebas al 9/10 (ej. 800 m en 2:25) para calibrar el ritmo con el carrito.",
+    "resultado": "4:43 en la milla (ritmo 2:55 min/km) empujando un cochecito, con <35 millas/sem y CERO lesiones."
+  },
+
+  "principios_rectores": [
+    {"nombre": "No hacer estupideces (Don't do dumb things)", "detalle": "El grueso del éxito no viene de una sesión mágica sino de EVITAR errores evitables: saltos bruscos de volumen, exceso de densidad semanal, entrenar por encima del umbral cuando toca rodar suave, y 'vaciar el tanque' en los entrenamientos para demostrarse que se está en forma."},
+    {"nombre": "Barreras preventivas (Idiot-proofing)", "detalle": "Todo corredor tiene una debilidad conductual. Si no sabe frenarse en series largas → usar intervalos cortos (200-300 m) o strides donde el daño sea mínimo. Si corre los días de umbral muy rápido → usar FC o ritmo sub-umbral ESTRICTO como freno de seguridad."},
+    {"nombre": "Consistencia acumulativa sobre heroísmo puntual", "detalle": "Un entrenamiento al 7/10 repetido ininterrumpido 20 semanas supera por amplio margen a uno al 10/10 seguido de fatiga crónica o lesión."},
+    {"nombre": "Cálculo individual de costo-beneficio (Run your own calculus)", "detalle": "Cada sesión se justifica según la restricción principal (tiempo vs. tolerancia tisular) y el cuello de botella fisiológico. La ciencia da los principios; la sabiduría está en adaptar la dosis a la propia vida."}
+  ],
+
+  "mapeo_modelo_base": {
+    "rodaje_suave_base_aerobica": "Z1-Z2 (LIT) · 45-60' continuos, 4-5 días/sem",
+    "sub_umbral": "Z3-Z4 (sub-umbral, 2.3-3.0 mmol, 6-7/10) · dosis 15→25-30' · ≤2/sem",
+    "velocidad_moderada_igloi": "Z5-Z6-Z7 a ritmo de carrera pero AERÓBICA por brevedad (6-7/10) · reps cortas 100-400 m / fartlek por tiempo",
+    "strides_feel_good_fast": "neuromuscular aláctico (Z7-Z8 de ritmo, NO fatigante) · ~100 m, 2×/sem",
+    "cuestas_cortas": "fuerza/hipertrofia funcional específica",
+    "afinamiento_8_9_10": "ritmo de carrera objetivo por distancia (milla→Z7 · 5K→Z6 · 10K/media→Z5-Z4) · 2-3 sesiones en 6 semanas"
+  },
+
+  "aplicacion_en_el_proyecto": [
+    "Es la plantilla por defecto para programar/renovar a un RECREACIONAL con <80 km/sem (la mayoría). Cruza con microciclos-recreativos (4 días/fase) y el corpus noruego (sub-umbral).",
+    "Al leer el feedback/renovación: si el atleta se 'vacía' en cada sesión (sRPE alto constante, se pasa de ritmo) → aplicar idiot-proofing (reps cortas, piso de zona estricto). Si salta volumen/densidad → reencauzar a 2 estímulos de calidad + ciclo móvil 10-14 días.",
+    "Para 5K/10K amateur: NO imponer tirada larga semanal cara; rodaje 60' + media-larga cada 2-3 sem. Reservar la tirada larga exigente para media/maratón.",
+    "Afinamiento solo si el atleta busca pico en fecha clave: ventana 4-6 sem, 2-3 sesiones 8-9/10 máx. Si es propenso a lesión o busca disfrutar → competir sobre la base."
+  ]
+}

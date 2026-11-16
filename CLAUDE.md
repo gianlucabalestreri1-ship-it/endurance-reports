@@ -483,6 +483,17 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   Valida la estructura base fácil + tempo del catálogo),
   `libreria-et` (catálogo de plantillas del coach), **`magness-sistema`** (Steve Magness — periodización
   base/precomp/competición/pico, tabla de tipos, ejemplos de sesiones con progresión, semanas de descarga),
+  **`magness-amateur-volumen-limitado`** (masterclass de Magness para AMATEURS con <50 millas/80 km semanales —
+  cargada 2026-11-16: el coach lo marca como **EL SISTEMA QUE YA USA** con mejoras, y aplica a la MAYORÍA de sus
+  atletas. Diagnóstico de 3 restricciones reales (lesión/tolerancia tisular · tiempo/estilo de vida · carga
+  alostática) + cuello de botella (perfiles); base aeróbica con **regla 45-60' continuos** en 4-5 días + strides
+  'feel-good-fast'; fase específica con **sub-umbral 2.3-3.0 mmol = base Z3-Z4** (dosis 15→25-30', ≤2/sem) y
+  **velocidad moderada fraccionada de Igloi** (6-7/10, 'corto antes que largo'); proporción aeróbico:velocidad por
+  distancia (milla 1:1 · 5-10K 2:1 · media/maratón 3:1-5:1); crítica a la tirada larga en distancias cortas; **ciclos
+  móviles de 10-14 días** con 2 estímulos de calidad; afinamiento 4-6 sem (8-9/10, 2-3 sesiones) + combos; caso real
+  milla 4:43 con carrito; 4 principios rectores (no hacer estupideces, idiot-proofing, consistencia>heroísmo, cálculo
+  individual). Trae mapeo al modelo base y cómo aplicarlo al programar/renovar recreacionales. Cruza con
+  microciclos-recreativos + corpus noruego (sub-umbral)),
   **`noruego-sistema`** (SISTEMA NORUEGO / doble umbral — microciclo semanal de Bakken/SISU + sesiones por zona
   del paper PMC11560996, **en FORMATO TIEMPO** por pedido del coach: dosis universal por tiempo, distancia = ajuste
   secundario. Trae mapeo zonas noruegas→modelo base (su 'threshold' Z3 = base Z3-Z4 sub-umbral), tabla de parámetros
