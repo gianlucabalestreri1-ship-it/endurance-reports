@@ -226,6 +226,12 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
     a semana). En sync en `lib/session-blocks.js` (feedback). OJO: la adherencia agregada del informe usa período 1+2;
     las primeras semanas de un bloque nuevo pueden salir bajas si el ciclista entrenó en días distintos a los programados
     (match es por fecha exacta, no ±días como en running).
+  - **Adherencia = MESOCICLO ACTUAL (fix 2026-11-16, caso Martin Sueta):** el pill, la sugerencia automática y el orden
+    dentro del tier usan la adherencia del **meso actual** (el que se renueva), NO el agregado de período 1+2. Cuando
+    `selectPeriod` agrega el meso PREVIO como contexto (porque el actual es corto ≤2 micros), ese meso de arranque NO debe
+    arrastrar el número (Martin: meso actual 100% 9/9, pero el arranque lo bajaba a 59%). `adh()` en `renewal-html.js`
+    agrupa micros por meso y usa el último; si el actual recién arrancó (<4 sesiones vencidas o 0 hechas) cae al período
+    completo para no mostrar 0% falso. El pill marca "· meso actual" y el global del período va al lado como contexto.
   - **Formulario conciso** (pedido del coach: "lo clave de cada respuesta sin ensuciar con texto"): Molestia (rojo si
     reporta dolor) · Estado (Sueño·Estrés·Energía/10·Motivación/10) · Carreras · Cambios · Peso · Sensación · Nota;
     cada campo truncado, se omiten los triviales (no/nada/ninguno). Lee `report/form-responses.json`.

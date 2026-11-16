@@ -58,7 +58,21 @@ function fbTable(d){
   if(!rows.length) return `<div class="nofb">Sin feedback cargado en el último mesociclo.</div>`;
   return `<div class="fbwrap"><table class="fb"><thead><tr><th>Fecha</th><th>Sesión</th><th>Tipo</th><th>sRPE</th><th>Comentario del atleta</th><th>Dolor</th><th>Ritmo obj → real</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
 }
-function adh(d){let t=0,done=0;for(const m of d.micros){t+=m.progSessions;done+=m.doneSessions;}return{t,done,pct:t?Math.round(100*done/t):0};}
+// Adherencia = MESOCICLO ACTUAL (el que estamos renovando). selectPeriod agrega el meso PREVIO
+// solo como contexto cuando el actual es corto (≤2 micros); no debe arrastrar la adherencia ni la
+// sugerencia (caso Martin Sueta: meso actual 100%, pero el de arranque lo bajaba a 59%). Si el meso
+// actual todavía no tiene ejecución suficiente (recién arrancó: <4 sesiones vencidas o 0 hechas),
+// cae al período completo para no mostrar un 0% falso.
+function adh(d){
+  const groups=[];
+  for(const m of d.micros){const k=String(m.meso!=null?m.meso:m.number);let g=groups.find(x=>x.k===k);if(!g){g={k,t:0,done:0};groups.push(g);}g.t+=m.progSessions;g.done+=m.doneSessions;}
+  const allT=groups.reduce((s,g)=>s+g.t,0),allDone=groups.reduce((s,g)=>s+g.done,0);
+  const cur=groups[groups.length-1]||{t:0,done:0};
+  const useCur=groups.length>1 && cur.t>=4 && cur.done>0;
+  const t=useCur?cur.t:allT,done=useCur?cur.done:allDone;
+  const overallPct=allT?Math.round(100*allDone/allT):0;
+  return {t,done,pct:t?Math.round(100*done/t):0,useCur,overallPct,overallT:allT,overallDone:allDone};
+}
 // ---- clasificación por TIPO DE CORREDOR (batching de contexto, Newport) ----
 // El tier sale del NIVEL REAL del atleta (pico de volumen del plan, no la semana de receso) +
 // un PISO por disciplina (un fondista en receso NO es un iniciante) + override manual opcional.
@@ -121,17 +135,18 @@ function sugerencia(d,a){
   const pain=d.micros.some(m=>(m.sessions||[]).some(s=>s.painClass==="active"));
   if(a.done===0) return `<b>Sin ejecución</b> en el período → perseguir feedback / revisar continuidad antes de renovar.`;
   if(pain) return `Molestia activa en el meso → <b>cuidar</b> al renovar.`;
-  if(a.pct<40) return `Adherencia baja (${a.pct}%) → revisar causas / ajustar carga.`;
-  if(a.pct>=80) return `Buena adherencia (${a.pct}%) → renovar progresando (objetivo: lo define el coach).`;
-  return `Adherencia ${a.pct}% → renovar según objetivo (lo define el coach).`;
+  const lbl=a.useCur?"meso actual":"período";
+  if(a.pct<40) return `Adherencia baja (${a.pct}% ${lbl}) → revisar causas / ajustar carga.`;
+  if(a.pct>=80) return `Buena adherencia (${a.pct}% ${lbl}) → renovar progresando (objetivo: lo define el coach).`;
+  return `Adherencia ${a.pct}% ${lbl} → renovar según objetivo (lo define el coach).`;
 }
 function card(d){
   const a=adh(d), fr=matchForm(d.athlete);
   const pill=fr?`<span class="pill form">Formulario ✓</span>`:"";
-  const apill=`<span class="pill adh ${a.pct===0?"a0":a.pct<40?"alo":a.pct>=80?"ahi":"amid"}">${a.pct}% · ${a.done}/${a.t}</span>`;
+  const apill=`<span class="pill adh ${a.pct===0?"a0":a.pct<40?"alo":a.pct>=80?"ahi":"amid"}" title="${a.useCur?"mesociclo actual (el que se renueva)":"período completo"}">${a.pct}% · ${a.done}/${a.t}${a.useCur?" · meso actual":""}</span>`;
   return `<div class="card">
     <h3>${esc(d.athlete)} ${apill} ${pill}</h3>
-    <div class="plan">${esc(d.plan.title)} · período ${d.periodMesos.join(" + ")} · ${esc(d.plan.start)}→${esc(d.plan.end)}${(d._km>=1&&!d._caco)?` · ~${Math.round(d._km)} km/sem`:""}${d.discipline?` · <span class="disc">${esc(d.discipline)}</span>`:""}${d._receso?` · <span class="receso">en receso · tier por nivel/disciplina</span>`:""}${d._overNote?` · <span class="receso">${esc(d._overNote)}</span>`:""}</div>
+    <div class="plan">${esc(d.plan.title)} · período ${d.periodMesos.join(" + ")} · ${esc(d.plan.start)}→${esc(d.plan.end)}${(d._km>=1&&!d._caco)?` · ~${Math.round(d._km)} km/sem`:""}${a.useCur?` · <span class="disc">adher. período completo ${a.overallPct}% (${a.overallDone}/${a.overallT}, incl. meso previo de contexto)</span>`:""}${d.discipline?` · <span class="disc">${esc(d.discipline)}</span>`:""}${d._receso?` · <span class="receso">en receso · tier por nivel/disciplina</span>`:""}${d._overNote?` · <span class="receso">${esc(d._overNote)}</span>`:""}</div>
     ${noteBlock(d)}
     ${formBlock(fr)}
     <div class="fblabel">Feedback del último mesociclo</div>
@@ -213,10 +228,10 @@ const html=`<!doctype html><html lang="es"><head><meta charset="utf-8"><meta nam
 <header class="top"><h1>Informe de renovación${titleExtra}</h1>
 <div class="sub">Una ficha por atleta con su feedback del último mesociclo · los que respondieron el formulario van primero</div>
 <div class="meta"><span><b>Fecha:</b> ${todayStr}</span><span><b>Atletas:</b> ${total}</span><span><b>Respondieron formulario:</b> ${nForm}</span>${ALTAS.length?`<span><b>Altas nuevas:</b> ${ALTAS.length}</span>`:""}<span><b>Fuente:</b> Endurance Tool + formulario de renovación/inicio</span></div></header>
-<div class="howto"><b>Cómo leerlo:</b> agrupado por <b>tipo de corredor</b> (volumen semanal) para trabajar en bloques afines y bajar el cambio de contexto. Dentro de cada bloque, los que <b>respondieron el formulario</b> van primero (con sus respuestas arriba de la ficha). Cada ficha trae el <b>feedback del último mesociclo</b> (ritmo obj→real; laps de pausa &gt;8'/km descartadas), la <b>adherencia</b> (solo runs) y una <b>sugerencia automática</b> (heurística: adherencia + molestia). Los objetivos de destino los define el coach.${ALTAS.length?" Al final, las <b>altas / nuevos ingresos</b> con qué hacer con cada uno.":""}</div>
+<div class="howto"><b>Cómo leerlo:</b> agrupado por <b>tipo de corredor</b> (volumen semanal) para trabajar en bloques afines y bajar el cambio de contexto. Dentro de cada bloque, los que <b>respondieron el formulario</b> van primero (con sus respuestas arriba de la ficha). Cada ficha trae el <b>feedback del último mesociclo</b> (ritmo obj→real; laps de pausa &gt;8'/km descartadas), la <b>adherencia del mesociclo actual</b> (el que se renueva; si el período trae el meso previo como contexto, su adherencia global va aclarada al lado) y una <b>sugerencia automática</b> (heurística: adherencia + molestia). Los objetivos de destino los define el coach.${ALTAS.length?" Al final, las <b>altas / nuevos ingresos</b> con qué hacer con cada uno.":""}</div>
 ${TIERS.map(tierSection).filter(Boolean).join("\n")}
 ${altasSec}
-<footer>Generado desde Endurance Tool (último mesociclo del plan vigente) + formulario de renovación (Google Form) + formulario de inicio (intake). Adherencia = solo runs, sesiones vencidas. Sugerencia = heurística (no reemplaza el criterio del coach). Objetivos de destino: los define el coach.</footer>
+<footer>Generado desde Endurance Tool (último mesociclo del plan vigente) + formulario de renovación (Google Form) + formulario de inicio (intake). Adherencia = sesiones vencidas del <b>mesociclo actual</b> (el meso previo, si se muestra, es contexto). Sugerencia = heurística (no reemplaza el criterio del coach). Objetivos de destino: los define el coach.</footer>
 </div></body></html>`;
 fs.writeFileSync(OUT,html);
 console.log("OK ->",OUT,"| atletas:",total,"| conForm:",nForm,"| altas:",ALTAS.length,"| bytes:",html.length);
