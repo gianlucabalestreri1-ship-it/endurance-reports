@@ -244,7 +244,7 @@ const PAIN_CTX = /(pie|rodilla|tobillo|cadera|gemelo|isquio|cu[aá]driceps|cuadr
 const NEG_W = /\b(sin|no|ni|ning\w*|cero|nunca|tampoco|niego|niega)\b/;
 function _painNegated(c, idx) {
   const before = c.slice(Math.max(0, idx - 40), idx);
-  const clause = before.split(/[.;,:!?]|\bpero\b|\baunque\b|\bsalvo\b/).pop(); // última cláusula antes de la palabra
+  const clause = before.split(/[.;,:!?/]|\bpero\b|\baunque\b|\bsalvo\b/).pop(); // última cláusula antes de la palabra
   return NEG_W.test(clause);
 }
 // 'active' = dolor real · 'improving' = mención negada con contexto (progresión buena) · 'none'
@@ -254,8 +254,12 @@ function classifyPain(comment) {
   PAIN_G.lastIndex = 0;
   let m, improving = false;
   while ((m = PAIN_G.exec(c)) !== null) {
+    // Etiqueta del formulario ("molestias:" / "dolores:") → no es mención; la respuesta se evalúa aparte.
+    let e = m.index; while (e < c.length && /[a-záéíóúñü]/.test(c[e])) e++;
+    let k = e; while (k < c.length && c[k] === ' ') k++;
+    if (c[k] === ':') continue;
     if (!_painNegated(c, m.index)) {
-      const clauseAfter = c.slice(m.index, m.index + 50).split(/[.;:!?]|\bpero\b|\baunque\b/)[0];
+      const clauseAfter = c.slice(m.index, m.index + 50).split(/[.;:!?/]|\bpero\b|\baunque\b/)[0];
       if (/\bmenos\b|cada vez menos|va cediendo|\bcediendo\b|aflojand|disminu/.test(clauseAfter)) { improving = true; continue; }
       return 'active';
     }

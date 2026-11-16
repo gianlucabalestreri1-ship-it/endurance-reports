@@ -96,6 +96,10 @@ en otra cláusula). `classifyPain` devuelve:
   **"Mejora 🟣"** (lila, color diferenciado). Ej.: "No presento molestias en mi pie derecho".
 - **`none`** = sin mención relevante → **"NO"**.
 `detectPain` = `classifyPain === 'active'` (los conteos de dolor cuentan solo activos; "Mejora" no suma).
+**Etiquetas del formulario (fix 2026-11-16):** si la palabra de dolor está seguida de `:` es un RÓTULO
+(`"molestias: sin molestias"`, `"Sensaciones / molestias: un poco de cansancio"`), NO una mención → se saltea y se
+evalúa la RESPUESTA que viene después. Así "sin molestias" = NO hubo dolor y "cansancio" (que NO está en la lista de
+dolor) no dispara. `/` también separa cláusulas. (Sync en `lib/endurance.js` + `endurance.js` raíz.)
 
 ### APIs de planes (más allá de las notificaciones)
 
