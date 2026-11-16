@@ -100,14 +100,18 @@ function sessCard(s,today){
 function weekGrid(mi,today){
   const days=weekDays(mi.start);if(!days.length)return "";
   const byDay={};for(const s of (mi.sessions||[]))if(s.date)(byDay[s.date]=byDay[s.date]||[]).push(s);
-  const heads=days.map((d,i)=>`<th>${DOW[i]} ${d.slice(8,10)}</th>`).join("");
-  const cells=days.map(d=>{
-    const ss=(byDay[d]||[]).sort((a,b)=>(a.moment||"")<(b.moment||"")?-1:1);
-    return ss.length?`<td>${ss.map(s=>sessCard(s,today)).join("")}</td>`:`<td class="rest">Descanso</td>`;
+  // SOLO los días con sesión (se omiten los descansos) → las columnas con muchos datos se ensanchan.
+  const active=days.map((d,i)=>({d,dow:DOW[i]})).filter(x=>byDay[x.d]&&byDay[x.d].length);
+  if(!active.length) return "";
+  const heads=active.map(x=>`<th>${x.dow} ${x.d.slice(8,10)}</th>`).join("");
+  const cells=active.map(x=>{
+    const ss=byDay[x.d].slice().sort((a,b)=>(a.moment||"")<(b.moment||"")?-1:1);
+    return `<td>${ss.map(s=>sessCard(s,today)).join("")}</td>`;
   }).join("");
   const rv=(mi.realVol&&!/^0\s*m$/.test(String(mi.realVol).trim()))?` · ${esc(mi.realVol)}`:"";
   const banner=`Microciclo ${esc(mi.number||"")} · ${esc(mi.meso||"")} — ${fmtDMY(mi.start)} al ${fmtDMY(mi.end)} <span class="wkadh">${mi.doneSessions}/${mi.progSessions} ejecutadas${rv}</span>`;
-  return `<div class="wk"><div class="wkhead">${banner}</div><div class="wkscroll"><table class="wkgrid"><thead><tr>${heads}</tr></thead><tbody><tr>${cells}</tr></tbody></table></div></div>`;
+  const minw=Math.max(360,active.length*150);
+  return `<div class="wk"><div class="wkhead">${banner}</div><div class="wkscroll"><table class="wkgrid" style="min-width:${minw}px"><thead><tr>${heads}</tr></thead><tbody><tr>${cells}</tr></tbody></table></div></div>`;
 }
 function fbTable(d){
   const today=new Date(Date.now()-3*3600*1000).toISOString().slice(0,10);
@@ -270,10 +274,9 @@ td.fitc{min-width:150px;font-size:10.8px}.obj{font-weight:700;color:#1f5fae;whit
 .wkhead{background:var(--navy);color:#fff;font-size:12.5px;font-weight:600;padding:6px 10px}
 .wkhead .wkadh{float:right;font-weight:400;opacity:.9}
 .wkscroll{overflow-x:auto}
-table.wkgrid{width:100%;table-layout:fixed;border-collapse:collapse;min-width:720px}
-table.wkgrid th{background:#eef2f7;color:#2b3440;font-size:11px;font-weight:700;text-align:center;padding:4px 3px;border:1px solid var(--line);width:14.28%}
-table.wkgrid td{border:1px solid var(--line);vertical-align:top;padding:3px;height:100%}
-table.wkgrid td.rest{text-align:center;color:#aab2bd;font-size:11px;background:#fafbfc}
+table.wkgrid{width:100%;table-layout:fixed;border-collapse:collapse}
+table.wkgrid th{background:#eef2f7;color:#2b3440;font-size:11px;font-weight:700;text-align:center;padding:4px 3px;border:1px solid var(--line)}
+table.wkgrid td{border:1px solid var(--line);vertical-align:top;padding:4px 5px;height:100%}
 .sess{border-left:3px solid #c9d2dc;border-radius:4px;background:#fbfcfd;padding:3px 4px;margin-bottom:3px}
 .sess.cLIT{border-left-color:#6fa8dc}.sess.cThT{border-left-color:#ffd24d}.sess.cHIT{border-left-color:#e06666}.sess.cOtr{border-left-color:#c9d2dc}
 .sess.fut{opacity:.6}

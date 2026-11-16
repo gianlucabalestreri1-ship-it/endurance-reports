@@ -246,8 +246,10 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
     **grilla semanal** (NO lista). Una grilla por microciclo: encabezado azul con "Microciclo N · Meso — DD/MM al DD/MM ·
     X/Y ejecutadas", columnas **Lun→Dom** (fecha en el `<th>`), y la info de cada sesión DENTRO de la celda de su día
     (tipo LIT/ThT/HIT con borde de color, sRPE, bloques prog→ejec compactos vía `ritmoCompact`, dolor, comentario);
-    "Descanso" en los días libres, "programada"/"sin reporte" en futuras/no reportadas, tag AM/PM. `fbTable`/`weekGrid`/
-    `sessCard`/`ritmoCompact` en `renewal-html.js`. Scroll horizontal en pantallas chicas.
+    "programada"/"sin reporte" en futuras/no reportadas, tag AM/PM. `fbTable`/`weekGrid`/`sessCard`/`ritmoCompact` en
+    `renewal-html.js`. Scroll horizontal en pantallas chicas. **Ajuste 2026-11-16:** se OMITEN las columnas de días SIN
+    sesión (no se muestra "Descanso") para repartir el ancho entre los días con datos → celdas más anchas y menos altas;
+    el ancho de columna se auto-distribuye (`table-layout:fixed`, min-width = nº columnas × 150px).
   - **Breakdown POR BLOQUE (fix 2026-11-16, caso Evelyn Virgilio):** reemplaza la vieja "Ritmo obj → real" (que volcaba
     las vueltas crudas = ruido). Usa el MISMO motor que el feedback (`SB.sessionBreakdown` de `lib/session-blocks.js`),
     que expone `struct` (bloques estructurados): cada bloque con su dosis + zona + rango objetivo y los **ritmos ejecutados
