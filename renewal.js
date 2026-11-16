@@ -177,7 +177,10 @@ function dayDiff(a, b) { return Math.round((Date.parse(d10(a) + 'T00:00:00Z') - 
 // reloj GPS real (da laps) vs app de teléfono (Nike/Strava genérico = solo resumen)
 function realDevice(dev) {
   const n = ((dev && dev.device_name) || '').toLowerCase(), o = ((dev && dev.origin) || '').toLowerCase();
-  if (/garmin|amazfit|coros|polar|suunto|apple ?watch|wahoo|fitbit|huawei|forerunner|fenix|instinct|venu|vivoactive|epix|enduro|galaxy watch/.test(n)) return true;
+  // relojes + ciclocomputadores reales (dan laps/potencia). Ojo: un ciclocomputador real
+  // (iGPSPORT, Bryton, Hammerhead, Edge, Elemnt…) puede sincronizar vía Strava → el nombre manda,
+  // no el origin (no confundir con Strava-teléfono, que viene con device_name genérico/desconocido).
+  if (/garmin|amazfit|coros|polar|suunto|apple ?watch|wahoo|fitbit|huawei|forerunner|fenix|instinct|venu|vivoactive|epix|enduro|galaxy watch|igpsport|bryton|hammerhead|karoo|\bedge\b|elemnt|magene|sigma rox|xoss/.test(n)) return true;
   return o === 'garmin';
 }
 // laps + ritmo de un resume_id (mismo shape que el loop principal)
@@ -236,6 +239,29 @@ async function pairCrossDayFits(session, microId, sessions, rawRun) {
     ss.hasFit = true; ss.laps = fl.laps; ss.realPace = fl.realPace; ss.realDist = fl.realDist; ss.realDur = fl.realDur; ss.source = 'FIT';
     if (ss.date !== f.date) ss.execDate = f.date;
     assigned.add(best.idx); usedFit.add(f.id); matchedDates.add(f.date);
+  }
+  // CICLISMO: ET a veces NO pega el FIT y el endpoint `session` no trae `resume` (visto en la
+  // cuenta de ciclismo) → la sesión queda marcada NO aunque la haya hecho. Señal confiable: un FIT
+  // REAL de bici (reloj GPS) en la MISMA fecha de la sesión programada. Es aditivo (solo NO→EJEC) y
+  // no afecta a corredores (el loop de arriba filtra /run/). Validado con el coach: reproduce la
+  // adherencia semana a semana. Match por fecha EXACTA (no ±4+distancia: las distancias de bici varían).
+  const bikeByDate = {};
+  for (const slot of (micro.fits || [])) if (Array.isArray(slot)) for (const f of slot) if (f && f.id) {
+    const dev = f.device_info || {};
+    if (!realDevice(dev) || !/cycl|bike|bici|mtb|ride|velo|ciclis|ruta|gravel/i.test(f.sport_code || '')) continue;
+    const date = d10(f.session_date), km = parseFloat(dev.distance) || 0;
+    if (!bikeByDate[date] || km > (bikeByDate[date].km || 0)) bikeByDate[date] = { id: f.id, date, km };
+  }
+  const usedBikeDate = new Set();
+  for (const ss of sessions) {
+    if (ss.strength || ss.future || ss.executed) continue;
+    const f = bikeByDate[ss.date];
+    if (!f || usedBikeDate.has(ss.date)) continue;
+    usedBikeDate.add(ss.date);
+    ss.executed = true; extraDone++; ss.hasFit = true; ss.source = 'FIT';
+    const fl = await fitLaps(f.id, session);              // laps de potencia/FC si el resume las trae
+    if (fl) { ss.laps = fl.laps; ss.realPace = fl.realPace; ss.realDist = fl.realDist; ss.realDur = fl.realDur; }
+    else if (f.km) ss.realDist = f.km.toFixed(2) + ' km';
   }
   // fits que no matchean ninguna sesión -> filas "(actividad sin sesión programada)".
   // Para relojes que parten la corrida (varios fits el mismo día): NO generar filas por los fragmentos

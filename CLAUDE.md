@@ -215,6 +215,17 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
     running más cercana sin FIT (fecha ±4 días + distancia); trae las laps con `session_resume(fit.id)` y marca la
     **fecha de ejecución real** (`execDate` → "ejec. DD-MM" en la ficha). Los FITs sin sesión → fila "(actividad sin
     sesión programada)". Evita tener que mover los FITs a mano en ET.
+  - **CICLISMO — adherencia (fix 2026-11-16, caso Martin Sueta):** para ciclistas la ejecución salía mal (daba ~52%
+    cuando las semanas recientes eran 100%). DOS causas: (1) el endpoint `session` NO devuelve `resume` en la cuenta de
+    ciclismo → `hasFit` falso aunque el FIT esté pegado; (2) `pairCrossDayFits` descartaba todo lo no-running (`/run/`) y
+    `realDevice` no reconocía el **ciclocomputador** (`iGPSPORT iGS520`, que además sincroniza con `origin:strava`, no
+    `garmin`). Fix: `realDevice` ahora incluye ciclocomputadores reales (iGPSPORT/Bryton/Hammerhead/Edge/Elemnt/Magene/
+    Sigma/Xoss) — el **nombre manda sobre el origin** (un ciclocomputador real vía Strava SÍ cuenta; Strava-teléfono con
+    device_name genérico NO) — y `pairCrossDayFits` suma un bloque **aditivo** (solo NO→EJEC): marca ejecutada la sesión
+    de bici con un FIT real en la **MISMA fecha** (señal confiable; validado con el coach: reproduce la adherencia semana
+    a semana). En sync en `lib/session-blocks.js` (feedback). OJO: la adherencia agregada del informe usa período 1+2;
+    las primeras semanas de un bloque nuevo pueden salir bajas si el ciclista entrenó en días distintos a los programados
+    (match es por fecha exacta, no ±días como en running).
   - **Formulario conciso** (pedido del coach: "lo clave de cada respuesta sin ensuciar con texto"): Molestia (rojo si
     reporta dolor) · Estado (Sueño·Estrés·Energía/10·Motivación/10) · Carreras · Cambios · Peso · Sensación · Nota;
     cada campo truncado, se omiten los triviales (no/nada/ninguno). Lee `report/form-responses.json`.
