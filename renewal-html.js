@@ -234,11 +234,12 @@ function sugerencia(d,a,fr){
   if(sig.carreras) fl.push("hay calendario competitivo → si la carrera está ≤6 sem, entrar a afinamiento");
   if(sig.cambios) fl.push("cambios logísticos reportados → recalcular días/volumen disponibles");
   if(fl.length) P.push(`<div><span class="sgk">Formulario:</span> ${esc(fl.join(" · "))}</div>`);
-  const km=d._km||0, tier=d._tier||"";
+  const km=d._km||0, tier=d._tier||"", caco=!!d._caco;
   let src;
   if(/t4|t5/.test(tier)) src=`Fondo/alto volumen → <b>volumen aeróbico primero</b> + umbral fraccionado controlado (<b>corpus noruego</b>: sub-umbral Z3-Z4 @2.5-3.5 mmol; fondo ≤21 km, base sin anaeróbico); la velocidad es mantenimiento.`;
-  else if(/t3/.test(tier)&&km>=35) src=`Desarrollo → equilibrio umbral + economía (~2:1 aeróbico:velocidad, <b>Magness</b>); progresión GRADUAL de volumen antes de sumar intensidad (base noruega: aeróbico primero).`;
-  else src=`Recreacional (&lt;80 km → la mayoría) → base <b>Magness amateur</b>: regla 45-60' continuos 4-5 días, 2 estímulos de calidad/sem, <b>sub-umbral Z3-Z4</b> (idiot-proofing · consistencia&gt;heroísmo) + strides; progresar por duración/densidad, no por ritmo.`;
+  else if(caco||tier==="t1") src=`Caminar-correr / iniciante → <b>NO correr continuo largo</b> (no lo tolera). Progresar la <b>duración del trote de a poco</b> y reducir las pausas de caminata gradualmente (p.ej. +1-2' de trote ó −1 pausa por microciclo); meta de mediano plazo ~20-30' continuos ANTES de pensar en calidad. Prioridad = tolerancia tisular + hábito (<b>Magness amateur</b>: idiot-proofing · consistencia&gt;heroísmo).`;
+  else if(/t3/.test(tier)&&km>=35) src=`Desarrollo (corre ~${Math.round(km)} km) → equilibrio umbral + economía (~2:1 aeróbico:velocidad, <b>Magness</b>); progresión GRADUAL de volumen antes de sumar intensidad (base noruega: aeróbico primero).`;
+  else src=`Consolidando (corre continuo, ~${km>=1?Math.round(km)+' km':'<30 km'}) → base aeróbica <b>Magness amateur</b>: llevar los rodajes <b>HACIA</b> 45-60' continuos 4-5 días SIN saltos bruscos + strides 'feel-good-fast'; recién después un toque de sub-umbral Z3-Z4 (≤2/sem). Progresar por duración/densidad, no por ritmo.`;
   P.push(`<div><span class="sgk">Foco (base):</span> ${src}</div>`);
   P.push(`<div class="sgc">El objetivo de destino y la decisión final los define el coach. Para un análisis fino por atleta (cruce completo con la base de datos), pedir el detalle.</div>`);
   return P.join("");

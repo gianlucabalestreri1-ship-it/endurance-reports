@@ -236,6 +236,17 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
        **recreacional (<80 km, la mayoría)** → `magness-amateur-volumen-limitado` (regla 45-60', 2 calidades/sem,
        sub-umbral Z3-Z4, idiot-proofing, progresar por duración/densidad no por ritmo). El branch lidera por **tier**
        (un fondista en receso con km actual bajo igual recibe el ancla noruega, no la recreacional).
+    **FIX 2026-11-16 (el Foco NO puede ser el mismo para todos — pedido coach):** la primera versión mandaba a TODO
+    iniciante a "45-60' continuos" de Magness, que un caminar-correr NO tolera. El branch ahora distingue la ETAPA REAL:
+    **CaCo/iniciante (`_caco` o tier t1)** → NO correr continuo largo: progresar la **duración del trote de a poco** y
+    reducir las pausas de caminata gradualmente (+1-2' trote ó −1 pausa/micro), meta mediano plazo ~20-30' continuos
+    ANTES de calidad (Magness: idiot-proofing/consistencia) · **consolidando (t2, corre continuo <50 km)** → llevar los
+    rodajes **HACIA** 45-60' SIN saltos bruscos + strides, recién después sub-umbral · **desarrollo (t3 ≥35 km)** →
+    umbral+economía · **fondo (t4/t5)** → noruego. La regla 45-60' es META, no punto de partida.
+  - **Lote de este informe = SOLO VENCIDOS (pedido coach 2026-11-16):** para una corrida puntual el coach puede pedir
+    solo los planes YA vencidos (sin "por vencer ≤7d"). `renewal-html.js` toma TODOS los `report/renewal-*-data.json`
+    presentes → para acotar, generar/mantener en `report/` solo los data de los vencidos (mover el resto fuera) antes de
+    renderizar. La ventana estándar sigue siendo vencidos + ≤7d; esto es un override por pedido.
     Cierra con la aclaración de que el objetivo de destino y la decisión final los define el coach.
   - **FITs ejecutados en OTRO día** (pedido del coach 2026-11-05): `renewal.js` empareja solo los FITs que ET no pegó a
     la sesión (el atleta entrenó otro día) — mismo criterio que el pipeline de feedback: `pairCrossDayFits` llama
