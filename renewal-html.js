@@ -122,20 +122,52 @@ function fbTable(d){
   if(!anyFb) return `<div class="nofb">Sin feedback cargado en el último mesociclo.</div>`;
   return d.micros.map(mi=>weekGrid(mi,today)).filter(Boolean).join("");
 }
-// ===== RESUMEN DE DECISIÓN (Newport: claridad de un pantallazo, NO catarata) =====
-// Agrega el mesociclo por TIPO de sesión y responde lo que el coach decide con una mirada:
-// fáciles → ¿se mantuvieron fáciles?  ·  intermedias → ¿se respetó el ritmo?  ·  altas → ¿se completó? + logrado vs esperado.
+// ===== EJECUCIÓN DEL MESOCICLO, CONDENSADA =====
+// El coach quiere VER toda la ejecución del mes (no un veredicto que lo deje ciego), pero SIN la grilla-calendario
+// gigante que obliga a scrollear. Solución: 1 LÍNEA por sesión (fecha · tipo · sesión · sRPE · dolor · obj→real),
+// agrupada por microciclo, + una línea de conteos arriba para orientar. Todo visible, el dato crudo a la vista.
 function isSessDone(s){return !s.future&&!s.strength&&(s.executed||s.sRPE!=null||(s.comment&&s.comment.trim())||(Array.isArray(s.blocks)&&s.blocks.some(b=>(b.exec||[]).length)));}
-// bloques de trabajo de una sesión como "label (Zx · obj rango) → ejecutado", compacto
-function keyBlocks(s){
+// bloques de trabajo INLINE: "label Zx (obj rango) → ejecutado [FC]", separados por · (para la celda de la fila)
+function blocksInline(s){
   const ws=(s.blocks||[]).filter(b=>b.kind==="work");
-  if(!ws.length)return "";
+  if(!ws.length){ if(s.realPace)return `<b>${fmtPaceV(s.realPace)}</b>`; return s.targetPace?`<span class="bil">obj ${esc(s.targetPace)}</span>`:`<span class="dash">—</span>`; }
   return ws.map(b=>{
     const z=b.zone!=null?` Z${b.zone}`:"";
-    const obj=b.range?` obj ${fmtRangeV(b.range)}${b.isPaceRange?"/km":""}`:"";
-    const ex=b.noExec?`<span class="no">no ejec.</span>`:((b.exec||[]).length?(b.exec.map(v=>b.bike?esc(v):fmtPaceV(v)).join(" ")+(b.hr?` <span class="fc">FC${b.hr}</span>`:"")):"");
-    return `<div class="kb"><span class="kbl">${esc(b.label)}${z}${obj}</span>${ex?` → <span class="kbe">${ex}</span>`:""}</div>`;
-  }).join("");
+    const obj=b.range?` <span class="bil">(${fmtRangeV(b.range)})</span>`:"";
+    const ex=b.noExec?`<span class="no">no ejec.</span>`:((b.exec||[]).length?(`<b>${b.exec.map(v=>b.bike?esc(v):fmtPaceV(v)).join(" ")}</b>`+(b.hr?` <span class="fc">FC${b.hr}</span>`:"")):"");
+    return `<span class="bi">${esc(b.label)}${z}${obj}${ex?` → ${ex}`:""}</span>`;
+  }).join(" · ");
+}
+function sessRow(s,today){
+  const future=s.date&&s.date>today;
+  const cat=(s.cat||"").toUpperCase();
+  const catCls=cat==="HIT"?"cHIT":cat==="THT"?"cThT":cat==="LIT"?"cLIT":"cOtr";
+  const sr=(s.sRPE!=null)?`<span class="srp ${s.sRPE>=6?"srpe-hi":""}">${esc(s.sRPE)}</span>`:"";
+  const mom=s.moment?`<span class="mom">${esc(s.moment)}</span> `:"";
+  const exc=(s.execDate&&s.execDate!==s.date)?` <span class="exc">ejec.${fmtDMY(s.execDate)}</span>`:"";
+  let exe;
+  if(s.strength) exe=`<span class="fz">Fuerza</span>`;
+  else if(future) exe=`<span class="prog">programada</span>`;
+  else if(isSessDone(s)) exe=blocksInline(s);
+  else exe=`<span class="prog">sin reporte</span>`;
+  const cm=(!s.strength&&!future&&s.comment)?`<div class="rcm">${esc(trunc(s.comment,160))}</div>`:"";
+  return `<tr class="${catCls}${future?" futr":""}${s.strength?" fzr":""}">
+    <td class="cf">${fmtDMY(s.date)}${exc}</td>
+    <td class="ct">${s.strength?`<span class="int fz">Fza</span>`:intChip(s.cat)}</td>
+    <td class="cs">${mom}${s.key?"★ ":""}${esc(trunc(s.title||"",42))}${painChip(s.painClass)}</td>
+    <td class="cr">${sr}</td>
+    <td class="ce">${exe}${cm}</td></tr>`;
+}
+function execTable(d,today){
+  const blocks=d.micros.map(mi=>{
+    const ss=(mi.sessions||[]).slice().sort((a,b)=>(a.date||"")<(b.date||"")?-1:(a.date||"")>(b.date||"")?1:((a.moment||"")<(b.moment||"")?-1:1));
+    if(!ss.length)return "";
+    const rv=(mi.realVol&&!/^0\s*m$/.test(String(mi.realVol).trim()))?` · ${esc(mi.realVol)}`:"";
+    const head=`<tr class="mrow"><td colspan="5">Micro ${esc(mi.number||"")} · ${esc(mi.meso||"")} — ${fmtDMY(mi.start)} al ${fmtDMY(mi.end)} <span class="wkadh">${mi.doneSessions}/${mi.progSessions} ejec.${rv}</span></td></tr>`;
+    return head+ss.map(s=>sessRow(s,today)).join("");
+  }).filter(Boolean).join("");
+  if(!blocks)return "";
+  return `<table class="exec"><tbody>${blocks}</tbody></table>`;
 }
 function resumenBlock(d){
   const today=new Date(Date.now()-3*3600*1000).toISOString().slice(0,10);
@@ -149,50 +181,11 @@ function resumenBlock(d){
     if(s.painClass==="active"&&!painS)painS=s;
   }
   const prog=c=>buckets[c].length, done=c=>buckets[c].filter(isSessDone).length;
-  const srpeAvg=c=>{const v=buckets[c].filter(isSessDone).map(s=>s.sRPE).filter(x=>x!=null);return v.length?Math.round(10*v.reduce((a,b)=>a+b,0)/v.length)/10:null;};
-  const anyData=prog("LIT")+prog("THT")+prog("HIT")>0;
-  if(!anyData)return `<div class="nofb">Sin sesiones de ritmo en el último mesociclo.</div>`;
-  const rows=[];
-  // FÁCILES (LIT): objetivo = correr fácil
-  if(prog("LIT")){
-    const dn=done("LIT"),pg=prog("LIT"),avg=srpeAvg("LIT");
-    const hard=buckets.LIT.filter(isSessDone).filter(s=>s.sRPE!=null&&s.sRPE>=6).length;
-    let v;
-    if(!dn)v=`<span class="warn">sin ejecutar</span>`;
-    else if(hard)v=`<span class="warn">⚠ ${hard} corrida(s) más exigente(s) de lo pautado (sRPE ≥6)</span>`;
-    else v=`<span class="ok">✓ se mantuvieron fáciles</span>${avg!=null?` · sRPE prom ${avg}`:""}`;
-    rows.push(`<div class="rrow lit"><span class="rlab">🔵 Fáciles</span><span class="rcnt">${dn}/${pg}</span><span class="rver">${v}</span></div>`);
-  }
-  // INTERMEDIAS (ThT): objetivo = respetar el ritmo/zona
-  if(prog("THT")){
-    const dn=done("THT"),pg=prog("THT");
-    let within=0,tot=0,lastKB="";
-    for(const s of buckets.THT.filter(isSessDone)){
-      for(const b of (s.blocks||[])){
-        if(b.kind!=="work"||!b.isPaceRange||b.noExec)continue;
-        const rs=rangeSecs(b.range);if(!rs)continue;
-        for(const e of (b.exec||[])){const p=paceToSec(e);if(p==null)continue;tot++;if(p>=rs[0]-8&&p<=rs[1]+8)within++;}
-      }
-      if((s.blocks||[]).some(b=>b.kind==="work"&&(b.exec||[]).length))lastKB=keyBlocks(s);
-    }
-    let v;
-    if(!dn)v=`<span class="warn">sin ejecutar</span>`;
-    else if(tot)v=(within/tot>=0.7)?`<span class="ok">✓ ritmo en zona</span> (${within}/${tot})`:`<span class="warn">⚠ ritmo fuera de zona (${within}/${tot} en rango)</span>`;
-    else {const avg=srpeAvg("THT");v=`ejecutadas${avg!=null?` · sRPE prom ${avg}`:""}`;}
-    rows.push(`<div class="rrow tht"><span class="rlab">🟡 Intermedias</span><span class="rcnt">${dn}/${pg}</span><span class="rver">${v}</span></div>`+(lastKB?`<div class="rdet">${lastKB}</div>`:""));
-  }
-  // ALTAS (HIT): objetivo = completar + logrado vs esperado
-  if(prog("HIT")){
-    const dn=done("HIT"),pg=prog("HIT");
-    let v;
-    if(!dn)v=`<span class="warn">✗ no ejecutó ${pg} alta(s)</span>`;
-    else if(dn<pg)v=`<span class="warn">⚠ completó ${dn}/${pg}</span>`;
-    else v=`<span class="ok">✓ completó todas</span>`;
-    const det=buckets.HIT.filter(isSessDone).map(s=>{const kb=keyBlocks(s);return kb?`<div class="hk"><span class="hkt">${s.key?"★ ":""}${esc(s.title||"")}</span>${kb}</div>`:"";}).filter(Boolean).join("");
-    rows.push(`<div class="rrow hit"><span class="rlab">🔴 Altas</span><span class="rcnt">${dn}/${pg}</span><span class="rver">${v}</span></div>`+(det?`<div class="rdet">${det}</div>`:""));
-  }
-  const painLine=painS?`<div class="rpain">⚠ Molestia reportada${painS.comment?`: ${esc(trunc(painS.comment,120))}`:""}</div>`:"";
-  return `<div class="resumen">${painLine}${rows.join("")}</div>`;
+  const anyFb=d.micros.some(mi=>(mi.sessions||[]).some(s=>isSessDone(s)));
+  if(!anyFb&&!(prog("LIT")+prog("THT")+prog("HIT"))) return `<div class="nofb">Sin feedback cargado en el último mesociclo.</div>`;
+  const chip=(emoji,lbl,c)=>prog(c)?`<span class="tc ${c.toLowerCase()}">${emoji} ${lbl} <b>${done(c)}/${prog(c)}</b></span>`:"";
+  const counts=`<div class="tcounts">${chip("🔵","Fáciles","LIT")}${chip("🟡","Intermedias","THT")}${chip("🔴","Altas","HIT")}${painS?`<span class="tc pain">⚠ Molestia reportada</span>`:""}</div>`;
+  return counts+execTable(d,today);
 }
 // Adherencia = MESOCICLO ACTUAL (el que estamos renovando). selectPeriod agrega el meso PREVIO
 // solo como contexto cuando el actual es corto (≤2 micros); no debe arrastrar la adherencia ni la
@@ -329,9 +322,8 @@ function card(d){
     ${noteBlock(d)}
     ${libBlock(d)}
     ${formBlock(fr)}
-    <div class="fblabel">Cumplimiento del mesociclo</div>
+    <div class="fblabel">Ejecución del mesociclo · obj → real</div>
     ${resumenBlock(d)}
-    <details class="fullgrid"><summary>Ver microciclos completos (detalle)</summary>${fbTable(d)}</details>
     <div class="sug"><div class="sugt">Sugerencia automática (referencia · NO reemplaza al coach)</div>${sugerencia(d,a,fr)}</div>
   </div>`;
 }
@@ -372,17 +364,25 @@ h2 .count{font-weight:400;color:var(--muted);font-size:12.5px}
 .fl .flk{color:var(--muted);font-weight:700}.fl .flv{color:#1c2430}
 .fl.pain .flv{color:var(--red);font-weight:600}.fl.pain .flk{color:var(--red)}
 .fblabel{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:4px 0 3px}
-.resumen{border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:6px}
-.rrow{display:flex;align-items:baseline;gap:10px;padding:7px 11px;border-top:1px solid #eef2f7;font-size:13px}.rrow:first-child{border-top:0}
-.rrow.lit{background:#f2f8ff}.rrow.tht{background:#fffdf2}.rrow.hit{background:#fff5f4}
-.rlab{font-weight:800;min-width:96px;color:#1e2b3a}.rcnt{font-weight:800;font-variant-numeric:tabular-nums;min-width:40px;color:#334} .rver{color:#3a4654;flex:1}
-.rver .ok{color:#1a7a3c;font-weight:700}.rver .warn{color:#c0392b;font-weight:700}
-.rdet{padding:2px 11px 8px 11px;font-size:11.5px;color:#4a5663}
-.rdet .kb,.hk .kb{margin:1px 0}.kbl{color:#5a6b80}.kbe{font-weight:700;color:#1e2b3a}.kb .no,.kbe .no{color:#c0392b;font-weight:700}
-.hk{margin:3px 0}.hkt{display:block;font-weight:700;color:#8a2f28;font-size:12px}
-.rdet .fc{color:#8a5a2b;font-size:10.5px}
-.rpain{background:#fdecea;color:#9c2a1e;font-weight:700;padding:6px 11px;font-size:12px}
-.fullgrid{margin:4px 0 2px}.fullgrid>summary{cursor:pointer;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;padding:3px 0}.fullgrid[open]>summary{margin-bottom:6px}
+.tcounts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:5px}
+.tc{font-size:12px;padding:2px 9px;border-radius:999px;font-weight:600;border:1px solid #dfe6ee}.tc b{font-variant-numeric:tabular-nums}
+.tc.lit{background:#eef6ff;color:#1c4e86;border-color:#cfe2f7}.tc.tht{background:#fff8e8;color:#8a6414;border-color:#f0e2bd}.tc.hit{background:#fdeeec;color:#a33123;border-color:#f3cfc9}
+.tc.pain{background:#fdecea;color:#9c2a1e;border-color:#f3c3bc;font-weight:700}
+table.exec{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:4px}
+table.exec td{padding:3px 6px;border-bottom:1px solid #eef2f7;vertical-align:top}
+tr.mrow td{background:#1f3a5f;color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border:0}
+tr.mrow .wkadh{color:#bcd4ef;font-weight:600;margin-left:6px}
+tr.cLIT{background:#f7fbff}tr.cThT{background:#fffdf5}tr.cHIT{background:#fff7f6}tr.futr{opacity:.5}tr.fzr{opacity:.65}
+.cf{white-space:nowrap;color:#55606d;font-variant-numeric:tabular-nums;width:1%}
+.ct{white-space:nowrap;width:1%}.cr{text-align:center;width:1%}
+.cs{color:#1e2b3a;font-weight:600}
+.ce{color:#3a4654;line-height:1.45}
+.ce .bi{white-space:normal}.ce .bil{color:#6b7886}.ce b{color:#13202e}.ce .no{color:#c0392b;font-weight:700}.ce .fc{color:#8a5a2b;font-size:10.5px}
+.rcm{color:#5a6673;font-size:11px;font-style:italic;margin-top:1px}
+.srp{display:inline-block;background:#eef2f7;border-radius:5px;padding:0 6px;font-weight:700;font-size:11px}.srpe-hi{background:#fde3df;color:#b23121}
+.exc{color:#b5641a;font-size:10px;font-weight:600}.mom{color:#7a8795;font-size:10px;font-weight:700}
+td .prog{color:#9aa6b2;font-style:italic}td .fz{color:#8a7bc0;font-weight:600}
+.int.fz{background:#efeafa;color:#6b5cab}
 .fbwrap{overflow-x:auto}
 table.fb{width:100%;border-collapse:collapse;font-size:11.8px;margin-top:2px}
 table.fb th{background:#33404f;color:#fff;text-align:left;padding:4px 7px;font-size:10px;font-weight:600}

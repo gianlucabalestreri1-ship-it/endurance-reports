@@ -271,17 +271,19 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
     arrastrar el número (Martin: meso actual 100% 9/9, pero el arranque lo bajaba a 59%). `adh()` en `renewal-html.js`
     agrupa micros por meso y usa el último; si el actual recién arrancó (<4 sesiones vencidas o 0 hechas) cae al período
     completo para no mostrar 0% falso. El pill marca "· meso actual" y el global del período va al lado como contexto.
-  - **RESUMEN DE DECISIÓN — claridad de un pantallazo (pedido coach 2026-11-16, Cal Newport):** la vista de grillas
-    semanales era una CATARATA (scroll infinito, caso Daiana Delicio) → el coach terminaba haciendo doble trabajo. Ahora
-    cada ficha ABRE con **"Cumplimiento del mesociclo"** (`resumenBlock` en `renewal-html.js`): agrega el meso por TIPO de
-    sesión y responde lo que el coach decide con una mirada — **🔵 Fáciles (LIT):** hechas/prog + ¿se mantuvieron fáciles?
-    (sRPE prom; ⚠ si alguna sRPE≥6 = corrió más fuerte de lo pautado) · **🟡 Intermedias (ThT):** hechas/prog + ¿se
-    respetó el ritmo? (% de vueltas de bloques `isPaceRange` dentro del rango objetivo ±8"; `rangeSecs`/`paceToSec`) +
-    el bloque clave obj→real · **🔴 Altas (HIT):** completó cuántas/prog + por cada sesión dura el **logrado vs esperado**
-    (`keyBlocks`: label Zx obj rango → ejecutado). Molestia activa sube como línea arriba. **La grilla semanal completa
-    queda COLAPSADA** en un `<details>` "Ver microciclos completos (detalle)" — está a un clic pero no satura. `isSessDone`
-    = ejecutada (feedback manual o FIT). Regla Newport §0: lo CLAVE de un pantallazo, el detalle a demanda.
-  - **VISTA SEMANAL tipo calendario ET (pedido coach 2026-11-16):** (AHORA DENTRO del `<details>` colapsable) el feedback del mesociclo se muestra como
+  - **EJECUCIÓN DEL MESOCICLO CONDENSADA — 1 línea por sesión (pedido coach 2026-11-16, Cal Newport; iterado 2x):**
+    la grilla-calendario era una CATARATA (scroll infinito, caso Daiana Delicio). Un primer intento de resumen por
+    TIPO con VEREDICTOS ("✓ se mantuvieron fáciles") **falló al revés**: dejaba al coach "ciego de la ejecución" y lo
+    obligaba a confiar en la agregación. Solución final (`resumenBlock`→`execTable`→`sessRow`/`blocksInline` en
+    `renewal-html.js`): el coach VE toda la ejecución, pero cada sesión condensada a **UNA fila**: `fecha · tipo
+    (chip LIT/ThT/HIT) · sesión (★ clave, dolor) · sRPE · obj → real` (los bloques de trabajo inline, ritmos
+    ejecutados en negrita + FC; "no ejec." en rojo; "programada"/"sin reporte"/"Fuerza" dimmed). Agrupado por
+    microciclo (fila-banner azul con X/Y ejec. + volumen real). Arriba, una **línea de conteos** (`tcounts`): 🔵
+    Fáciles done/prog · 🟡 Intermedias · 🔴 Altas + flag de molestia — SOLO para orientar, NO reemplaza el dato.
+    Fuerza se muestra dimmed (no penaliza, chip "Fza" violeta). Helpers `paceToSec`/`rangeSecs` quedan para comparar.
+    Regla: mostrar el DATO CRUDO scannable (1 línea/sesión), ni veredicto ciego ni grilla gigante. La vieja grilla
+    semanal (`weekGrid`) queda en el código pero ya NO se usa en la ficha.
+  - **VISTA SEMANAL tipo calendario ET (histórico 2026-11-16, YA NO SE USA — reemplazada por la tabla de 1 línea/sesión):** el feedback del mesociclo se mostraba como
     **grilla semanal** (NO lista). Una grilla por microciclo: encabezado azul con "Microciclo N · Meso — DD/MM al DD/MM ·
     X/Y ejecutadas", columnas **Lun→Dom** (fecha en el `<th>`), y la info de cada sesión DENTRO de la celda de su día
     (tipo LIT/ThT/HIT con borde de color, sRPE, bloques prog→ejec compactos vía `ritmoCompact`, dolor, comentario);
