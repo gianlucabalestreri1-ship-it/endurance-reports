@@ -242,6 +242,18 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
     arrastrar el número (Martin: meso actual 100% 9/9, pero el arranque lo bajaba a 59%). `adh()` en `renewal-html.js`
     agrupa micros por meso y usa el último; si el actual recién arrancó (<4 sesiones vencidas o 0 hechas) cae al período
     completo para no mostrar 0% falso. El pill marca "· meso actual" y el global del período va al lado como contexto.
+  - **Columna "Programado → ejecutado POR BLOQUE" (fix 2026-11-16, caso Evelyn Virgilio):** reemplaza la vieja "Ritmo
+    obj → real" (que volcaba las vueltas crudas = ruido). Ahora renovación usa el MISMO motor que el feedback
+    (`SB.sessionBreakdown` de `lib/session-blocks.js`), que expone `struct` (bloques estructurados): cada bloque con su
+    dosis + zona + rango objetivo y, debajo, los **ritmos ejecutados alineados a ese bloque** (ej. `Bloque 3 - 4x1K (Z4)
+    (6:03 - 5:41) con 2' pausa pasiva` → `5'36" 5'43" 5'37" 5'32"`). `renewal.js` guarda `blocks` por sesión.
+  - **Vueltas pegadas como TEXTO en el comentario (`parseLapDump`):** muchos atletas sin FIT pegado copian el resumen de
+    su reloj como texto (`"Vuelta 1: 2020 m – 13:41 – 6'47\""`, `"Último kilómetro: 1024 m – 06:43 – 6'35\""`).
+    `parseLapDump` (en `lib/session-blocks.js`) lo reconstruye como laps reales {dist, pace} línea por línea (token
+    confiable = el ritmo `M'SS"`, NO el tiempo ni la distancia), los alinea a los bloques por distancia acumulada (las
+    vueltas de pausa, cortas/lentas >8'/km, las filtra el mismo umbral), y **limpia el volcado del comentario** dejando
+    solo la narrativa. Aplica a feedback y renovación. OJO ciclismo: el endpoint `session` no trae `resume` en esa cuenta
+    → los bloques de bici salen programados SIN potencia ejecutada (la adherencia sí se resuelve por `get_micro`).
   - **Formulario conciso** (pedido del coach: "lo clave de cada respuesta sin ensuciar con texto"): Molestia (rojo si
     reporta dolor) · Estado (Sueño·Estrés·Energía/10·Motivación/10) · Carreras · Cambios · Peso · Sensación · Nota;
     cada campo truncado, se omiten los triviales (no/nada/ninguno). Lee `report/form-responses.json`.

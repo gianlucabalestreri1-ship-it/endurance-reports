@@ -32,14 +32,28 @@ function intChip(c){const k=(c||"").toUpperCase();const m={LIT:["LIT","lit"],THT
 function painChip(p){if(p==="active")return `<span class="pn act">Dolor SÍ</span>`;if(p==="improving")return `<span class="pn mej">Mejora</span>`;return "";}
 // parseo de ritmos a mano del comentario
 function parseManual(txt){if(!txt)return{paces:[],stripped:txt};const re=/(\d{1,2})\s*[.:'’;]\s*(\d{2})(?!\d)/g;const paces=[],ranges=[];let m;while((m=re.exec(txt))!==null){const mm=+m[1],ss=+m[2];if(ss>=60)continue;const tot=mm+ss/60;if(tot<2.4||tot>12)continue;const after=txt.slice(re.lastIndex,re.lastIndex+6);if(/^\s*km/i.test(after)&&!/^\s*\/\s*km/i.test(after))continue;paces.push(`${mm}'${String(ss).padStart(2,"0")}"/km`);ranges.push([m.index,re.lastIndex]);}if(!paces.length)return{paces:[],stripped:txt};let st=txt;for(let i=ranges.length-1;i>=0;i--){const[a,b]=ranges[i];let e=b;const mk=txt.slice(b,b+6).match(/^\s*(?:"|”)?\s*\/?\s*km/i);if(mk)e=b+mk[0].length;st=st.slice(0,a)+" "+st.slice(e);}st=st.replace(/\s+[-–·,;:]+(?=\s|$)/g," ").replace(/\s{2,}/g," ").replace(/^[\s\-–·,;:]+/,"").trim();return{paces,stripped:st};}
+// ritmo "6:47" / "6'47\"" -> "6'47\""  ·  rango "8:03–6:54" -> "8:03 - 6:54"
+function fmtPaceV(p){const m=String(p).match(/(\d{1,2})[:'’](\d{2})/);return m?`${m[1]}'${m[2]}"`:esc(p);}
+function fmtRangeV(r){return esc(String(r||"").replace(/\s*–\s*/g," - "));}
+// PROGRAMADO → EJECUTADO por bloque (dosis + zona + rango objetivo, con los ritmos ejecutados debajo).
 function ritmoCell(s){
-  const obj=s.targetPace?`<span class="obj">obj ${esc(s.targetPace)}</span>`:"";
-  if(s.hasFit&&Array.isArray(s.laps)&&s.laps.length){
-    const kept=s.laps.filter(l=>{const p=paceMin(l.pace);return p===null?true:p<=PAUSE;});
-    if(kept.length){const laps=kept.map(l=>{const km=l.distKm!=null?Number(l.distKm).toFixed(2):"";const fc=(l.hrA||l.hrM)?` (${l.hrA||"–"} ${l.hrM||"–"})`:"";return `<span class="lap">${km} ${esc(l.pace||"")}${fc}</span>`;}).join("");
-      return `${obj}<div class="laps">${laps}</div>`;}
+  if(Array.isArray(s.blocks)&&s.blocks.length){
+    const out=s.blocks.map(b=>{
+      if(b.kind==="warm") return `<div class="blk"><span class="blh">Bloque ${b.n} - ${esc(b.label)}${b.dur?" "+esc(b.dur):""}</span></div>`;
+      if(b.kind==="pause") return `<div class="blk pau"><span class="blh">Bloque ${b.n} - ${b.dur?esc(b.dur)+" ":""}${esc(b.label)}</span></div>`;
+      if(b.kind==="total"){const ex=(b.exec||[]).map(v=>b.bike?esc(v):fmtPaceV(v)).join("  ");return `<div class="blk"><span class="blh">${esc(b.label)}</span><div class="ex">${ex}${b.hr?` <span class="fc">FC ${b.hr}</span>`:""}</div></div>`;}
+      const zone=b.zone!=null?` (Z${b.zone})`:"";
+      const rng=b.range?` (${fmtRangeV(b.range)}${b.isPaceRange&&!b.bike?"/km":""})`:"";
+      const rec=b.rec&&b.rec.dur?` <span class="rec">con ${esc(b.rec.dur)} pausa pasiva</span>`:"";
+      let ex="";
+      if(b.noExec) ex=`<div class="ex no">— (no ejecutado)</div>`;
+      else if((b.exec||[]).length){const vals=b.exec.map(v=>b.bike?esc(v):fmtPaceV(v)).join("  ");ex=`<div class="ex">${vals}${b.hr?` <span class="fc">FC ${b.hr}</span>`:""}</div>`;}
+      return `<div class="blk"><span class="blh">Bloque ${b.n} - ${esc(b.label)}${zone}${rng}${rec}</span>${ex}</div>`;
+    }).join("");
+    return `<div class="blocks">${out}</div>`;
   }
-  if(s.comment){const mp=parseManual(s.comment);if(mp.paces.length)return `${obj}<div class="laps"><span class="mano">ritmos: </span>${mp.paces.map(p=>`<span class="lap">${esc(p)}</span>`).join("")}</div>`;}
+  // fallback (sesión sin breakdown): objetivo + real medio
+  const obj=s.targetPace?`<span class="obj">obj ${esc(s.targetPace)}</span>`:"";
   if(s.realPace)return `${obj}<div class="laps"><span class="lap">real ${esc(s.realPace)}</span></div>`;
   return obj||'<span class="dash">—</span>';
 }
@@ -56,7 +70,7 @@ function fbTable(d){
     rows.push(`<tr><td class="c">${dcell}</td><td>${s.key?"★ ":""}${esc(s.title||"")}</td><td class="c">${intChip(s.cat)}</td><td class="c">${sr}</td><td class="cm">${comment?esc(comment):'<span class="dash">—</span>'}</td><td class="c">${painChip(s.painClass)||'<span class="dash">—</span>'}</td><td class="fitc">${ritmoCell(s)}</td></tr>`);
   }
   if(!rows.length) return `<div class="nofb">Sin feedback cargado en el último mesociclo.</div>`;
-  return `<div class="fbwrap"><table class="fb"><thead><tr><th>Fecha</th><th>Sesión</th><th>Tipo</th><th>sRPE</th><th>Comentario del atleta</th><th>Dolor</th><th>Ritmo obj → real</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
+  return `<div class="fbwrap"><table class="fb"><thead><tr><th>Fecha</th><th>Sesión</th><th>Tipo</th><th>sRPE</th><th>Comentario del atleta</th><th>Dolor</th><th>Programado → ejecutado (por bloque)</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
 }
 // Adherencia = MESOCICLO ACTUAL (el que estamos renovando). selectPeriod agrega el meso PREVIO
 // solo como contexto cuando el actual es corto (≤2 micros); no debe arrastrar la adherencia ni la
@@ -202,6 +216,12 @@ table.fb td.c{text-align:center;white-space:nowrap}table.fb td.cm{min-width:230p
 .pn{font-size:9.5px;font-weight:700;padding:1px 5px;border-radius:4px}.pn.act{background:#fbe0dd;color:#c0392b}.pn.mej{background:#efe3fb;color:#7a3fc0}
 td.fitc{min-width:150px;font-size:10.8px}.obj{font-weight:700;color:#1f5fae;white-space:nowrap}
 .laps{display:flex;flex-direction:column;gap:1px;margin-top:2px}.lap{font-size:10.2px;color:#44505d;white-space:nowrap;font-variant-numeric:tabular-nums}.mano{color:#8a6d10;font-weight:600}
+.blocks{display:flex;flex-direction:column;gap:2px}
+.blk{line-height:1.3}.blk .blh{font-size:10.6px;color:#2b3440;font-weight:600}
+.blk .ex{font-size:11px;color:#1a6b2e;font-variant-numeric:tabular-nums;padding-left:9px}
+.blk .ex.no{color:#c0392b;font-weight:600}
+.blk.pau .blh{color:#8a94a0;font-weight:500}
+.blk .rec{color:#8a94a0;font-weight:400}.blk .fc{color:#8a94a0;font-weight:400}
 .dash{color:#c3ccd6}
 .sug{margin-top:8px;background:#0f1b2b;color:#fff;border-radius:6px;padding:7px 11px;font-size:12.5px}.sug b{color:#8fd0ff}
 .disc{background:#eef2f7;color:#44505d;border-radius:4px;padding:0 5px;font-size:11px;font-weight:600}.receso{background:#fdf3e6;color:#b5641a;border-radius:4px;padding:0 5px;font-size:11px;font-weight:700}

@@ -17,6 +17,7 @@
  * Salida: report/renewal-<plan>-data.json por plan.
  */
 const ET = require('./lib/endurance');
+const SB = require('./lib/session-blocks');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
@@ -350,17 +351,22 @@ async function renewalForPlan(session, planId) {
         }
         const it = (s.type && s.type.intensity_type) || '';
         const idx = sessions.length;
+        // Breakdown PROGRAMADO → EJECUTADO por bloque (mismo motor que el feedback): alinea los
+        // ritmos (FIT o vueltas pegadas como texto en el comentario) a cada bloque y limpia el volcado.
+        let blocks = [], bdFromComment = false, bdClean = null;
+        if (full) { try { const bd = SB.sessionBreakdown(full); blocks = bd.struct || []; bdFromComment = bd.fromComment; bdClean = bd.commentClean; } catch (_) {} }
+        const commentRaw = (bdFromComment && bdClean != null ? bdClean : (s.athlete_comment || ''));
         sessions.push({
           date: s.date, moment: mom.toUpperCase(), title: s.title, due, future: !due,
           cat: it === 'THT' ? 'ThT' : it === 'LIT' ? 'LIT' : it === 'HIT' ? 'HIT' : (it || ''),
           key: !!s.key_session, status: !due ? 'Futura' : (s.get_status_display || s.status), executed, hasFit, strength,
           progRpe: s.rpe != null ? s.rpe : null, sRPE: s.athlete_rpe != null ? s.athlete_rpe : null,
           progDist: fmtMag(s.distance), progDur: fmtMag(s.duration),
-          targetPace: mainTarget ? mainTarget.target : '', targets,
+          targetPace: mainTarget ? mainTarget.target : '', targets, blocks,
           realDist, realDur, realPace, source: due ? source : '', laps, execDate: null,
           pain: ET.detectPain ? ET.detectPain((s.athlete_comment || '').trim()) : false,
           painClass: ET.classifyPain ? ET.classifyPain((s.athlete_comment || '').trim()) : 'none',
-          comment: (s.athlete_comment || '').replace(/\s+/g, ' ').trim().slice(0, 600),
+          comment: commentRaw.replace(/\s+/g, ' ').trim().slice(0, 600),
         });
         if (due && !strength) rawRun.push({ idx, date: s.date, progM: (s.distance && s.distance.magnitude) || 0 });
       }
