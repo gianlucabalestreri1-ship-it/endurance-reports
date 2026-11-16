@@ -217,8 +217,26 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
     contexto (ej. Franco = ultra, aunque su disciplina ET figure Trail-21k). La ficha muestra la **disciplina** y la nota de receso/override.
   - Cada ficha: **adherencia** (pill de color, solo runs) · **formulario conciso** (ver abajo) · **feedback del último
     mesociclo** (fecha, tipo LIT/ThT/HIT, sRPE, comentario, dolor, **ritmo obj→real**; laps de pausa >8'/km descartadas;
-    sin FIT → ritmos parseados del comentario) · **sugerencia automática** (heurística adherencia+molestia; NO reemplaza
+    sin FIT → ritmos parseados del comentario) · **sugerencia automática** (ver abajo; NO reemplaza
     al coach; los objetivos de destino los define el coach).
+  - **MESOCICLO DE LIBRERÍA EN CURSO + SUGERENCIA EN 3 PARTES (pedido coach 2026-11-16, caso Evelyn Virgilio):** la vieja
+    sugerencia de una línea ("buena adherencia → progresar") era superficial. Ahora cada ficha trae:
+    1. **Bloque de librería** (`libBlock` en `renewal-html.js`, dato `libMeso` en `renewal.js`): el `book_shop_template`
+       del **meso que contiene HOY** (o el último del período) → `name` (ej. "Mesociclo 5 - Consolidando al corredor") +
+       `folder` + **próximo paso** (`next` = Mesociclo N+1, derivado del nº) + la **`description` = tu FILTRO DE DECISIÓN**
+       escrito para la revisión (apto/no-apto · alertas de control · VERDICTO EXPRESS), en un `<details>` desplegable.
+       (`folder_bookshops_list` NO trae descripción por-meso; la fuente autoritativa es `meso.book_shop_template`.)
+    2. **Sugerencia en 3 partes** (`sugerencia(d,a,fr)` = motor de reglas, NO heurística de una línea):
+       **Progresión** (apto-para-progresar al próximo meso / repetir / cuidar, según adherencia del meso actual + molestia
+       activa + formulario; remite a tu filtro de decisión) · **Formulario** (`formSignals`: señales que condicionan la
+       carga — carga alostática alta por sueño/estrés → no sumar densidad; energía/motivación ≤5; calendario competitivo
+       → afinar; cambios logísticos → recalcular días) · **Foco (base)**: recomendación metodológica ANCLADA a `data/`
+       y citando la fuente — **fondo/alto volumen (t4/t5)** → corpus noruego (aeróbico primero + umbral fraccionado
+       @2.5-3.5 mmol, fondo ≤21 km) · **desarrollo (t3 ≥35 km)** → equilibrio umbral+economía (~2:1, Magness) ·
+       **recreacional (<80 km, la mayoría)** → `magness-amateur-volumen-limitado` (regla 45-60', 2 calidades/sem,
+       sub-umbral Z3-Z4, idiot-proofing, progresar por duración/densidad no por ritmo). El branch lidera por **tier**
+       (un fondista en receso con km actual bajo igual recibe el ancla noruega, no la recreacional).
+    Cierra con la aclaración de que el objetivo de destino y la decisión final los define el coach.
   - **FITs ejecutados en OTRO día** (pedido del coach 2026-11-05): `renewal.js` empareja solo los FITs que ET no pegó a
     la sesión (el atleta entrenó otro día) — mismo criterio que el pipeline de feedback: `pairCrossDayFits` llama
     `get_micro(micro_id)`, junta los FITs de reloj real (`realDevice`), de-dup, y empareja cada uno con la sesión de

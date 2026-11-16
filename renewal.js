@@ -388,9 +388,21 @@ async function renewalForPlan(session, planId) {
     if (_v > _peakM) _peakM = _v;
   }
   const discipline = plan.discipline ? (plan.discipline.name || plan.discipline.code || '') : ((plan.sport && plan.sport.name) || '');
+  // MESOCICLO DE LIBRERÍA que está ejecutando (si corresponde): book_shop_template del meso que contiene HOY
+  // (o el último del período). Trae name + folder + la DESCRIPCIÓN = el "filtro de decisión" que el coach escribió
+  // para la revisión/renovación (apto/no-apto + alertas + veredicto). `next` = Mesociclo N+1 (próximo paso del roadmap).
+  let libMeso = null;
+  const curMeso = period.find((m) => m.start_date && m.end_date && m.start_date <= TODAY && m.end_date >= TODAY) || period[period.length - 1];
+  const bst = curMeso && (curMeso.book_shop_template || curMeso.bookshop_template);
+  if (bst && (bst.name || bst.description)) {
+    let next = '';
+    const mm = (bst.name || '').match(/mesociclo\s*(\d+)\s*(.*)/i);
+    if (mm) next = `Mesociclo ${(+mm[1]) + 1}${mm[2] ? ' ' + mm[2].trim() : ''}`;
+    libMeso = { name: (bst.name || '').trim(), folder: (bst.folder_name || '').trim(), description: (bst.description || '').trim(), next };
+  }
   const data = { generatedAt: new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }),
     athlete, plan: { id: plan.id, title: plan.title, start: plan.start_date, end: plan.end_date, status: plan.get_status_display || plan.status },
-    discipline, planPeakKm: Math.round(_peakM / 100) / 10,
+    discipline, planPeakKm: Math.round(_peakM / 100) / 10, libMeso,
     periodMesos: period.map((m) => m.name || m.number), micros };
   fs.mkdirSync(OUT, { recursive: true });
   const f = path.join(OUT, `renewal-${planId}-data.json`);

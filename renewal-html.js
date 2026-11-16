@@ -192,14 +192,56 @@ function formBlock(fr){
   if(!trivial(q["Algo extra"])) L.push(`<div class="fl"><span class="flk">Nota</span><span class="flv">${esc(trunc(q["Algo extra"],170))}</span></div>`);
   return `<div class="formb"><div class="formh">Formulario de renovación · ${fdate(fr.date)}</div>${L.join("")}</div>`;
 }
-function sugerencia(d,a){
-  const pain=d.micros.some(m=>(m.sessions||[]).some(s=>s.painClass==="active"));
-  if(a.done===0) return `<b>Sin ejecución</b> en el período → perseguir feedback / revisar continuidad antes de renovar.`;
-  if(pain) return `Molestia activa en el meso → <b>cuidar</b> al renovar.`;
-  const lbl=a.useCur?"meso actual":"período";
-  if(a.pct<40) return `Adherencia baja (${a.pct}% ${lbl}) → revisar causas / ajustar carga.`;
-  if(a.pct>=80) return `Buena adherencia (${a.pct}% ${lbl}) → renovar progresando (objetivo: lo define el coach).`;
-  return `Adherencia ${a.pct}% ${lbl} → renovar según objetivo (lo define el coach).`;
+// --- Mesociclo de LIBRERÍA en curso (book_shop_template del meso actual): nombre + folder + próximo paso
+//     + el FILTRO DE DECISIÓN que el coach escribió para la renovación (colapsable). ---
+function libBlock(d){
+  const lib=d.libMeso; if(!lib||!(lib.name||lib.description)) return "";
+  const desc=lib.description?`<details class="libdet"><summary>Filtro de decisión del coach — apto/no-apto · alertas · veredicto</summary><pre class="libpre">${esc(lib.description)}</pre></details>`:"";
+  return `<div class="libb"><div class="libh">📚 Mesociclo de librería en curso</div>`
+    +`<div class="libr"><b>${esc(lib.name||"—")}</b>${lib.folder?` <span class="libf">· ${esc(lib.folder)}</span>`:""}${lib.next?` <span class="libn">→ próximo paso: ${esc(lib.next)}</span>`:""}</div>${desc}</div>`;
+}
+// señales del formulario que condicionan la carga a programar
+function formSignals(fr){
+  const q={}; if(fr) for(const [l,a] of (fr.qa||[])) q[l]=a;
+  const num=s=>{const m=String(s||"").match(/(\d+(?:[.,]\d+)?)/);return m?parseFloat(m[1].replace(",",".")):null;};
+  return {
+    has:!!fr,
+    molForm: !!(q["Dolores/molestias"]&&painAns(q["Dolores/molestias"])),
+    energia:num(q["Energía"]), motiv:num(q["Motivación"]),
+    estresAlto:/alto|elevad|much/i.test(q["Estrés"]||""),
+    suenoMal:/mal|poco|insuf|interrump|regular|cuesta/i.test(q["Sueño"]||""),
+    carreras: !trivial(q["Calendario competitivo"]) ? q["Calendario competitivo"] : "",
+    cambios: !trivial(q["Cambios logísticos"]) ? q["Cambios logísticos"] : "",
+  };
+}
+// Sugerencia = motor de reglas: (1) veredicto de progresión (contra adherencia + molestia + filtro de decisión del
+// meso de librería), (2) señales del formulario que condicionan la carga, (3) foco metodológico ANCLADO a la base
+// (data/: Magness amateur para recreacionales · corpus noruego para fondo). NO reemplaza al coach.
+function sugerencia(d,a,fr){
+  const painMeso=d.micros.some(m=>(m.sessions||[]).some(s=>s.painClass==="active"));
+  const sig=formSignals(fr), lib=d.libMeso, P=[];
+  let v;
+  if(a.done===0) v=`<b>Sin ejecución</b> en el meso → perseguir feedback y revisar continuidad ANTES de renovar.`;
+  else if(painMeso||sig.molForm) v=`<b>Cuidar</b>: molestia reportada → mantener/retroceder dosis, bajar impacto y asegurar tolerancia tisular antes de progresar.`;
+  else if(a.pct<50) v=`Adherencia ${a.pct}% → <b>no avanzar</b>: repetir/ajustar el mismo mesociclo para consolidar.`;
+  else if(a.pct>=80) v=`Adherencia ${a.pct}% sin molestia${sig.has?" + formulario OK":""} → <b>apto para progresar</b>${lib&&lib.next?` al <b>${esc(lib.next)}</b>`:""}${lib?` (verificar contra tu filtro de decisión del meso)`:""}.`;
+  else v=`Adherencia ${a.pct}% → progresar con cautela o repetir según objetivo${lib?` (ver filtro de decisión)`:""}.`;
+  P.push(`<div><span class="sgk">Progresión:</span> ${v}</div>`);
+  const fl=[];
+  if(sig.estresAlto||sig.suenoMal) fl.push("carga alostática alta (sueño/estrés) → NO sumar densidad, priorizar recuperación");
+  if(sig.energia!=null&&sig.energia<=5) fl.push(`energía ${sig.energia}/10 → consolidar, no forzar`);
+  if(sig.motiv!=null&&sig.motiv<=5) fl.push(`motivación ${sig.motiv}/10 → variar estímulo / meta corta`);
+  if(sig.carreras) fl.push("hay calendario competitivo → si la carrera está ≤6 sem, entrar a afinamiento");
+  if(sig.cambios) fl.push("cambios logísticos reportados → recalcular días/volumen disponibles");
+  if(fl.length) P.push(`<div><span class="sgk">Formulario:</span> ${esc(fl.join(" · "))}</div>`);
+  const km=d._km||0, tier=d._tier||"";
+  let src;
+  if(/t4|t5/.test(tier)) src=`Fondo/alto volumen → <b>volumen aeróbico primero</b> + umbral fraccionado controlado (<b>corpus noruego</b>: sub-umbral Z3-Z4 @2.5-3.5 mmol; fondo ≤21 km, base sin anaeróbico); la velocidad es mantenimiento.`;
+  else if(/t3/.test(tier)&&km>=35) src=`Desarrollo → equilibrio umbral + economía (~2:1 aeróbico:velocidad, <b>Magness</b>); progresión GRADUAL de volumen antes de sumar intensidad (base noruega: aeróbico primero).`;
+  else src=`Recreacional (&lt;80 km → la mayoría) → base <b>Magness amateur</b>: regla 45-60' continuos 4-5 días, 2 estímulos de calidad/sem, <b>sub-umbral Z3-Z4</b> (idiot-proofing · consistencia&gt;heroísmo) + strides; progresar por duración/densidad, no por ritmo.`;
+  P.push(`<div><span class="sgk">Foco (base):</span> ${src}</div>`);
+  P.push(`<div class="sgc">El objetivo de destino y la decisión final los define el coach. Para un análisis fino por atleta (cruce completo con la base de datos), pedir el detalle.</div>`);
+  return P.join("");
 }
 function card(d){
   const a=adh(d), fr=matchForm(d.athlete);
@@ -209,10 +251,11 @@ function card(d){
     <h3>${esc(d.athlete)} ${apill} ${pill}</h3>
     <div class="plan">${esc(d.plan.title)} · período ${d.periodMesos.join(" + ")} · ${esc(d.plan.start)}→${esc(d.plan.end)}${(d._km>=1&&!d._caco)?` · ~${Math.round(d._km)} km/sem`:""}${a.useCur?` · <span class="disc">adher. período completo ${a.overallPct}% (${a.overallDone}/${a.overallT}, incl. meso previo de contexto)</span>`:""}${d.discipline?` · <span class="disc">${esc(d.discipline)}</span>`:""}${d._receso?` · <span class="receso">en receso · tier por nivel/disciplina</span>`:""}${d._overNote?` · <span class="receso">${esc(d._overNote)}</span>`:""}</div>
     ${noteBlock(d)}
+    ${libBlock(d)}
     ${formBlock(fr)}
     <div class="fblabel">Feedback del último mesociclo</div>
     ${fbTable(d)}
-    <div class="sug">Sugerencia (auto) → ${sugerencia(d,a)}</div>
+    <div class="sug"><div class="sugt">Sugerencia automática (referencia · NO reemplaza al coach)</div>${sugerencia(d,a,fr)}</div>
   </div>`;
 }
 // ---- cargar y ordenar ----
@@ -290,7 +333,15 @@ table.wkgrid td{border:1px solid var(--line);vertical-align:top;padding:4px 5px;
 .sess .ex{font-size:10px;color:#1a6b2e;font-variant-numeric:tabular-nums;padding-left:4px;line-height:1.25}.sess .ex.no{color:#c0392b}.sess .ex .fc{color:#8a94a0}
 .sess .cm{font-size:9.7px;color:#55606c;margin-top:2px;line-height:1.3}
 .dash{color:#c3ccd6}
-.sug{margin-top:8px;background:#0f1b2b;color:#fff;border-radius:6px;padding:7px 11px;font-size:12.5px}.sug b{color:#8fd0ff}
+.sug{margin-top:8px;background:#0f1b2b;color:#e9f1fb;border-radius:6px;padding:9px 12px;font-size:12.5px;line-height:1.5}.sug b{color:#8fd0ff}.sug>div{margin:3px 0}
+.sugt{font-size:10.5px;font-weight:800;color:#9fb4ca;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.sgk{display:inline-block;min-width:78px;font-weight:800;color:#ffd27a}
+.sgc{margin-top:5px;font-size:11px;color:#9fb4ca;font-style:italic}
+.libb{background:#eef4ff;border:1px solid #c7d9f5;border-left:4px solid #3f6fd1;border-radius:7px;padding:9px 12px;margin:6px 0 9px}
+.libh{font-size:10.5px;font-weight:800;color:#2d5bb0;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.libr{font-size:13px;color:#1e3a5f}.libf{color:#5a6b80;font-weight:600;font-size:11.5px}.libn{background:#dde9ff;color:#2d5bb0;border-radius:4px;padding:0 6px;font-size:11px;font-weight:700;white-space:nowrap}
+.libdet{margin-top:6px}.libdet summary{cursor:pointer;font-size:11px;font-weight:700;color:#2d5bb0}
+.libpre{white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#2a3b50;background:#fbfdff;border:1px solid #d7e3f5;border-radius:6px;padding:8px 10px;margin:6px 0 0;max-height:280px;overflow:auto}
 .disc{background:#eef2f7;color:#44505d;border-radius:4px;padding:0 5px;font-size:11px;font-weight:600}.receso{background:#fdf3e6;color:#b5641a;border-radius:4px;padding:0 5px;font-size:11px;font-weight:700}
 .exec{font-size:9.5px;color:#b5641a;font-weight:600;white-space:nowrap}
 .cnote{background:#fff8ec;border:1px solid #f0dcb8;border-left:4px solid #d98a2b;border-radius:7px;padding:9px 12px;margin:6px 0 9px}
