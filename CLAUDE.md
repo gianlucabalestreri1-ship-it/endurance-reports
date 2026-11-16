@@ -247,13 +247,20 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
     (`SB.sessionBreakdown` de `lib/session-blocks.js`), que expone `struct` (bloques estructurados): cada bloque con su
     dosis + zona + rango objetivo y, debajo, los **ritmos ejecutados alineados a ese bloque** (ej. `Bloque 3 - 4x1K (Z4)
     (6:03 - 5:41) con 2' pausa pasiva` → `5'36" 5'43" 5'37" 5'32"`). `renewal.js` guarda `blocks` por sesión.
-  - **Vueltas pegadas como TEXTO en el comentario (`parseLapDump`):** muchos atletas sin FIT pegado copian el resumen de
-    su reloj como texto (`"Vuelta 1: 2020 m – 13:41 – 6'47\""`, `"Último kilómetro: 1024 m – 06:43 – 6'35\""`).
-    `parseLapDump` (en `lib/session-blocks.js`) lo reconstruye como laps reales {dist, pace} línea por línea (token
-    confiable = el ritmo `M'SS"`, NO el tiempo ni la distancia), los alinea a los bloques por distancia acumulada (las
-    vueltas de pausa, cortas/lentas >8'/km, las filtra el mismo umbral), y **limpia el volcado del comentario** dejando
-    solo la narrativa. Aplica a feedback y renovación. OJO ciclismo: el endpoint `session` no trae `resume` en esa cuenta
-    → los bloques de bici salen programados SIN potencia ejecutada (la adherencia sí se resuelve por `get_micro`).
+  - **Vueltas pegadas como TEXTO en el comentario (`parseLapDump`, v2 2026-11-16):** muchos atletas sin FIT pegado copian
+    el resumen de su reloj como texto, en VARIOS formatos: `"Vuelta 1: 2020 m – 13:41 – 6'47\""`, `"806 5'51\""`
+    (distancia pelada + ritmo), `"3035 m| 19:56| 6'35\""` (dist| tiempo| ritmo). `parseLapDump` (en `lib/session-blocks.js`)
+    reconoce CUALQUIER línea con `<distancia> … <ritmo>` y reconstruye laps reales {dist, pace} — **token confiable = el
+    ritmo `M'SS"` (apóstrofo), NO el tiempo `MM:SS` (dos puntos) ni la distancia**. Preserva la narrativa de la misma línea
+    (ej. "acá en lugar de correr 800m corrí más…") y limpia el volcado. Reglas de alineación (lib/session-blocks.js):
+    (1) `totalDist` de cada bloque = SOLO trabajo (sin la recuperación); (2) `alignLaps` **pre-filtra las vueltas de pausa**
+    (ritmo >8'/km) para que no consuman distancia acumulada y asigna por **CENTRO de la vuelta** al bloque cuyo rango de
+    distancia lo contiene (robusto ante bloques chicos no ejecutados —strides, pausas—); (3) **anota la distancia** cuando
+    una vuelta se desvía >25% de la dosis y hay una vuelta por repetición (ej. corrió 1.020m en vez de 800m → `6'05" (1,02K)`).
+    Casos validados (Evelyn): 4x800 con descansos intercalados, 6x400 con strides programados no ejecutados, 4x1000. Aplica
+    a feedback y renovación. OJO ciclismo: el endpoint `session` no trae `resume` en esa cuenta → los bloques de bici salen
+    programados SIN potencia ejecutada (la adherencia sí se resuelve por `get_micro`). PENDIENTE: sesiones donde la atleta
+    rotula ella misma "Bloque N:" o reporta TIEMPOS por rep (`2:14-2:20…`) en vez de ritmos — todavía no se parsean.
   - **Formulario conciso** (pedido del coach: "lo clave de cada respuesta sin ensuciar con texto"): Molestia (rojo si
     reporta dolor) · Estado (Sueño·Estrés·Energía/10·Motivación/10) · Carreras · Cambios · Peso · Sensación · Nota;
     cada campo truncado, se omiten los triviales (no/nada/ninguno). Lee `report/form-responses.json`.

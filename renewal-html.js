@@ -33,7 +33,7 @@ function painChip(p){if(p==="active")return `<span class="pn act">Dolor SÍ</spa
 // parseo de ritmos a mano del comentario
 function parseManual(txt){if(!txt)return{paces:[],stripped:txt};const re=/(\d{1,2})\s*[.:'’;]\s*(\d{2})(?!\d)/g;const paces=[],ranges=[];let m;while((m=re.exec(txt))!==null){const mm=+m[1],ss=+m[2];if(ss>=60)continue;const tot=mm+ss/60;if(tot<2.4||tot>12)continue;const after=txt.slice(re.lastIndex,re.lastIndex+6);if(/^\s*km/i.test(after)&&!/^\s*\/\s*km/i.test(after))continue;paces.push(`${mm}'${String(ss).padStart(2,"0")}"/km`);ranges.push([m.index,re.lastIndex]);}if(!paces.length)return{paces:[],stripped:txt};let st=txt;for(let i=ranges.length-1;i>=0;i--){const[a,b]=ranges[i];let e=b;const mk=txt.slice(b,b+6).match(/^\s*(?:"|”)?\s*\/?\s*km/i);if(mk)e=b+mk[0].length;st=st.slice(0,a)+" "+st.slice(e);}st=st.replace(/\s+[-–·,;:]+(?=\s|$)/g," ").replace(/\s{2,}/g," ").replace(/^[\s\-–·,;:]+/,"").trim();return{paces,stripped:st};}
 // ritmo "6:47" / "6'47\"" -> "6'47\""  ·  rango "8:03–6:54" -> "8:03 - 6:54"
-function fmtPaceV(p){const m=String(p).match(/(\d{1,2})[:'’](\d{2})/);return m?`${m[1]}'${m[2]}"`:esc(p);}
+function fmtPaceV(p){return esc(String(p).replace(/(\d{1,2})[:'’](\d{2})(?:"|”)?/,function(_,a,b){return a+"'"+b+'"';}));}
 function fmtRangeV(r){return esc(String(r||"").replace(/\s*–\s*/g," - "));}
 // PROGRAMADO → EJECUTADO por bloque (dosis + zona + rango objetivo, con los ritmos ejecutados debajo).
 function ritmoCell(s){
