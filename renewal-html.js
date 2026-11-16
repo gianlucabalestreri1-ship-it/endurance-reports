@@ -57,20 +57,63 @@ function ritmoCell(s){
   if(s.realPace)return `${obj}<div class="laps"><span class="lap">real ${esc(s.realPace)}</span></div>`;
   return obj||'<span class="dash">—</span>';
 }
-function fbTable(d){
-  const rows=[];
-  for(const mi of d.micros) for(const s of (mi.sessions||[])){
-    if(s.strength) continue;
-    const hasFb=s.executed||s.comment||s.sRPE!=null;
-    if(!hasFb) continue;
-    let comment=s.comment||"";
-    if(!(s.hasFit&&s.laps&&s.laps.length)){const mp=parseManual(comment);if(mp.paces.length)comment=mp.stripped;}
-    const sr=(s.sRPE!=null)?`<span class="${s.sRPE>=6?"srpe-hi":""}">${esc(s.sRPE)}</span>`:(s.progRpe!=null?`<span class="dim">${esc(s.progRpe)}*</span>`:"—");
-    const dcell=`${esc(s.date.slice(5))}${(s.execDate&&s.execDate!==s.date)?`<div class="exec">ejec. ${esc(s.execDate.slice(5))}</div>`:""}`;
-    rows.push(`<tr><td class="c">${dcell}</td><td>${s.key?"★ ":""}${esc(s.title||"")}</td><td class="c">${intChip(s.cat)}</td><td class="c">${sr}</td><td class="cm">${comment?esc(comment):'<span class="dash">—</span>'}</td><td class="c">${painChip(s.painClass)||'<span class="dash">—</span>'}</td><td class="fitc">${ritmoCell(s)}</td></tr>`);
+// ---- VISTA SEMANAL (calendario tipo Endurance Tool): 1 grilla por microciclo, columnas Lun→Dom ----
+function fmtDMY(iso){const m=String(iso||"").match(/(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}/${m[2]}`:"";}
+const DOW=["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+function weekDays(startIso){
+  const m=String(startIso||"").match(/(\d{4})-(\d{2})-(\d{2})/);if(!m)return [];
+  const base=Date.UTC(+m[1],+m[2]-1,+m[3]);
+  return Array.from({length:7},(_,i)=>new Date(base+i*86400000).toISOString().slice(0,10));
+}
+// breakdown COMPACTO para la celda del día (B1, dosis+zona+rango, ritmos debajo; pausas en una línea tenue)
+function ritmoCompact(s){
+  if(Array.isArray(s.blocks)&&s.blocks.length){
+    return s.blocks.map(b=>{
+      if(b.kind==="pause") return `<div class="blc pau">↺ ${b.dur?esc(b.dur)+" ":""}pausa</div>`;
+      if(b.kind==="warm") return `<div class="blc">B${b.n} entrada${b.dur?" "+esc(b.dur):""}</div>`;
+      if(b.kind==="total"){const ex=(b.exec||[]).map(v=>b.bike?esc(v):fmtPaceV(v)).join(" ");return `<div class="ex">${ex}${b.hr?` <span class="fc">FC${b.hr}</span>`:""}</div>`;}
+      const zone=b.zone!=null?` Z${b.zone}`:"";
+      const rng=b.range?` <span class="rg">(${fmtRangeV(b.range)})</span>`:"";
+      let ex="";
+      if(b.noExec) ex=`<div class="ex no">no ejec.</div>`;
+      else if((b.exec||[]).length) ex=`<div class="ex">${b.exec.map(v=>b.bike?esc(v):fmtPaceV(v)).join(" ")}${b.hr?` <span class="fc">FC${b.hr}</span>`:""}</div>`;
+      return `<div class="blc"><b>B${b.n}</b> ${esc(b.label)}${zone}${rng}</div>${ex}`;
+    }).join("");
   }
-  if(!rows.length) return `<div class="nofb">Sin feedback cargado en el último mesociclo.</div>`;
-  return `<div class="fbwrap"><table class="fb"><thead><tr><th>Fecha</th><th>Sesión</th><th>Tipo</th><th>sRPE</th><th>Comentario del atleta</th><th>Dolor</th><th>Programado → ejecutado (por bloque)</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
+  return s.realPace?`<div class="ex">real ${esc(s.realPace)}</div>`:"";
+}
+function sessCard(s,today){
+  const future=s.date&&s.date>today;
+  const cat=(s.cat||"").toUpperCase();
+  const catCls=cat==="HIT"?"cHIT":cat==="THT"?"cThT":cat==="LIT"?"cLIT":"cOtr";
+  const sr=(s.sRPE!=null)?`<span class="srp ${s.sRPE>=6?"srpe-hi":""}">sRPE ${esc(s.sRPE)}</span>`:"";
+  const mom=s.moment?`<span class="mom">${esc(s.moment)}</span>`:"";
+  const exc=(s.execDate&&s.execDate!==s.date)?`<span class="exc">ejec. ${fmtDMY(s.execDate)}</span>`:"";
+  const body=s.strength?`<div class="fz">Fuerza</div>`:(future?`<div class="prog">programada</div>`:ritmoCompact(s));
+  const noRep=(!s.strength&&!future&&!s.executed&&s.sRPE==null&&!s.comment)?`<div class="prog">sin reporte</div>`:"";
+  const cm=(!s.strength&&s.comment)?`<div class="cm">${esc(s.comment)}</div>`:"";
+  return `<div class="sess ${catCls}${future?" fut":""}">
+    <div class="sh">${mom}${s.key?"★ ":""}${esc(s.title||"")} ${intChip(s.cat)}</div>
+    <div class="sm">${sr}${painChip(s.painClass)}${exc}</div>
+    ${body}${noRep}${cm}</div>`;
+}
+function weekGrid(mi,today){
+  const days=weekDays(mi.start);if(!days.length)return "";
+  const byDay={};for(const s of (mi.sessions||[]))if(s.date)(byDay[s.date]=byDay[s.date]||[]).push(s);
+  const heads=days.map((d,i)=>`<th>${DOW[i]} ${d.slice(8,10)}</th>`).join("");
+  const cells=days.map(d=>{
+    const ss=(byDay[d]||[]).sort((a,b)=>(a.moment||"")<(b.moment||"")?-1:1);
+    return ss.length?`<td>${ss.map(s=>sessCard(s,today)).join("")}</td>`:`<td class="rest">Descanso</td>`;
+  }).join("");
+  const rv=(mi.realVol&&!/^0\s*m$/.test(String(mi.realVol).trim()))?` · ${esc(mi.realVol)}`:"";
+  const banner=`Microciclo ${esc(mi.number||"")} · ${esc(mi.meso||"")} — ${fmtDMY(mi.start)} al ${fmtDMY(mi.end)} <span class="wkadh">${mi.doneSessions}/${mi.progSessions} ejecutadas${rv}</span>`;
+  return `<div class="wk"><div class="wkhead">${banner}</div><div class="wkscroll"><table class="wkgrid"><thead><tr>${heads}</tr></thead><tbody><tr>${cells}</tr></tbody></table></div></div>`;
+}
+function fbTable(d){
+  const today=new Date(Date.now()-3*3600*1000).toISOString().slice(0,10);
+  const anyFb=d.micros.some(mi=>(mi.sessions||[]).some(s=>s.executed||s.comment||s.sRPE!=null));
+  if(!anyFb) return `<div class="nofb">Sin feedback cargado en el último mesociclo.</div>`;
+  return d.micros.map(mi=>weekGrid(mi,today)).filter(Boolean).join("");
 }
 // Adherencia = MESOCICLO ACTUAL (el que estamos renovando). selectPeriod agrega el meso PREVIO
 // solo como contexto cuando el actual es corto (≤2 micros); no debe arrastrar la adherencia ni la
@@ -222,6 +265,27 @@ td.fitc{min-width:150px;font-size:10.8px}.obj{font-weight:700;color:#1f5fae;whit
 .blk .ex.no{color:#c0392b;font-weight:600}
 .blk.pau .blh{color:#8a94a0;font-weight:500}
 .blk .rec{color:#8a94a0;font-weight:400}.blk .fc{color:#8a94a0;font-weight:400}
+/* ---- vista semanal (calendario) ---- */
+.wk{margin:8px 0 12px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.wkhead{background:var(--navy);color:#fff;font-size:12.5px;font-weight:600;padding:6px 10px}
+.wkhead .wkadh{float:right;font-weight:400;opacity:.9}
+.wkscroll{overflow-x:auto}
+table.wkgrid{width:100%;table-layout:fixed;border-collapse:collapse;min-width:720px}
+table.wkgrid th{background:#eef2f7;color:#2b3440;font-size:11px;font-weight:700;text-align:center;padding:4px 3px;border:1px solid var(--line);width:14.28%}
+table.wkgrid td{border:1px solid var(--line);vertical-align:top;padding:3px;height:100%}
+table.wkgrid td.rest{text-align:center;color:#aab2bd;font-size:11px;background:#fafbfc}
+.sess{border-left:3px solid #c9d2dc;border-radius:4px;background:#fbfcfd;padding:3px 4px;margin-bottom:3px}
+.sess.cLIT{border-left-color:#6fa8dc}.sess.cThT{border-left-color:#ffd24d}.sess.cHIT{border-left-color:#e06666}.sess.cOtr{border-left-color:#c9d2dc}
+.sess.fut{opacity:.6}
+.sess .sh{font-size:11px;font-weight:600;color:#1c2430;line-height:1.25;margin-bottom:1px}
+.sess .mom{font-size:9px;background:#e3e9f0;color:#5b6672;border-radius:3px;padding:0 3px;margin-right:2px;vertical-align:middle}
+.sess .sm{display:flex;flex-wrap:wrap;gap:3px;margin:1px 0}
+.sess .srp{font-size:9.5px;color:#44505d;background:#eef2f7;border-radius:3px;padding:0 3px}.sess .srp.srpe-hi{background:#fde2df;color:#b23b2e;font-weight:700}
+.sess .exc{font-size:9px;color:#8a6d10}
+.sess .fz,.sess .prog{font-size:10px;color:#8a94a0;font-style:italic}
+.blc{font-size:9.8px;color:#2b3440;line-height:1.25}.blc b{color:#1c2430}.blc .rg{color:#7a8491}.blc.pau{color:#aab2bd}
+.sess .ex{font-size:10px;color:#1a6b2e;font-variant-numeric:tabular-nums;padding-left:4px;line-height:1.25}.sess .ex.no{color:#c0392b}.sess .ex .fc{color:#8a94a0}
+.sess .cm{font-size:9.7px;color:#55606c;margin-top:2px;line-height:1.3}
 .dash{color:#c3ccd6}
 .sug{margin-top:8px;background:#0f1b2b;color:#fff;border-radius:6px;padding:7px 11px;font-size:12.5px}.sug b{color:#8fd0ff}
 .disc{background:#eef2f7;color:#44505d;border-radius:4px;padding:0 5px;font-size:11px;font-weight:600}.receso{background:#fdf3e6;color:#b5641a;border-radius:4px;padding:0 5px;font-size:11px;font-weight:700}

@@ -242,11 +242,16 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
     arrastrar el número (Martin: meso actual 100% 9/9, pero el arranque lo bajaba a 59%). `adh()` en `renewal-html.js`
     agrupa micros por meso y usa el último; si el actual recién arrancó (<4 sesiones vencidas o 0 hechas) cae al período
     completo para no mostrar 0% falso. El pill marca "· meso actual" y el global del período va al lado como contexto.
-  - **Columna "Programado → ejecutado POR BLOQUE" (fix 2026-11-16, caso Evelyn Virgilio):** reemplaza la vieja "Ritmo
-    obj → real" (que volcaba las vueltas crudas = ruido). Ahora renovación usa el MISMO motor que el feedback
-    (`SB.sessionBreakdown` de `lib/session-blocks.js`), que expone `struct` (bloques estructurados): cada bloque con su
-    dosis + zona + rango objetivo y, debajo, los **ritmos ejecutados alineados a ese bloque** (ej. `Bloque 3 - 4x1K (Z4)
-    (6:03 - 5:41) con 2' pausa pasiva` → `5'36" 5'43" 5'37" 5'32"`). `renewal.js` guarda `blocks` por sesión.
+  - **VISTA SEMANAL tipo calendario ET (pedido coach 2026-11-16):** el feedback del mesociclo se muestra como
+    **grilla semanal** (NO lista). Una grilla por microciclo: encabezado azul con "Microciclo N · Meso — DD/MM al DD/MM ·
+    X/Y ejecutadas", columnas **Lun→Dom** (fecha en el `<th>`), y la info de cada sesión DENTRO de la celda de su día
+    (tipo LIT/ThT/HIT con borde de color, sRPE, bloques prog→ejec compactos vía `ritmoCompact`, dolor, comentario);
+    "Descanso" en los días libres, "programada"/"sin reporte" en futuras/no reportadas, tag AM/PM. `fbTable`/`weekGrid`/
+    `sessCard`/`ritmoCompact` en `renewal-html.js`. Scroll horizontal en pantallas chicas.
+  - **Breakdown POR BLOQUE (fix 2026-11-16, caso Evelyn Virgilio):** reemplaza la vieja "Ritmo obj → real" (que volcaba
+    las vueltas crudas = ruido). Usa el MISMO motor que el feedback (`SB.sessionBreakdown` de `lib/session-blocks.js`),
+    que expone `struct` (bloques estructurados): cada bloque con su dosis + zona + rango objetivo y los **ritmos ejecutados
+    alineados a ese bloque** (ej. `B3 4x1K Z4 (6:03 - 5:41) → 5'36" 5'43" 5'37" 5'32"`). `renewal.js` guarda `blocks` por sesión.
   - **Vueltas pegadas como TEXTO en el comentario (`parseLapDump`, v2 2026-11-16):** muchos atletas sin FIT pegado copian
     el resumen de su reloj como texto, en VARIOS formatos: `"Vuelta 1: 2020 m – 13:41 – 6'47\""`, `"806 5'51\""`
     (distancia pelada + ritmo), `"3035 m| 19:56| 6'35\""` (dist| tiempo| ritmo). `parseLapDump` (en `lib/session-blocks.js`)
