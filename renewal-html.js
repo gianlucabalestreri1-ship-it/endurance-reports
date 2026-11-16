@@ -138,54 +138,58 @@ function blocksInline(s){
     return `<span class="bi">${esc(b.label)}${z}${obj}${ex?` → ${ex}`:""}</span>`;
   }).join(" · ");
 }
-function sessRow(s,today){
+const metersOf=v=>{const m=String(v||"").match(/([\d.]+)\s*m/);return m?parseFloat(m[1]):0;};
+const km1=m=>Math.round(m/100)/10;
+// ¿es sesión de CALIDAD (moderada-alta)? tempo/umbral, intervalos/HIIT/VO2, o un fondo/long run, o clave marcada.
+const LONG_RE=/fondo|long\s*run|larg|tirada|rodaje\s*larg/i;
+function isQuality(s){if(s.strength)return false;const c=(s.cat||"").toUpperCase();return c==="THT"||c==="HIT"||!!s.key||LONG_RE.test(s.title||"");}
+// una fila calma por sesión de calidad: fecha · nombre · sRPE · obj→real  (marca de intensidad = borde izq.)
+function keyRow(s,today){
   const future=s.date&&s.date>today;
   const cat=(s.cat||"").toUpperCase();
-  const catCls=cat==="HIT"?"cHIT":cat==="THT"?"cThT":cat==="LIT"?"cLIT":"cOtr";
-  const sr=(s.sRPE!=null)?`<span class="srp ${s.sRPE>=6?"srpe-hi":""}">${esc(s.sRPE)}</span>`:"";
-  const mom=s.moment?`<span class="mom">${esc(s.moment)}</span> `:"";
+  const bar=cat==="HIT"?"kb-hit":cat==="THT"?"kb-tht":LONG_RE.test(s.title||"")?"kb-long":"kb-lit";
+  const sr=(s.sRPE!=null)?`<span class="ksr ${s.sRPE>=6?"hi":""}">sRPE ${esc(s.sRPE)}</span>`:"";
   const exc=(s.execDate&&s.execDate!==s.date)?` <span class="exc">ejec.${fmtDMY(s.execDate)}</span>`:"";
+  const pc=s.painClass==="active"?`<span class="kpain">dolor</span>`:(s.painClass==="improving"?`<span class="kmej">mejora</span>`:"");
   let exe;
-  if(s.strength) exe=`<span class="fz">Fuerza</span>`;
-  else if(future) exe=`<span class="prog">programada</span>`;
+  if(future) exe=`<span class="prog">programada</span>`;
   else if(isSessDone(s)) exe=blocksInline(s);
-  else exe=`<span class="prog">sin reporte</span>`;
-  const cm=(!s.strength&&!future&&s.comment)?`<div class="rcm">${esc(trunc(s.comment,160))}</div>`:"";
-  return `<tr class="${catCls}${future?" futr":""}${s.strength?" fzr":""}">
-    <td class="cf">${fmtDMY(s.date)}${exc}</td>
-    <td class="ct">${s.strength?`<span class="int fz">Fza</span>`:intChip(s.cat)}</td>
-    <td class="cs">${mom}${s.key?"★ ":""}${esc(trunc(s.title||"",42))}${painChip(s.painClass)}</td>
-    <td class="cr">${sr}</td>
-    <td class="ce">${exe}${cm}</td></tr>`;
-}
-function execTable(d,today){
-  const blocks=d.micros.map(mi=>{
-    const ss=(mi.sessions||[]).slice().sort((a,b)=>(a.date||"")<(b.date||"")?-1:(a.date||"")>(b.date||"")?1:((a.moment||"")<(b.moment||"")?-1:1));
-    if(!ss.length)return "";
-    const rv=(mi.realVol&&!/^0\s*m$/.test(String(mi.realVol).trim()))?` · ${esc(mi.realVol)}`:"";
-    const head=`<tr class="mrow"><td colspan="5">Micro ${esc(mi.number||"")} · ${esc(mi.meso||"")} — ${fmtDMY(mi.start)} al ${fmtDMY(mi.end)} <span class="wkadh">${mi.doneSessions}/${mi.progSessions} ejec.${rv}</span></td></tr>`;
-    return head+ss.map(s=>sessRow(s,today)).join("");
-  }).filter(Boolean).join("");
-  if(!blocks)return "";
-  return `<table class="exec"><tbody>${blocks}</tbody></table>`;
+  else exe=`<span class="miss">no ejecutada</span>`;
+  const cm=(!future&&s.comment)?`<div class="kcm">${esc(trunc(s.comment,170))}</div>`:"";
+  return `<div class="krow ${bar}${future?" futr":""}">
+    <div class="kh"><span class="kdate">${fmtDMY(s.date)}${exc}</span> <span class="ktitle">${s.key?"★ ":""}${esc(s.title||"")}</span> ${sr}${pc}</div>
+    <div class="kx">${exe}</div>${cm}</div>`;
 }
 function resumenBlock(d){
   const today=new Date(Date.now()-3*3600*1000).toISOString().slice(0,10);
-  const buckets={LIT:[],THT:[],HIT:[]};
-  let painS=null;
-  for(const m of d.micros)for(const s of (m.sessions||[])){
-    const future=s.date&&s.date>today;
-    if(future||s.strength)continue;
-    const c=(s.cat||"").toUpperCase();
-    if(buckets[c])buckets[c].push(s);
-    if(s.painClass==="active"&&!painS)painS=s;
+  // ---- carga del mes: VOLUMEN prog→ejec + distribución de INTENSIDAD por sesiones (prog→hechas) ----
+  let pVol=0,rVol=0; const cnt={LIT:[0,0],THT:[0,0],HIT:[0,0]}; let painS=null;
+  for(const m of d.micros){
+    pVol+=metersOf(m.progVol); rVol+=metersOf(m.realVol);
+    for(const s of (m.sessions||[])){
+      const future=s.date&&s.date>today;
+      if(future||s.strength)continue;
+      const c=(s.cat||"").toUpperCase(); if(cnt[c]){cnt[c][0]++; if(isSessDone(s))cnt[c][1]++;}
+      if(s.painClass==="active"&&!painS)painS=s;
+    }
   }
-  const prog=c=>buckets[c].length, done=c=>buckets[c].filter(isSessDone).length;
+  const volPct=pVol?Math.round(100*rVol/pVol):0;
+  const volBar=`<div class="vbar"><i style="width:${Math.min(100,volPct)}%"></i></div>`;
+  const intPart=(lbl,c)=>cnt[c][0]?`<span class="ip ${c.toLowerCase()}"><i></i>${lbl} <b>${cnt[c][1]}/${cnt[c][0]}</b></span>`:"";
+  const dash=`<div class="dash">
+    <div class="dvol"><span class="dk">Volumen</span> <b>${km1(rVol)} / ${km1(pVol)} km</b> <span class="dpct">${volPct}%</span>${volBar}</div>
+    <div class="dint"><span class="dk">Sesiones</span> ${intPart("Fácil","LIT")}${intPart("Moderada","THT")}${intPart("Alta","HIT")}</div>
+    ${painS?`<div class="dpain">⚠ Molestia reportada${painS.comment?`: ${esc(trunc(painS.comment,110))}`:""}</div>`:""}
+  </div>`;
+  // ---- SESIONES DE CALIDAD (moderada-alta + fondos): obj→real, lo único con detalle ----
+  const q=[];
+  for(const m of d.micros)for(const s of (m.sessions||[]))if(isQuality(s))q.push(s);
+  q.sort((a,b)=>(a.date||"")<(b.date||"")?-1:(a.date||"")>(b.date||"")?1:0);
   const anyFb=d.micros.some(mi=>(mi.sessions||[]).some(s=>isSessDone(s)));
-  if(!anyFb&&!(prog("LIT")+prog("THT")+prog("HIT"))) return `<div class="nofb">Sin feedback cargado en el último mesociclo.</div>`;
-  const chip=(emoji,lbl,c)=>prog(c)?`<span class="tc ${c.toLowerCase()}">${emoji} ${lbl} <b>${done(c)}/${prog(c)}</b></span>`:"";
-  const counts=`<div class="tcounts">${chip("🔵","Fáciles","LIT")}${chip("🟡","Intermedias","THT")}${chip("🔴","Altas","HIT")}${painS?`<span class="tc pain">⚠ Molestia reportada</span>`:""}</div>`;
-  return counts+execTable(d,today);
+  if(!anyFb&&!(cnt.LIT[0]+cnt.THT[0]+cnt.HIT[0])) return `<div class="nofb">Sin feedback cargado en el último mesociclo.</div>`;
+  const keyList=q.length?`<div class="klabel">Sesiones de calidad · objetivo → ejecutado</div><div class="klist">${q.map(s=>keyRow(s,today)).join("")}</div>`
+    :`<div class="klabel">Sesiones de calidad</div><div class="nofb">No hubo sesiones de moderada-alta intensidad en el período.</div>`;
+  return dash+keyList;
 }
 // Adherencia = MESOCICLO ACTUAL (el que estamos renovando). selectPeriod agrega el meso PREVIO
 // solo como contexto cuando el actual es corto (≤2 micros); no debe arrastrar la adherencia ni la
@@ -320,10 +324,10 @@ function card(d){
     <h3>${esc(d.athlete)} ${apill} ${pill}</h3>
     <div class="plan">${esc(d.plan.title)} · período ${d.periodMesos.join(" + ")} · ${esc(d.plan.start)}→${esc(d.plan.end)}${(d._km>=1&&!d._caco)?` · ~${Math.round(d._km)} km/sem`:""}${a.useCur?` · <span class="disc">adher. período completo ${a.overallPct}% (${a.overallDone}/${a.overallT}, incl. meso previo de contexto)</span>`:""}${d.discipline?` · <span class="disc">${esc(d.discipline)}</span>`:""}${d._receso?` · <span class="receso">en receso · tier por nivel/disciplina</span>`:""}${d._overNote?` · <span class="receso">${esc(d._overNote)}</span>`:""}</div>
     ${noteBlock(d)}
+    <div class="fblabel">Qué hizo este mes</div>
+    ${resumenBlock(d)}
     ${libBlock(d)}
     ${formBlock(fr)}
-    <div class="fblabel">Ejecución del mesociclo · obj → real</div>
-    ${resumenBlock(d)}
     <div class="sug"><div class="sugt">Sugerencia automática (referencia · NO reemplaza al coach)</div>${sugerencia(d,a,fr)}</div>
   </div>`;
 }
@@ -364,25 +368,32 @@ h2 .count{font-weight:400;color:var(--muted);font-size:12.5px}
 .fl .flk{color:var(--muted);font-weight:700}.fl .flv{color:#1c2430}
 .fl.pain .flv{color:var(--red);font-weight:600}.fl.pain .flk{color:var(--red)}
 .fblabel{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:4px 0 3px}
-.tcounts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:5px}
-.tc{font-size:12px;padding:2px 9px;border-radius:999px;font-weight:600;border:1px solid #dfe6ee}.tc b{font-variant-numeric:tabular-nums}
-.tc.lit{background:#eef6ff;color:#1c4e86;border-color:#cfe2f7}.tc.tht{background:#fff8e8;color:#8a6414;border-color:#f0e2bd}.tc.hit{background:#fdeeec;color:#a33123;border-color:#f3cfc9}
-.tc.pain{background:#fdecea;color:#9c2a1e;border-color:#f3c3bc;font-weight:700}
-table.exec{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:4px}
-table.exec td{padding:3px 6px;border-bottom:1px solid #eef2f7;vertical-align:top}
-tr.mrow td{background:#1f3a5f;color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border:0}
-tr.mrow .wkadh{color:#bcd4ef;font-weight:600;margin-left:6px}
-tr.cLIT{background:#f7fbff}tr.cThT{background:#fffdf5}tr.cHIT{background:#fff7f6}tr.futr{opacity:.5}tr.fzr{opacity:.65}
-.cf{white-space:nowrap;color:#55606d;font-variant-numeric:tabular-nums;width:1%}
-.ct{white-space:nowrap;width:1%}.cr{text-align:center;width:1%}
-.cs{color:#1e2b3a;font-weight:600}
-.ce{color:#3a4654;line-height:1.45}
-.ce .bi{white-space:normal}.ce .bil{color:#6b7886}.ce b{color:#13202e}.ce .no{color:#c0392b;font-weight:700}.ce .fc{color:#8a5a2b;font-size:10.5px}
-.rcm{color:#5a6673;font-size:11px;font-style:italic;margin-top:1px}
-.srp{display:inline-block;background:#eef2f7;border-radius:5px;padding:0 6px;font-weight:700;font-size:11px}.srpe-hi{background:#fde3df;color:#b23121}
-.exc{color:#b5641a;font-size:10px;font-weight:600}.mom{color:#7a8795;font-size:10px;font-weight:700}
-td .prog{color:#9aa6b2;font-style:italic}td .fz{color:#8a7bc0;font-weight:600}
-.int.fz{background:#efeafa;color:#6b5cab}
+/* ---- Dashboard de carga (calmo, mínimo color) ---- */
+.dash{background:#f7f9fb;border:1px solid #e6ebf1;border-radius:8px;padding:9px 12px;margin-bottom:9px}
+.dvol,.dint{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:#2a3542}
+.dint{margin-top:6px}
+.dk{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:#8a97a5;min-width:68px}
+.dvol b,.dint b{color:#13202e;font-variant-numeric:tabular-nums}.dpct{color:#5a6673;font-weight:700}
+.vbar{flex:1;min-width:90px;height:7px;background:#e4e9ef;border-radius:4px;overflow:hidden}.vbar i{display:block;height:100%;background:#3f6fd1}
+.ip{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:#48535f}.ip i{width:8px;height:8px;border-radius:2px;display:inline-block}
+.ip.lit i{background:#6aa0e0}.ip.tht i{background:#e0b64c}.ip.hit i{background:#d9534f}
+.dpain{margin-top:6px;color:#9c2a1e;font-weight:700;font-size:12px}
+/* ---- Sesiones de calidad (lo único con detalle) ---- */
+.klabel{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:4px 0 4px}
+.klist{display:flex;flex-direction:column;gap:5px}
+.krow{border:1px solid #e9edf2;border-left:3px solid #c7ced6;border-radius:6px;padding:6px 10px;background:#fff}
+.krow.kb-hit{border-left-color:#d9534f}.krow.kb-tht{border-left-color:#e0b64c}.krow.kb-long{border-left-color:#5a8fd6}.krow.kb-lit{border-left-color:#9fb4c8}
+.krow.futr{opacity:.5}
+.kh{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;font-size:13px}
+.kdate{color:#6b7682;font-variant-numeric:tabular-nums;font-size:11.5px;white-space:nowrap}
+.ktitle{font-weight:700;color:#1b2733;flex:1}
+.ksr{font-size:11px;font-weight:700;color:#55606d}.ksr.hi{color:#b23121}
+.kpain{font-size:11px;font-weight:700;color:#b23121}.kmej{font-size:11px;font-weight:700;color:#7a4fb0}
+.kx{font-size:12px;color:#39434e;line-height:1.5;margin-top:2px}
+.kx .bil{color:#78838f}.kx b{color:#13202e}.kx .no,.kx .miss{color:#c0392b;font-weight:700}.kx .fc{color:#7a6a45;font-size:10.5px}
+.kx .prog{color:#9aa6b2;font-style:italic}
+.kcm{color:#5a6673;font-size:11px;font-style:italic;margin-top:2px}
+.exc{color:#b5641a;font-size:10px;font-weight:600}
 .fbwrap{overflow-x:auto}
 table.fb{width:100%;border-collapse:collapse;font-size:11.8px;margin-top:2px}
 table.fb th{background:#33404f;color:#fff;text-align:left;padding:4px 7px;font-size:10px;font-weight:600}

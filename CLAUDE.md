@@ -271,18 +271,22 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
     arrastrar el número (Martin: meso actual 100% 9/9, pero el arranque lo bajaba a 59%). `adh()` en `renewal-html.js`
     agrupa micros por meso y usa el último; si el actual recién arrancó (<4 sesiones vencidas o 0 hechas) cae al período
     completo para no mostrar 0% falso. El pill marca "· meso actual" y el global del período va al lado como contexto.
-  - **EJECUCIÓN DEL MESOCICLO CONDENSADA — 1 línea por sesión (pedido coach 2026-11-16, Cal Newport; iterado 2x):**
-    la grilla-calendario era una CATARATA (scroll infinito, caso Daiana Delicio). Un primer intento de resumen por
-    TIPO con VEREDICTOS ("✓ se mantuvieron fáciles") **falló al revés**: dejaba al coach "ciego de la ejecución" y lo
-    obligaba a confiar en la agregación. Solución final (`resumenBlock`→`execTable`→`sessRow`/`blocksInline` en
-    `renewal-html.js`): el coach VE toda la ejecución, pero cada sesión condensada a **UNA fila**: `fecha · tipo
-    (chip LIT/ThT/HIT) · sesión (★ clave, dolor) · sRPE · obj → real` (los bloques de trabajo inline, ritmos
-    ejecutados en negrita + FC; "no ejec." en rojo; "programada"/"sin reporte"/"Fuerza" dimmed). Agrupado por
-    microciclo (fila-banner azul con X/Y ejec. + volumen real). Arriba, una **línea de conteos** (`tcounts`): 🔵
-    Fáciles done/prog · 🟡 Intermedias · 🔴 Altas + flag de molestia — SOLO para orientar, NO reemplaza el dato.
-    Fuerza se muestra dimmed (no penaliza, chip "Fza" violeta). Helpers `paceToSec`/`rangeSecs` quedan para comparar.
-    Regla: mostrar el DATO CRUDO scannable (1 línea/sesión), ni veredicto ciego ni grilla gigante. La vieja grilla
-    semanal (`weekGrid`) queda en el código pero ya NO se usa en la ficha.
+  - **"QUÉ HIZO ESTE MES" — carga + sesiones de calidad (pedido coach 2026-11-16, iterado 3×; pensar como Magness,
+    optimizar como Newport):** la grilla-calendario era catarata; el resumen por VEREDICTOS dejaba ciego; la tabla de
+    1-línea-por-sesión seguía con "muchos colores / info dispersa". **Diseño final** (`resumenBlock` en `renewal-html.js`):
+    pensá qué mira un entrenador con 80 atletas de un vistazo →
+    1. **Dashboard de carga** (`.dash`, arriba de la ficha, justo bajo el header): **VOLUMEN programado→ejecutado**
+       (`metersOf`/`km1` suman `micro.progVol`/`realVol` del período → "ejec / prog km (%)" + barra) y **distribución de
+       INTENSIDAD por sesiones** (conteo por `cat` LIT/ThT/HIT, hechas/prog → "Fácil 7/8 · Moderada 5/5 · Alta 3/4"),
+       = los 2 charts prog-vs-ejec que el coach mira en ET. + flag de molestia.
+    2. **Sesiones de calidad** (`keyRow`): SOLO moderada-alta + fondos (`isQuality`: cat ThT/HIT, `s.key`, o título
+       `LONG_RE`=fondo/long/largo/tirada). Cada una: fecha · nombre (★) · sRPE · **objetivo → ejecutado** (`blocksInline`)
+       + comentario. **Los rodajes de base/mantenimiento y la FUERZA ya NO aparecen** (no son decisión de calidad).
+    **Color MÍNIMO** (Newport): fondo gris calmo, 1 barra azul de volumen, sesión de calidad = tarjeta blanca con
+    **borde izquierdo** por intensidad (rojo HIT · ámbar ThT · azul fondo · gris-azul easy); nada de filas tintadas,
+    pills de 3 colores ni chips por todos lados. **Orden de la ficha:** header → Qué hizo este mes → meso de librería →
+    formulario → sugerencia (top-down: qué pasó → dónde está en el roadmap → su feedback → recomendación).
+    `weekGrid`/`execTable`/`sessRow` quedan en el código pero YA NO se usan en la ficha. (De 147 KB a ~99 KB.)
   - **VISTA SEMANAL tipo calendario ET (histórico 2026-11-16, YA NO SE USA — reemplazada por la tabla de 1 línea/sesión):** el feedback del mesociclo se mostraba como
     **grilla semanal** (NO lista). Una grilla por microciclo: encabezado azul con "Microciclo N · Meso — DD/MM al DD/MM ·
     X/Y ejecutadas", columnas **Lun→Dom** (fecha en el `<th>`), y la info de cada sesión DENTRO de la celda de su día
