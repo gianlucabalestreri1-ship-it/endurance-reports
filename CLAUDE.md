@@ -189,6 +189,12 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
   fusionan en una fila**. Para ver TODO sin filtro de edad: `--days 0` o `--all-dates`.
 
 **Informe de renovación a demanda** (`renewal.js` → **`renewal-html.js`**):
+- **QUIÉNES entran al lote (criterio 2026-11-16, caso Nancy/Juan Sandoval):** el lote se arma por **VENCIMIENTO del plan**
+  (ventana estándar ≤7 días, o la que pida el coach), **NO por quién respondió el formulario**. Responder el form ≠ estar
+  por renovar: varios lo llenan anticipadamente (Nancy respondió 1/11 con plan hasta 13/12) o ya fueron renovados (Juan
+  Sandoval, renovado la semana pasada, plan hasta 04/12). El formulario es CONTEXTO que se adosa a la ficha, no el disparador.
+  Fuente de vencimientos: `plans.js --report` (`get_upcoming_activities`: por vencer ≤7d + vencidos). Si el coach pide una
+  ventana mayor, confirmar cuántos entran y filtrar por `plan.end` (ya está en cada `renewal-<id>-data.json`) antes de generar el HTML.
 - `node renewal.js --names "Nombre Apellido" ...` | `--file lista.txt` | `--dry` (previsualiza el match) | `<plan_id>`.
   Resuelve nombre→atleta→plan vigente con `athlete_list` (fuzzy: acentos + tokens + Levenshtein; match flojo se
   marca "⚠ revisar", nombre-de-pila solo en consulta multi-palabra NO matchea). → `report/renewal-<plan>-data.json`.
