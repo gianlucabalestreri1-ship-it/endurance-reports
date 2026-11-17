@@ -41,6 +41,13 @@ optimizada. **La vía optimizada es HTTP puro (sin navegador).**
 > - **Entregar la conclusión accionable:** qué significa + qué ajustar (recalibrar zona, cambiar estímulo, etc.),
 >   no la planilla sola. Devoluciones rápidas: TEXTO en el chat, sin generar HTML por atleta (gasta recursos).
 > - **VO2 en perfiles lentos:** prescribir por TIEMPO (reps de 1' a 100% vVO2 / ritmo 1500), no por 400m (se les va a ~2').
+> - **FCmáx subestimada (chequeo OBLIGATORIO con datos de dispositivo):** antes de leer FC o "tiempo en zona", comparar
+>   la **FCmáx configurada** (`session.training_zones` HR / 100% FC) contra la **FC MÁXIMA realmente registrada** en
+>   esfuerzos máximos recientes (carreras, tests, últimas reps/último km de una sesión dura: `lap.max_heart_rate` del
+>   `session_resume`). Si un esfuerzo reciente registró una FC MAYOR que la configurada → las zonas de FC están BAJAS →
+>   el %FCmáx, el "tiempo en zona" y cualquier feedback por FC salen **INFLADOS** (una umbral a 92% real leería como ~97%,
+>   = parece VO2/casi máximo). Marcarlo y recomendar recalibrar la FCmáx (el pico de carrera/test es piso; el verdadero
+>   puede ser un toque más). Caso Leandro Schulman (2026-11-17): 10K cerró en 188 con la FCmáx configurada en 179.
 
 ## 1. Acceso al sistema
 
