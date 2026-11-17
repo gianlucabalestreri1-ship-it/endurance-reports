@@ -35,7 +35,7 @@
     "Z3_Tempo": {"ritmo_equiv": "ritmo MARATÓN", "lactato": "2.0-3.5", "FCmax": "82-87%", "vVO2max": "80-84%", "target_sesion": "@2.5 mmol", "rol": "piso del umbral; sesión AM del doble umbral"},
     "Z4_Umbral": {"ritmo_equiv": "ritmo 10K / MEDIO", "lactato": "3.5-4.5", "FCmax": "87-92%", "vVO2max": "84-88%", "target_sesion": "@3.5 mmol", "rol": "umbral estricto; sesión PM del doble umbral (reps cortas, pausa corta)"},
     "Z5_Supraumbral": {"ritmo_equiv": "ritmo 5000", "lactato": "4.5-7", "FCmax": "92-95%", "vVO2max": "88-94%", "rol": "aclaramiento de lactato a ritmos altos; puente al específico"},
-    "Z6_VO2max": {"ritmo_equiv": "ritmo 3000-5000", "lactato": "7-11", "FCmax": "95-100%", "vVO2max": "94-100%", "rol": "techo aeróbico; 0-1/sem"},
+    "Z6_VO2max": {"ritmo_equiv": "ritmo 3000-5000", "lactato": "7-11", "FCmax": "95-100%", "vVO2max": "94-100%", "ref_100pct": "100% vVO2máx = RITMO DEL TEST DE 5' del atleta (el que usa el coach); la distancia del test varía ~1000-1700 m según nivel, lo que fija la zona es el RITMO medio de ese 5', no la distancia", "rol": "techo aeróbico; 0-1/sem"},
     "Z7_Glucolitico": {"ritmo_equiv": "ritmo 800-1500 / cuestas", "lactato": ">11 (cuestas ~8)", "FCmax": "~100%", "vVO2max": ">100% (hasta ~140%)", "rol": "velocidad/anaeróbico, economía, fuerza (cuestas)"},
     "Z8_Neuromuscular": {"ritmo_equiv": "sprint / rectas", "rol": "velocidad pura, rectas de economía (en calentamiento o días suaves)"}
   },
@@ -118,7 +118,7 @@
     },
     "NOR - VO2max (Z6)": {
       "para_que": "Techo aeróbico / vVO2máx (~3-5K). 0-1 por semana. En período base: NO (el anaeróbico entra cerca de competencia).",
-      "anclas": "7-11 mmol · 95-100% FC · 94-100% vVO2.",
+      "anclas": "7-11 mmol · 95-100% FC · 94-100% vVO2. 100% vVO2máx = RITMO DEL TEST DE 5' del atleta (el que usa el coach); la distancia del test varía ~1000-1700 m según nivel, lo que fija la zona es el RITMO de ese 5', no la distancia.",
       "sesiones": [
         {"nombre": "NOR Z6 VO2 · 4-6×3'/2'", "bloques": "Zona 6 × (4-6 de 3') · pausa 2' Z1 (≈1000m)"},
         {"nombre": "NOR Z6 VO2 · 10-15×60-70\"/60-75\"", "bloques": "Zona 6 × (10-15 de 60-70\") · pausa 60-75\" (≈400m)"},

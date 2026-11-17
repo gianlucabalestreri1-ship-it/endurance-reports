@@ -12,7 +12,7 @@
     {"n": 7, "nombre": "Glucolítico", "fase": "HIT"},
     {"n": 8, "nombre": "Neuromuscular", "fase": "HIT"}
   ],
-  "fuente_valores_por_atleta": "ET — session.training_zones (modelo MAS/IEG): ritmo (min/km) por zona, FC, FTP, RPE. Siempre usar los valores REALES del atleta.",
+  "fuente_valores_por_atleta": "ET — session.training_zones (modelo MAS/IEG): ritmo (min/km) por zona, FC, FTP, RPE. Siempre usar los valores REALES del atleta. ANCLA DE Z6 (vVO2máx): el 100% de la vVO2máx (Zona 6) = RITMO del test de 5' del atleta (el que usa el coach). La distancia cubierta en esos 5' varía según nivel (~1000 m principiante → ~1700 m avanzado); lo que fija la zona es el RITMO medio del 5', no la distancia. El resto de las zonas se derivan como % de esa vVO2máx (ver protocolos-testeo-zonas).",
   "mapping_externos": {
     "nota": "Traducción fisiológica APROXIMADA (son modelos distintos). Para ritmos concretos usar siempre las zonas reales del atleta en ET expresadas en el modelo base.",
     "juan_del_campo_vam": {

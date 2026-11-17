@@ -8,7 +8,7 @@
   },
   "protocolos_vVO2max_MAS": {
     "test_5min_actual": {
-      "que": "Distancia máxima recorrida en 5' (pista). La velocidad media = estimación de vVO2máx/MAS.",
+      "que": "Distancia máxima recorrida en 5' (pista). La velocidad media = estimación de vVO2máx/MAS. ES EL TEST QUE USA EL COACH: el ritmo resultante del test de 5' = 100% vVO2máx = piso de referencia de la Zona 6. La DISTANCIA cubierta en esos 5' varía según el nivel del deportista (~1000 m en un principiante/poco entrenado hasta ~1700 m en uno avanzado); lo que fija la zona NO es la distancia sino el RITMO medio (min/km) de ese 5'.",
       "pro": "Simple, familiar (ya lo usa el coach), un solo esfuerzo.",
       "contra": "Es MÁXIMO (depende del pacing/motivación/día). Un 5' all-out cae un pelín POR ENCIMA de la vVO2máx real (la vVO2máx se sostiene ~6 min) → el '100% = ritmo de 5'' queda levemente rápido. En validaciones de campo subestima la MAS de cinta ~0.45 m/s. Sirve si SIEMPRE se hace igual (mismo protocolo = comparable en el tiempo).",
       "cuando": "Mantenerlo por continuidad / si no hay otra opción."
