@@ -20,6 +20,28 @@ optimizada. **La vía optimizada es HTTP puro (sin navegador).**
 > - **No inventar** lo que es labor del coach (objetivos / a dónde va): se deja vacío.
 > - Entregar en el **formato que el coach ya usa** (Excel), sin ruido, centrado y legible.
 
+## 0.1 ANÁLISIS CON OJO DE ENTRENADOR (aplica a TODO informe: renovación, feedback, propuestas, dossiers)
+
+> **No traer solo el dato: CORRELACIONARLO.** Esto es lo que diferencia al asistente de un simple volcado.
+> En cada informe donde haya ejecución, cruzar los números entre sí y leerlos con criterio fisiológico, y
+> presentar **la lectura**, no solo la tabla. En concreto:
+> - **Test vs. entrenamientos:** comparar el test (1000/5'/vVO2) con los ritmos de las sesiones. Ej. caso
+>   Damiana (2026-11-17): test 1000 a 5:17 vs 5×1000 a ~5:39 con sRPE 7 → un 1000 máx suele estar 15-25"/km
+>   bajo el ritmo de 5K, así que 5:39 (ritmo 5K) → 5:17 es coherente; lo descalibrado era la ETIQUETA: ese
+>   "Umbral (Z4)" se corrió a ritmo de 5K (corrió MÁS FUERTE que su umbral) → zona mal seteada o no controla el ritmo.
+> - **Ritmo ejecutado vs zona prescrita + sRPE:** marcar cuando corrió por ENCIMA (o debajo) de la zona pautada
+>   (sRPE alto + ritmo > rango de zona = se fue de zona). Un "umbral" a sRPE 7 ya es sospechoso.
+> - **Apelotonamiento de ritmos / reserva de velocidad:** si 5K ≈ umbral ≈ casi el máximo de 1000 (poca brecha),
+>   = **reserva de velocidad angosta** (motor ok, poco techo anaeróbico) → el test no sube con más umbral/base, le
+>   falta TECHO (velocidad pura/neuromuscular/VO2), no piso. Caso opuesto (Rocío): sobre-entrenó el VO2 (abuso de PULL).
+> - **Marco de lectura (fuentes):** PUSH vs PULL (Magness) para estancamientos; vVO2 = VO2máx × economía (lever de
+>   economía: strides/fuerza/cuestas/velocidad pura); Casado (volumen+fácil #1, VO2 largo aporta poco); base sin
+>   anaeróbico hasta el período específico. Expresar SIEMPRE en el modelo base Z1-Z8 y por zona (no inventar ritmos
+>   que no estén en el dato; el 100% vVO2 = ritmo del test de 5' del atleta).
+> - **Entregar la conclusión accionable:** qué significa + qué ajustar (recalibrar zona, cambiar estímulo, etc.),
+>   no la planilla sola. Devoluciones rápidas: TEXTO en el chat, sin generar HTML por atleta (gasta recursos).
+> - **VO2 en perfiles lentos:** prescribir por TIEMPO (reps de 1' a 100% vVO2 / ritmo 1500), no por 400m (se les va a ~2').
+
 ## 1. Acceso al sistema
 
 > **DECISIÓN (2026-10-11): acceso API-first.** El proyecto se construye sobre la
