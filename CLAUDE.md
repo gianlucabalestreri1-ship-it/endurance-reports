@@ -666,6 +666,16 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   priorizado: mirar SIEMPRE sRPE + comentario + ritmo real por lap vs objetivo + FC por lap; el resto solo ante bandera).
   Para **asesorar en cualquier situación**: basarse en Magness + Juan del Campo + Roces + Noruego (+ AMA de Bakken + best-practice),
   expresado SIEMPRE en el modelo base. (El coach irá sumando más guías —YouTube de Magness, etc.— a `data/`.)
+- **ORIGINALES de la base en Drive (pedido coach 2026-11-19):** además de la extracción a `data/*.json`, los documentos
+  ORIGINALES (PDF/Excel que el coach sube) se guardan **en su formato original** en la carpeta de Drive
+  **"Base de datos — Metodología (originales)"** (`1L64OnJGjdc1dLXJ5hgLuXKejJX_6Y9b7`) para acceso de 1 clic. Regla:
+  **cada doc que el coach suba → (1) subir el ORIGINAL a esa carpeta + (2) extraer a `data/`.** Subida confiable:
+  `create_file` con `base64Content` = **referencia** `sha256:<hash>:<ruta ABSOLUTA>` (NO base64 pegado — corrompe >10 KB).
+  OJO: la ruta de `/root/.claude/uploads/...` NO es referenciable → copiar antes al scratchpad y referenciar esa copia;
+  `contentMimeType: application/pdf` + `disableConversionToGoogleType: true`. Ya está el manual noruego de 1 sesión diaria.
+  (Hay también una `report/Biblioteca-Metodologia.html` = índice buscable que renderiza data/ legible, `generator/biblioteca-html.js`,
+  pero el coach quiere el ORIGINAL → Drive manda.) Los sources viejos (papers/masterclasses de sesiones previas) NO tienen
+  su archivo original disponible; muchos `data/` traen el DOI/link al paper; el coach puede re-soltar el original en la carpeta.
 - **Librería (bookshop) de ET — NO editable por API** (solo lectura: `bookshops_list`/`folder_bookshops_list`; la
   única escritura del proyecto es marcar leído). Crear/renombrar/configurar sesiones de la librería se hace desde la
   **app de ET** (el asistente entrega el catálogo ya nombrado + lo guarda en `data/`). **Nomenclatura acordada
