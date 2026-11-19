@@ -568,6 +568,18 @@ Reyes `1PU3bQ_t75m5gjOZ3AdGZa_TSgVFhwzT8`, Martin Sueta `1RFdIHPn1L5OXrXiT65FAaE
   milla 4:43 con carrito; 4 principios rectores (no hacer estupideces, idiot-proofing, consistencia>heroísmo, cálculo
   individual). Trae mapeo al modelo base y cómo aplicarlo al programar/renovar recreacionales. Cruza con
   microciclos-recreativos + corpus noruego (sub-umbral)),
+  **`noruego-una-sesion-diaria-macrociclos`** (GUÍA PRÁCTICA DE PROGRAMACIÓN del coach, NO una fuente de evidencia —
+  es el "CÓMO" bajar el corpus noruego a la práctica para amateurs de **1 sesión diaria, 4-6 días/sem**; cargada
+  2026-11-19). Adapta el doble umbral de élite a 1 sesión/día (el doble umbral desaparece → **umbral simple 2×/sem**,
+  subumbral @2-3 mmol, intervalos, 1 "elemento X"/sem). Trae: los 7 estímulos + tabla de intensidad por zona
+  (lactato/%FCmáx/RPE/ritmo/habla) + reglas con y sin lactámetro (incl. ajuste de ritmo por duración del intervalo);
+  **plantillas de microciclo 4/5/6 días** (Umbral A largos + Umbral B cortos + X + tirada larga) con límites
+  (20-40 min en umbral/sesión, 48-72h entre umbrales, ≥75-80% fácil); y **MACROCICLOS COMPLETOS por distancia listos
+  para armar el plan: 5K-10K (18 sem), 21K (18 sem), 42K (22 sem)** con la dosis fase por fase (general→específica→
+  competitiva→transición) + cómo evoluciona + ajuste por nº de días + catálogo de sesiones por distancia + semáforo de
+  Bakken para decidir la carga del día + qué datos mirar por sesión. Marca explícitamente qué es documentado vs
+  inferencia del coach. **Regla de uso:** usar este doc como MANUAL DE APLICACIÓN al programar/renovar; citar la
+  EVIDENCIA desde las fuentes originales (Casado/Haugen/Tønnessen/Bakken), no desde acá.),
   **`noruego-sistema`** (SISTEMA NORUEGO / doble umbral — microciclo semanal de Bakken/SISU + sesiones por zona
   del paper PMC11560996, **en FORMATO TIEMPO** por pedido del coach: dosis universal por tiempo, distancia = ajuste
   secundario. Trae mapeo zonas noruegas→modelo base (su 'threshold' Z3 = base Z3-Z4 sub-umbral), tabla de parámetros

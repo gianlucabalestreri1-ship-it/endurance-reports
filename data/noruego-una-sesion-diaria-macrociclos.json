@@ -1,0 +1,263 @@
+{
+  "id": "noruego-una-sesion-diaria-macrociclos",
+  "titulo": "Método noruego con una sesión diaria: macrociclos para 5K-10K, 21K y 42K",
+  "autor": "Gianluca (coach) — síntesis propia de varias fuentes",
+  "fecha": "2026-11-10",
+  "tipo": "GUÍA PRÁCTICA DE PROGRAMACIÓN del coach — NO es una fuente de evidencia (eso son los papers del corpus noruego). Es el 'CÓMO' bajar esas fuentes a la práctica: adapta el método noruego de doble umbral (élite, 11-14 sesiones/sem, 130-220 km) a corredores AMATEURS de UNA SESIÓN DIARIA (4-6 días/sem). Separa 2 capas: lo que las fuentes publican (documentado) y la adaptación a 1 sesión diaria (extrapolación razonada del coach, marcada como tal). Al asesorar: usar este doc como el manual de APLICACIÓN; citar la EVIDENCIA desde las fuentes originales (Casado, Haugen, Tønnessen, etc.), no desde acá.",
+  "uso": "MANUAL DE APLICACIÓN para PROGRAMAR y RENOVAR la mayoría de sus atletas (amateurs, 1 sesión/día). Cubre el hueco que el corpus noruego de élite no cubría: cómo baja el doble umbral a una sola sesión diaria + macrociclos completos por distancia (5K-10K / 21K / 42K) listos para armar el plan. Cruzar con magness-amateur-volumen-limitado + noruego-lgtit-casado + microciclos-recreativos.",
+  "tesis": "Ninguna fuente publica un macrociclo noruego para 1 sesión diaria y 4-6 días/sem (lo publicado es élite, 11-14 sesiones, 130-220 km). Con 1 sesión diaria el DOBLE UMBRAL desaparece → queda umbral simple 2×/semana (justo lo que programa Grete Koens todo el año). La variación se busca a propósito: duración del intervalo, pausa, superficie y el elemento X.",
+
+  "ideas_que_se_sostienen_en_todas_las_fuentes": [
+    "DOS VELOCIDADES dominan la semana: rodaje realmente fácil (<70% FCmáx según Bakken) + umbral controlado, casi siempre en intervalos.",
+    "El umbral se corre POR DEBAJO del umbral: objetivo 2-3 mmol/L de lactato, NO 4. Permite repetir la sesión varias veces por semana sin desgaste muscular.",
+    "2-3 días clave/semana, separados por días fáciles, con semanas parecidas entre sí.",
+    "UN estímulo distinto por semana por encima del umbral (el 'elemento X'): cuestas cortas en la base, ritmo de competencia cerca de la carrera.",
+    "Periodización tradicional: primero volumen, después intensidad; el trabajo a ritmo de competencia crece al acercarse el objetivo.",
+    "Con 1 sesión diaria el doble umbral desaparece → umbral simple 2×/semana (Grete Koens lo hace todo el año con su equipo de élite)."
+  ],
+
+  "estimulos_del_macrociclo": {
+    "nota": "7 estímulos; lo que cambia entre fases y distancias es la DOSIS, no el repertorio.",
+    "lista": [
+      {"estimulo": "Rodaje fácil (Z1)", "adaptacion": "volumen aeróbico, economía, recuperación, baja el tono muscular entre días clave", "presencia": "todos los días no clave; ≥75-80% del volumen"},
+      {"estimulo": "Tirada larga", "adaptacion": "resistencia de base; en maratón además durabilidad y uso de sustratos", "presencia": "1/semana"},
+      {"estimulo": "Umbral en intervalos LARGOS (subumbral, 6-10 min)", "adaptacion": "subir la velocidad de umbral con bajo costo muscular", "presencia": "1/semana (sesión diaria) = Umbral A"},
+      {"estimulo": "Umbral en intervalos CORTOS (45s-3min o 400-1000m, pausa muy corta)", "adaptacion": "mismo rango de lactato a mayor velocidad: reclutamiento y mecánica cercanos a competencia", "presencia": "1/semana = Umbral B"},
+      {"estimulo": "Elemento X (cuestas 200m, o intervalos 200-1000m POR ENCIMA del umbral)", "adaptacion": "mantener el techo aeróbico + estímulo neuromuscular distinto", "presencia": "1/semana o cada dos"},
+      {"estimulo": "Ritmo de competencia", "adaptacion": "especificidad: sustituye de a poco al elemento X y a parte del umbral", "presencia": "solo en fase específica y competitiva"},
+      {"estimulo": "Rectas, velocidad y fuerza", "adaptacion": "economía, potencia y prevención", "presencia": "1-2/semana, pegado a días fáciles o clave"}
+    ],
+    "tres_rasgos_bakken": [
+      "El umbral se hace en INTERVALOS porque permite más velocidad al mismo lactato y menos desgaste que el continuo (vale de 1500m a 10K; en maratón pide más continuo).",
+      "La zona entre el rodaje muy fácil y el umbral se EVITA en 5K-10K. En maratón SÍ tiene lugar, sobre todo integrada en una sesión dura.",
+      "El modelo se apoya en solo 2 velocidades → la variación se busca a propósito: duración del intervalo, pausa, superficie y elemento X."
+    ]
+  },
+
+  "intensidad_por_estimulo": {
+    "nota": "Fijar por CARGA INTERNA, verificar con ≥2 señales a la vez (ninguna medida sola alcanza). Rangos para corredores bien entrenados; para amateurs ajustar (ver salvedades).",
+    "tabla": [
+      {"estimulo": "Rodaje fácil", "lactato_mmol": "<1,0-1,5", "pct_FCmax": "<70 (Bakken); 60-72 (escala noruega)", "RPE_Borg": "9-12", "ritmo_ref_elite": "3-5 km/h más lento que ritmo maratón", "habla": "conversación fluida"},
+      {"estimulo": "Tirada larga y progresivos", "lactato_mmol": "1,0-2,5", "pct_FCmax": "73-82", "RPE_Borg": "12-14", "ritmo_ref_elite": "1-2 km/h más lento que ritmo maratón", "habla": "frases largas"},
+      {"estimulo": "Subumbral, intervalos largos", "lactato_mmol": "2,0-3,0", "pct_FCmax": "80-87", "RPE_Borg": "13-14", "ritmo_ref_elite": "entre ritmo maratón y medio maratón", "habla": "frases cortas, sin conversación cómoda"},
+      {"estimulo": "Umbral, intervalos cortos", "lactato_mmol": "3,0-4,0 (hasta 4,5)", "pct_FCmax": "87-92", "RPE_Borg": "14-16", "ritmo_ref_elite": "cerca de ritmo 10K", "habla": "pocas palabras"},
+      {"estimulo": "Elemento X y VO2máx", "lactato_mmol": "4,5-8", "pct_FCmax": ">92", "RPE_Borg": "16-18", "ritmo_ref_elite": "ritmo 5K a 3K", "habla": "no se habla"},
+      {"estimulo": "Tolerancia y ritmo 1500m", "lactato_mmol": ">8", "pct_FCmax": "no aplica", "RPE_Borg": "18-20", "ritmo_ref_elite": "ritmo 800-1500m", "habla": "no se habla"}
+    ],
+    "con_lactato": [
+      "Medir cada 1-3 repeticiones y buscar una CURVA PLANA (Casado 2023).",
+      "Apuntar a 0,3-0,5 mmol/L por debajo del umbral individual; en reps cortas alcanza con 0,2 (Bakken).",
+      "Si en intervalos largos el lactato pasa de 3 mmol/L en la última rep → la intensidad fue demasiado alta (Bakken).",
+      "El umbral individual varía: Bakken vio corredores de clase mundial con umbral en 2,0. La tabla es punto de partida, no norma."
+    ],
+    "sin_lactato_FC_ritmo_percepcion": [
+      "Estimar el ritmo de umbral: esfuerzo que un corredor bien entrenado sostiene ~1 h, y uno menos entrenado 30-40 min (Koens). Un 10K reciente lo estima mejor que un 5K.",
+      "Ajustar el ritmo a la DURACIÓN del intervalo (cuanto más largo, más conservador — calculadora de Bakken): 45s-1min = ritmo umbral · 1-3min = 1-3% más lento · 4-5min = 3-6% más lento · 8-12min = 6-9% más lento.",
+      "Techo de FC: 80-87% FCmáx para el subumbral (Bakken). Koens baja 3-5 latidos y 5-10 s/km cuando los bloques pasan de 4 min.",
+      "Cruzar con test del habla + RPE: si la FC está en rango pero el esfuerzo se siente duro o no se puede hablar en frases cortas → aflojar.",
+      "Recalibrar con datos propios: la relación FC↔lactato cambia entre corredores y períodos (Casado 2023)."
+    ],
+    "salvedades_amateur_inferencia_coach": [
+      "Las referencias 'ritmo maratón' / 'ritmo 10K' de la tabla valen para ÉLITE: un amateur que corre 10K en 50 min tiene el umbral cerca de su ritmo de 10K, NO de medio maratón.",
+      "En intervalos de 1 min o menos la FC no llega a estabilizarse → ahí mandan el ritmo y la percepción."
+    ]
+  },
+
+  "macrociclo_fases": {
+    "modelo": "Periodización tradicional: prep. general → prep. específica → competencia → transición. Volumen primero, intensidad después (Sandbakk 2025).",
+    "fases": [
+      {"fase": "Preparación general", "domina": "subir volumen fácil + acumular la mayor carga de umbral", "umbral": "máxima frecuencia y minutos/sesión; intervalos más largos", "elemento_X": "cuestas cortas 1×/semana"},
+      {"fase": "Preparación específica", "domina": "introducir ritmo de competencia de forma gradual", "umbral": "baja la cantidad de sesiones; queda la dosis mínima que sostiene la base", "elemento_X": "se reemplaza en parte por pista a ritmo de carrera"},
+      {"fase": "Competencia", "domina": "especificidad y frescura", "umbral": "sesiones más cortas, de mantenimiento", "elemento_X": "ritmo de carrera y competencias"},
+      {"fase": "Transición", "domina": "descanso", "umbral": "sin umbral", "elemento_X": "sin estímulo"}
+    ],
+    "duraciones_elite_como_proporcion": [
+      "Subida inicial de volumen: 8-12 semanas. Arranca en 40-60% del volumen pico y crece primero por FRECUENCIA, después por DURACIÓN (Haugen 2022).",
+      "Maratón: 5-6 meses de preparación, doble periodización anual, maratón cada 3 meses mínimo.",
+      "Transición: 1-2 semanas; tras maratón, 7-14 días sin entrenar o muy suave.",
+      "Sesiones a tope: últimas 3-6 semanas antes del objetivo (Tønnessen 2024).",
+      "Transición a pista (Bakken): empieza con intervalos de 300-400m a 6-8 mmol/L, después pasa a 1000m, vigilando que la curva de lactato no se empine. El salto de esfuerzo es grande para quien viene de base solo de umbral."
+    ]
+  },
+
+  "mesociclo": {
+    "nota": "Las fuentes documentan 2 formas de organizar la carga; ninguna prueba que una sea mejor.",
+    "opciones": [
+      {"opcion": "Semanas planas", "como": "todas las semanas se parecen; la adaptación se juega en el ciclo completo", "quien": "Bakken en su versión final; running semana a semana pareja (Sandbakk 2025)"},
+      {"opcion": "Carga y descarga", "como": "semana fácil cada 3-4, con 25-35% menos volumen; se quitan 1-2 sesiones y se acortan las fáciles", "quien": "práctica común entre deportes (AthleteMonitoring); Bakken usó 2:1 al inicio de su carrera"}
+    ],
+    "cual_elegir": "Los noruegos de élite toleran semanas planas porque la intensidad está muy controlada. Con amateurs que trabajan y SIN lactato, conviene carga/descarga (menos confianza en el control fino de la intensidad)."
+  },
+
+  "microciclo": {
+    "principios_documentados": [
+      "Ritmo duro-fácil: 2-3 días clave/semana (típico martes, jueves, sábado) con días fáciles entre medio.",
+      "El DÍA es la unidad de carga. Para sumar carga, la élite duplica la intensidad en un día clave antes que agregar otro día duro.",
+      "El volumen se ajusta alargando o acortando las sesiones FÁCILES, no tocando las clave.",
+      "Dentro de la sesión clave: entrada en calor 20-30 min progresiva con 3-5 rectas, intensidad levemente creciente entre reps, final con margen, vuelta a la calma 20-30 min.",
+      "Puesta a punto: recortar volumen solo en los últimos 7-10 días (Haugen 2022); mantener frecuencia e intensidad, acortar sesiones hasta 50%. Última sesión intensa 3-5 días antes (ej. 10×200m a ritmo de carrera; Koens hace 6×3min en lugar de 10×3min)."
+    ],
+    "adaptacion_una_sesion_diaria": {
+      "nota": "PROPUESTA del coach (las fuentes no publican plantillas 4/5/6 días). Antecedente más cercano: la 'receta' de Koens (ciclo de 7 entrenamientos de 1 sesión: fácil 45-60min, umbral 6-10×3min/1min, fácil, 2 series de 6-10×30s/30s, fácil, subumbral 3-5×6min/2min, fácil).",
+      "plantillas_base": {
+        "4_dias": {"Lun": "descanso", "Mar": "Umbral A (intervalos largos)", "Mié": "descanso", "Jue": "Umbral B (intervalos cortos)", "Vie": "descanso", "Sáb": "fácil + rectas", "Dom": "tirada larga"},
+        "5_dias": {"Lun": "descanso", "Mar": "Umbral A", "Mié": "fácil", "Jue": "Umbral B", "Vie": "descanso", "Sáb": "Elemento X", "Dom": "tirada larga"},
+        "6_dias": {"Lun": "fácil + rectas", "Mar": "Umbral A", "Mié": "fácil", "Jue": "Umbral B", "Vie": "descanso", "Sáb": "Elemento X", "Dom": "tirada larga"}
+      },
+      "limites_de_las_fuentes": [
+        {"parametro": "Minutos en umbral por sesión", "rango": "20-40", "origen": "Tønnessen 2024; Koens usa 30 y hasta 40 en fondistas"},
+        {"parametro": "Separación entre sesiones de umbral", "rango": "48-72 h", "origen": "Koens; Bakken exige ≥1 día fácil completo entre días clave"},
+        {"parametro": "Proporción fácil", "rango": "≥75-80% del volumen", "origen": "Haugen 2022; Kelemen 2023"},
+        {"parametro": "Rodaje fácil", "rango": "40-70 min, <70% FCmáx", "origen": "Haugen 2022; Bakken"},
+        {"parametro": "Pausas en umbral", "rango": "15-30s en intervalos ≤1min; 1-2min en los largos", "origen": "Bakken; Tønnessen 2024"}
+      ],
+      "regla_reps": "La cantidad de repeticiones se elige para que el tiempo en umbral quede dentro de 20-40 min: un corredor de 5:00/km NO hace 12×1000m. Excepción: bloques a ritmo maratón/media (menor intensidad) admiten más tiempo (30-75 min en élite).",
+      "decisiones_por_dias": {
+        "4_dias": "2 umbrales ya ocupan media semana; el X no entra como sesión propia sin romper la proporción fácil. Caminos: reemplazar Umbral B por X una semana de cada dos; o sumar 4-6 cuestas/rectas al final del rodaje del sábado; o dejar el X fuera de la base y sumarlo recién en fase específica como ritmo de carrera.",
+        "5_dias": "La versión más parecida al patrón mar-jue-sáb. Deja 1 solo rodaje fácil entre semana → la tirada larga carga buena parte del volumen fácil.",
+        "6_dias": "Admite 2 variantes en la base: una mantiene el sábado como X; la otra lo convierte algunas semanas en un TERCER umbral (Casado 2023 en prep: 3-4 sesiones; Bakken solo en períodos puntuales).",
+        "pregunta_guia": "¿Qué limita más a cada atleta, el techo aeróbico o la velocidad de umbral? De eso depende si el sábado rinde más como X o como umbral."
+      }
+    }
+  },
+
+  "macrociclos_por_distancia": {
+    "nota": "Las dosis son PROPUESTA del coach para amateurs de 1 sesión diaria; los formatos de sesión vienen de Bakken, Koens y Tønnessen 2024.",
+    "5K_10K": {
+      "duracion_semanas": 18,
+      "caracter": "El más fiel al modelo original: base larga de umbral en intervalos, cuestas como elemento X, giro tardío a ritmo de carrera.",
+      "fases": [
+        {"fase": "General I: construcción", "semanas": "1-5", "umbral_A_largos": "3-5×6min, pausa 1min", "umbral_B_cortos": "6-10×3min, pausa 1min", "elemento_X": "6-10×200m en cuesta, vuelta al trote", "tirada_larga": "50-70 min fácil"},
+        {"fase": "General II: carga de umbral", "semanas": "6-10", "umbral_A_largos": "4×8min a 4×10min, pausa 1-2min", "umbral_B_cortos": "8-12×1000m con 1min, o 15-25×400m con 30s, o 20-30×45s con 15s", "elemento_X": "12-20×200m en cuesta", "tirada_larga": "60-90 min fácil"},
+        {"fase": "Específica", "semanas": "11-15", "umbral_A_largos": "4-5×6min", "umbral_B_cortos": "8×3min, pausa 1min", "elemento_X_o_especifico": "primero 10-12×400m a ritmo 3K-5K con 60-75s; después 4-6×1000m a ritmo 5K con 2min, o 6-8×1000m a ritmo 10K con 1:30", "tirada_larga": "60-80 min fácil"},
+        {"fase": "Competitiva y puesta a punto", "semanas": "16-18", "umbral_A_largos": "una sola sesión de umbral/semana: 6×3min o 3×6min", "umbral_B_cortos": "no se hace", "elemento_X_o_especifico": "carrera de control; 10×200m a ritmo de carrera 3-5 días antes del objetivo", "tirada_larga": "45-60 min fácil"}
+      ],
+      "como_evoluciona": [
+        "Semanas 1-10: primero sube el volumen fácil, después los minutos en umbral, y recién al final el ritmo. El lactato/FC objetivo NO cambian: lo que mejora es el ritmo a esa misma carga interna.",
+        "Semanas 11-15: el umbral baja a dosis de mantenimiento. El X deja las cuestas y pasa a pista, de corto a largo: 300-400m antes que 1000m (Bakken).",
+        "Semanas 16-18: se mantiene la frecuencia y se acortan las sesiones. Umbral estándar 2 días antes de competir para chequear FC y ritmo."
+      ],
+      "matices_5k_vs_10k": [
+        "5K: pesan más los intervalos de 400m y el ritmo 3K-5K en fase específica.",
+        "10K: pesan más los intervalos de 1000-2000m a ritmo 10K; formato de élite = 4-6×2000m con 2min (Tønnessen 2024).",
+        "La tirada larga no necesita crecer mucho: Bakken corría máximo 1h, o 16-18 km, los domingos."
+      ]
+    },
+    "21K": {
+      "duracion_semanas": 18,
+      "caracter": "Se diferencia del 5K-10K en la fase específica: los intervalos largos se estiran hacia bloques a ritmo de media y la tirada larga gana un final progresivo. Combina la base de umbral con lo que Haugen 2022 documenta para fondistas (aplicación al medio maratón NO publicada = inferencia del coach).",
+      "fases": [
+        {"fase": "General I: construcción", "semanas": "1-5", "umbral_A_largos": "3-5×6min, pausa 1min", "umbral_B_cortos": "6-10×3min, pausa 1min", "elemento_X": "6-10×200m en cuesta", "tirada_larga": "60-90 min fácil"},
+        {"fase": "General II: carga de umbral", "semanas": "6-11", "umbral_A_largos": "4×10min a 3×15min, pausa 2min", "umbral_B_cortos": "10×3min con 1min, u 8-10×1000m con 1min", "elemento_X": "10-20×200m en cuesta", "tirada_larga": "90-110 min; algunos días con 10-20min finales progresivos"},
+        {"fase": "Específica", "semanas": "12-16", "umbral_A_largos": "bloques a ritmo de media: 3×15min a 2×20-25min, pausa 2-3min; o continuo progresivo 30-40min", "umbral_B_cortos": "8-10×3min, pausa 1min", "elemento_X": "cada dos semanas: 5-6×1000m a ritmo 10K con 1:30-2min", "tirada_larga": "100-130 min con 15-30min finales en zona 2"},
+        {"fase": "Puesta a punto", "semanas": "17-18", "umbral_A_largos": "2×10min a ritmo de media", "umbral_B_cortos": "6×3min", "elemento_X": "10×200m a ritmo 10K, 3-5 días antes", "tirada_larga": "60-70 min fácil"}
+      ],
+      "como_evoluciona": [
+        "Semanas 1-11: igual lógica que 5K-10K, con intervalos largos que crecen más: de 6 a 15min por repetición.",
+        "Semanas 12-16: el Umbral A se vuelve la sesión específica (bloques a ritmo de media). El Umbral B se conserva corto para sostener velocidad.",
+        "Tirada larga: finales progresivos en zona 2 (5-30min) son el único uso de esa zona que Tønnessen 2024 registra en corredores."
+      ],
+      "punto_a_pensar": "En un amateur que corre la media entre 1:40 y 2:00, el ritmo de carrera queda POR DEBAJO de su umbral → los bloques 'a ritmo de media' son subumbral por naturaleza, y la sesión específica y la de umbral largo terminan siendo casi la misma. Conviene que una se alargue y la otra quede corta y más rápida (inferencia del coach)."
+    },
+    "42K": {
+      "duracion_semanas": 22,
+      "caracter": "Donde el modelo más se aparta del original: más trabajo CONTINUO, uso deliberado de la zona entre rodaje y umbral, y una tirada larga que pasa a ser sesión clave. Casado 2023 aclara que la aplicación al maratón es incierta; Bakken dice que el maratón necesita más continuo.",
+      "fases": [
+        {"fase": "General I: construcción", "semanas": "1-6", "umbral_A_largos": "3-5×6min, pausa 1min", "umbral_B_cortos": "6-10×3min, pausa 1min", "elemento_X": "6-10×200m en cuesta", "tirada_larga": "75-110 min fácil"},
+        {"fase": "General II: carga de umbral", "semanas": "7-12", "umbral_A_largos": "4×10min a 3×15min, pausa 2min", "umbral_B_cortos": "10×3min con 1min, u 8-10×1000m con 1min", "elemento_X": "12-16×200m en cuesta, semanal o cada dos", "tirada_larga": "110-150 min fácil"},
+        {"fase": "Específica", "semanas": "13-19", "umbral_A_largos": "bloques a ritmo maratón: 3×15min, luego 3×20min, luego 2×30min, pausa 2-3min", "umbral_B_cortos": "8×3min o 6-8×1000m, pausa 1min", "elemento_X": "sale; quedan rectas después de un rodaje", "tirada_larga": "alternar: larga fácil 150-165min, y larga con 30-60min a ritmo maratón o progresiva"},
+        {"fase": "Puesta a punto", "semanas": "20-22", "umbral_A_largos": "2×15min a ritmo maratón, luego 3×6min", "umbral_B_cortos": "6×3min", "elemento_X": "8-10×200m sueltos, 3-5 días antes", "tirada_larga": "90min y después 60min"}
+      ],
+      "como_evoluciona": [
+        "Semanas 1-12: misma base que las otras distancias. La diferencia es la tirada larga, que crece hasta 75-165min (Haugen 2022, élite), 1-2 km/h más lento que ritmo maratón.",
+        "Semanas 13-19: el Umbral A baja de intensidad y sube de duración hasta ser trabajo a ritmo maratón (en la escala de Casado 2023 cae en la parte baja del umbral, 2-3,5 mmol/L; formato élite = 4×5000m, Haugen 2022). El Umbral B se mantiene corto.",
+        "Tirada larga con CONTENIDO: Bakken acepta la zona intermedia en maratón si va integrada en una sesión dura (ejemplo extremo: tirada de 30-40km de Kipchoge en zonas 2-3).",
+        "Pico de volumen 2-4 semanas antes. Puesta a punto: élite recorta solo últimos 7-10 días; guía general 2-3 semanas con 40-60% menos (cuál aplicar a amateur queda abierto)."
+      ],
+      "distribucion_elite_ultimas_5_semanas_haugen2022_tabla5": {
+        "zona_1_facil": "75-80% del volumen",
+        "zona_2_3_de_larga_rapida_a_ritmo_media": "17-21%",
+        "zona_4_5_ritmo_10K_o_mas_rapido": "3-4%",
+        "lectura": "En maratón casi todo el trabajo de calidad queda entre ritmo maratón y ritmo de media; lo más rápido es marginal. 10 maratonistas de clase mundial corrieron 170-191 km/sem en esas semanas."
+      }
+    },
+    "ajuste_por_dias_resumen": {
+      "5K_10K": {"4": "A y B fijos; cuestas como agregado corto o alternando con B. Específica: el ritmo 10K reemplaza a B cada dos semanas.", "5": "A, B y X. Específica: A, B y sábado alternando ritmo 10K con rodaje y rectas.", "6": "igual que 5 + 1 rodaje; el sábado puede alternar X y un tercer umbral."},
+      "21K": {"4": "A y B fijos; cuestas como agregado corto. Específica: A específico y B.", "5": "A, B y X. Específica: A, B reducido y específico.", "6": "igual que 5 + 1 rodaje."},
+      "42K": {"4": "A y B fijos; sin X como sesión. Específica: A a ritmo maratón y larga con contenido = las 2 claves; B se acorta u omite las semanas de larga exigente.", "5": "A, B y X. Específica: el sábado pasa a rodaje con rectas para llegar fresco a la larga.", "6": "igual que 5 + 1 rodaje."}
+    }
+  },
+
+  "sesiones_tipicas_por_distancia": {
+    "nota": "Sesiones tal como las publican las fuentes, casi todas en formato de ÉLITE. Para amateurs el dato trasladable es la ESTRUCTURA (duración del intervalo, pausa, intensidad), NO la cantidad de repeticiones.",
+    "catalogo": [
+      {"adaptacion": "Umbral, intervalos largos", "sesion": "5×6min/1min; 4×10min; 5a6×2000m/1min; 3×3000m/2min", "intensidad": "2-3 mmol/L", "distancia": "todas", "fuente": "Casado 2023; Bakken"},
+      {"adaptacion": "Umbral, intervalos medios", "sesion": "10-12×1000m con 45-60s; 10×3min con 1min", "intensidad": "~3-3,5 mmol/L", "distancia": "5K-10K y 21K", "fuente": "Tønnessen 2024; Koens"},
+      {"adaptacion": "Umbral, microintervalos", "sesion": "20-25×400m con 30s; 1min con 30s; 45s con 15s", "intensidad": "en el umbral o apenas arriba, lactato bajo 4", "distancia": "5K-10K", "fuente": "Bakken; Casado 2023"},
+      {"adaptacion": "Subumbral combinado", "sesion": "4×10min con 2min: dos a ritmo 'ágil' (15-20 s/km más lento que umbral) y dos a subumbral", "intensidad": "por debajo del umbral", "distancia": "21K y 42K", "fuente": "Koens"},
+      {"adaptacion": "Umbral continuo", "sesion": "20-50min cerca del ritmo de media", "intensidad": "zona 3", "distancia": "21K y 42K", "fuente": "Haugen 2022"},
+      {"adaptacion": "Ritmo maratón extensivo", "sesion": "4×5000m; tirada de 30-40km en zonas 2-3", "intensidad": "parte baja del umbral", "distancia": "42K", "fuente": "Haugen 2022"},
+      {"adaptacion": "Elemento X, cuestas", "sesion": "20×200m en subida, 70s de trote de vuelta", "intensidad": "~8 mmol/L", "distancia": "todas en la base", "fuente": "Casado 2023"},
+      {"adaptacion": "Elemento X, pista", "sesion": "intervalos de 200 a 1000m", "intensidad": "5-8 mmol/L", "distancia": "5K-10K", "fuente": "Bakken"},
+      {"adaptacion": "VO2máx y ritmo 10K", "sesion": "6-8×1000m con 1:30; 4-6×2000m con 2min; 20-25×400m con 30-45s", "intensidad": "zona 4", "distancia": "10K y 21K", "fuente": "Tønnessen 2024"},
+      {"adaptacion": "Ritmo 5K-3K", "sesion": "4-6×1000m con 2min; 10-15×400m con 60-75s", "intensidad": "zona 5", "distancia": "5K", "fuente": "Tønnessen 2024"},
+      {"adaptacion": "Afinado precompetitivo", "sesion": "4-6×1000m cerca de ritmo 3K + 7×300m cuatro días antes; 10×200m a ritmo de carrera", "intensidad": "ritmo de carrera", "distancia": "5K-10K", "fuente": "Bakken; Haugen 2022"},
+      {"adaptacion": "Fartlek", "sesion": "30-60min con cambios; ejemplo élite 30×1min rápido con 1min de trote", "intensidad": "zonas 1-4", "distancia": "42K", "fuente": "Haugen 2022"},
+      {"adaptacion": "Velocidad", "sesion": "rectas de 60-120m (~1% del volumen); 2 series de 6-10×30s con 30s", "intensidad": "suelto, sin acidez", "distancia": "todas", "fuente": "Haugen 2022; Koens"}
+    ],
+    "reglas_ejecucion_tonnessen2024": [
+      "La intensidad sube APENAS a lo largo de la sesión; en élite la diferencia entre la primera y la última rep ronda 0,5 km/h.",
+      "Se termina con repeticiones en reserva, cuidando la técnica.",
+      "A mayor intensidad: intervalos más cortos, menos tiempo acumulado y pausas relativamente más largas.",
+      "La cinta se usa para controlar la intensidad, sobre todo en umbral."
+    ]
+  },
+
+  "que_datos_analizar_por_sesion": {
+    "principio": "Cada sesión clave funciona como un TEST REPETIBLE: se compara FC, ritmo, lactato (si hay) y fatiga percibida contra la MISMA sesión de semanas anteriores (Tønnessen 2024). Por eso Koens mantiene las sesiones de umbral deliberadamente previsibles.",
+    "dentro_de_la_sesion_de_umbral": [
+      {"dato": "FC en la entrada en calor a ritmo fijo", "mirar": "cuanto más baja, mejor disposición", "alerta": "más alta que lo habitual"},
+      {"dato": "Ritmo por repetición", "mirar": "estable o levemente creciente", "alerta": "caída de ritmo para sostener la FC"},
+      {"dato": "FC por repetición y deriva", "mirar": "meseta estable dentro del rango", "alerta": "deriva marcada (en Talsnes, la 2ª mitad de 6×10min tuvo 2,8% más FC y 0,41 mmol/L más lactato)"},
+      {"dato": "Lactato, si se mide", "mirar": "curva plana entre reps, dentro de 2-3 mmol/L", "alerta": ">3 mmol/L al final de intervalos largos"},
+      {"dato": "RPE", "mirar": "estable en 13-14 Borg", "alerta": "subida hacia 15 o más al final"},
+      {"dato": "Test del habla", "mirar": "frases cortas posibles", "alerta": "no poder hablar a un ritmo que 'en los papeles' es correcto"},
+      {"dato": "Margen al terminar", "mirar": "quedan reps en reserva y la técnica se sostiene", "alerta": "terminar al límite"},
+      {"dato": "Estado muscular al día siguiente", "mirar": "piernas sueltas", "alerta": "rigidez o dolor que condiciona la próxima sesión clave"}
+    ],
+    "semaforo_bakken": {
+      "verde": "FC baja en la entrada en calor, lactato bajo a ritmo alto y FC más alta que lo habitual a ese ritmo → se puede ALARGAR la sesión.",
+      "amarillo": "valores normales → sesión según lo planificado.",
+      "rojo": "FC alta en la entrada en calor y dificultad para subir la FC a un lactato dado, sin cambio en la 2ª-3ª rep → se CORTA la sesión.",
+      "logica_de_fondo": "buscar la FC más BAJA posible en la entrada en calor y la FC más ALTA posible a la mayor velocidad de umbral."
+    },
+    "entre_semanas": [
+      "Ritmo sostenido a la misma FC o lactato en la sesión estándar = indicador PRINCIPAL de progreso.",
+      "Minutos acumulados en umbral por semana y por sesión.",
+      "Proporción de tiempo fácil, umbral y por encima del umbral.",
+      "Cumplimiento de los rodajes por debajo de 70% FCmáx (la zona de FC que más importa respetar según Bakken).",
+      "Respuesta subjetiva del atleta cruzada con los datos objetivos (Sandbakk 2025).",
+      "OJO: índices como TRIMP o RPE de sesión NO son válidos para comparar carga entre modalidades (carrera vs bici) — Tønnessen y colegas."
+    ]
+  },
+
+  "evidencia_vs_extrapolacion": {
+    "documentado": ["rangos de lactato/FC/RPE por zona (élite)", "formatos de sesión de umbral, X y ritmo de carrera (élite)", "fases del macrociclo y dirección de los cambios", "2 sesiones de umbral simple ~30min (práctica de Koens)"],
+    "inferencia_del_coach": ["superioridad del modelo sobre otros (sin ensayos controlados; Casado 2023 lo pide como investigación futura)", "duración de 18 y 22 semanas y límites de cada fase", "repeticiones y minutos para amateurs (dentro de 20-40 min/sesión)", "plantillas de 4/5/6 días", "aplicación a 21K y 42K (el modelo se describió en 1500m-10000m)", "porcentajes de FC en amateurs (los rangos vienen de bien entrenados)"],
+    "limites_investigacion": ["Sandbakk 2025 solo por resumen/extractos", "de Magness solo resúmenes escritos de podcasts", "el libro de Bakken 'The Norwegian Method Applied' (adaptación 5K-maratón + microintervalos 45/15) es de pago y NO se consultó", "los entrenadores estudiados son 12 varones noruegos → posible sesgo de cultura común"]
+  },
+
+  "fuentes": {
+    "literatura": [
+      "Casado, Foster, Bakken, Tjelta. Does lactate-guided threshold interval training within a high-volume low-intensity approach represent the 'next step'… Int J Environ Res Public Health, 2023",
+      "Tønnessen et al. Training session models in endurance sports: a Norwegian perspective on best practice. Sports Med, 2024",
+      "Sandbakk et al. Best-practice training characteristics within Olympic endurance sports as described by Norwegian world-class coaches. Sports Med Open, 2025",
+      "Haugen, Sandbakk, Seiler, Tønnessen. The training characteristics of world-class distance runners. Sports Med Open, 2022",
+      "Casado et al. Training periodization, methods, intensity distribution, and volume in highly trained and elite distance runners: a systematic review. Int J Sports Physiol Perform, 2022",
+      "Talsnes et al. Estudio de una sesión larga frente a dos sesiones cortas de intensidad moderada. Front Physiol, 2024",
+      "Kelemen, Benczenleitner, Tóth. The Norwegian double-threshold method in distance running: systematic literature review. Sci J Sport Perform, 2023"
+    ],
+    "entrenadores": ["Marius Bakken (Norwegian model of lactate threshold training; Revisited; Double Threshold in Depth; A Practical Guide; Calculadora de zonas)", "Grete Koens (Threshold Training; Houd het simpel; De methode; 5 tips om te pieken op het juiste moment)", "Steve Magness y Jon Marcus (The Good-Enough Approach to Double Threshold; Applying to Track, Cross-Country, and Marathon)"],
+    "resumenes": ["AthleteMonitoring. The Norwegian Approach to Periodization and Training in Endurance Sports"]
+  }
+}
