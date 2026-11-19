@@ -1,0 +1,188 @@
+{
+  "id": "libreria-et-maestra",
+  "titulo": "Librería maestra de sesiones para Endurance Tool — por AUTOR",
+  "estado": "EN CONSTRUCCIÓN. Fase 1 = cargar la noruega (NOR) completa, Z1→Z8 + específicos. Después se suman otros autores (CAN, JDC, JD, PF, EO) decidiendo uno por uno.",
+  "fecha_inicio": "2026-11-19",
+  "nota_proyecto": "Proyecto a ir controlando. Fuente de verdad de cómo queda la librería de ET. Cada vez que se carga/renombra/agrega algo en la app de ET, se refleja acá. La librería de ET NO es editable por API (solo lectura) → esto es el plano; el coach lo ejecuta en la app. Render: generator/libreria-maestra-html.js → report/Libreria-ET-maestra.html (paso a paso).",
+  "convencion": {
+    "regla": "Carpeta y sesión llevan PREFIJO DE AUTOR. Así cada metodología vive en su propia carpeta y no se mezcla (una sesión de Canova no ensucia la carpeta NOR).",
+    "carpeta": "[AUTOR] - [Zona | Distancia] - [Tipo]  →  ej. 'NOR - Z4 - Umbral', 'CAN - 10K - Específico umb', 'JDC - 21K - Específico RP', 'JD - Z5 - Supraumbral'.",
+    "sesion": "[AUTOR] - [Zona | Distancia] - [dosis]  →  ej. 'NOR - Z4 - 25x400 / 30\"', 'JD - Z5 - 7x2' / 1''.",
+    "dosis": "En TIEMPO siempre que se pueda (duración + nº reps + pausa); la distancia es referencia secundaria que ET ajusta por atleta. Reps de distancia (400/1000/2000) cuando la fuente las da así.",
+    "config_ET": "Cada bloque se configura por ZONA del modelo base (Z1-Z8) → ET calcula el ritmo desde las zonas del atleta. El target de lactato / la nota de ejecución van en la nota del bloque (viajan con la sesión).",
+    "autores": {
+      "NOR": "Noruego (doble umbral / LGTIT — Bakken, Koens, Casado, Tønnessen). EN CARGA.",
+      "CAN": "Canova (específicos por % del ritmo de carrera). Por decidir.",
+      "JDC": "Juan del Campo (específicos race pace / VAM). Por decidir.",
+      "JD": "Jack Daniels (I/T/R-pace, progresión por km). Por decidir.",
+      "PF": "Pfitzinger (umbral por volumen semanal). Por decidir.",
+      "EO": "Entrenamiento Óptimo (progresión propia del coach por zona). Por decidir."
+    }
+  },
+  "ordenes_de_zona": {
+    "_nota": "Anclas por zona (del catálogo noruego, modelo base). Van en la DESCRIPCIÓN de la carpeta.",
+    "Z1": "Recuperación · <2 mmol · <70% FCmáx · regenerativo, baja el tono. Dosis = duración.",
+    "Z2": "Endurance/Fondo · 0.7-2 mmol · 62-82% FCmáx · base aeróbica (~75-80% del volumen); fondo ≤21 km. Dosis = duración.",
+    "Z3": "Tempo · 2-3.5 mmol · 82-87% FCmáx · TARGET @2.5 · ritmo maratón · AM del doble umbral · reps LARGAS, lactato bajo.",
+    "Z4": "Umbral · 3.5-4.5 mmol · 87-92% FCmáx · TARGET @3.5 · ritmo 10K-medio · PM del doble umbral · reps CORTAS/densas · correr al PISO de la zona.",
+    "Z5": "Supraumbral · 4.5-7 mmol · 92-95% FCmáx · ~ritmo 5000 · aclaramiento de lactato; incluye el 45/15.",
+    "Z6": "VO2máx · 7-11 mmol · 95-100% FCmáx · 100% vVO2 = RITMO DEL TEST DE 5' del atleta · 0-1/sem · NO en base.",
+    "Z7": "Glucolítico · >11 mmol (cuestas ~8) · velocidad/anaeróbico corto, economía y fuerza (cuestas) · reps cortas, pausa larga.",
+    "Z8": "Neuromuscular · sprint/rectas · velocidad pura y economía · también como bloque de calentamiento/vuelta a la calma.",
+    "ESP": "Específico por distancia · a RITMO DE CARRERA (período competitivo) · reemplaza en parte al umbral."
+  },
+  "autores": {
+    "NOR": {
+      "nombre": "Método noruego (doble umbral / LGTIT)",
+      "descripcion": "Sub-umbral controlado guiado por carga interna. Umbral en intervalos (más velocidad a igual lactato). 75-80% fácil. Progresa por velocidad a igual lactato/FC, no por dureza. Fuentes: Bakken/SISU, Koens, Casado 2023, Tønnessen 2024, Haugen 2022.",
+      "carpetas": [
+        {
+          "carpeta": "NOR - Z1 - Recuperación",
+          "nota": "<2 mmol · <70% FCmáx. Regenerativo, baja el tono. Conversable. Dosis = duración.",
+          "sesiones": [
+            "NOR - Z1 - 30-40' regenerativo",
+            "NOR - Z1 - 40-60' <70% FCmáx"
+          ]
+        },
+        {
+          "carpeta": "NOR - Z2 - Fácil y Fondo",
+          "nota": "0.7-2 mmol · 62-82% FCmáx. Base aeróbica (~75-80% del volumen). Fondo ≤21 km. Conversacional. El fácil es FÁCIL (no convertirlo en carrera).",
+          "sesiones": [
+            "NOR - Z2 - Fácil 30-50'",
+            "NOR - Z2 - Fácil 50-75'",
+            "NOR - Z2 - Fondo 75-105'",
+            "NOR - Z2 - Fondo + cierre 15-25' Z3",
+            "NOR - Z2 - Progresivo (final Z2→Z3)"
+          ]
+        },
+        {
+          "carpeta": "NOR - Z3 - Tempo",
+          "nota": "2-3.5 mmol · 82-87% FCmáx · @2.5 · ritmo maratón · AM del doble umbral. Reps largas, lactato bajo. 'Que salga fácil', piso de zona.",
+          "sesiones": [
+            "NOR - Z3 - 6x5' / 1'",
+            "NOR - Z3 - 5x6' / 1'",
+            "NOR - Z3 - 4x8' / 1-2'",
+            "NOR - Z3 - 3x10' / 90\"",
+            "NOR - Z3 - 4x10' / 2'",
+            "NOR - Z3 - 3x15' / 2'",
+            "NOR - Z3 - Continuo 20-40'",
+            "NOR - Z3 - 2x15-20' / 3'"
+          ]
+        },
+        {
+          "carpeta": "NOR - Z4 - Umbral",
+          "nota": "3.5-4.5 mmol · 87-92% FCmáx · @3.5 · ritmo 10K-medio · PM del doble umbral. Reps cortas/densas = alta velocidad a lactato bajo. Correr al PISO; terminar 'podía más'. FC estable rep a rep.",
+          "sesiones": [
+            "NOR - Z4 - 6x3' / 1'",
+            "NOR - Z4 - 8x3' / 1'",
+            "NOR - Z4 - 10x3' / 1'",
+            "NOR - Z4 - 12x3' / 1'",
+            "NOR - Z4 - 10-12x1000 / 1'",
+            "NOR - Z4 - 20x400 / 30\"",
+            "NOR - Z4 - 25x400 / 30\"",
+            "NOR - Z4 - 20-25x1' / 30\"",
+            "NOR - Z4 - 15x90\" progresivo / 30\""
+          ]
+        },
+        {
+          "carpeta": "NOR - Z5 - Supraumbral",
+          "nota": "4.5-7 mmol · 92-95% FCmáx · ~ritmo 5000. Aclaramiento de lactato a ritmos altos; puente al específico. Última rep tan buena como la primera.",
+          "sesiones": [
+            "NOR - Z5 - 6x3' / 90\"",
+            "NOR - Z5 - 8x3' / 90\"",
+            "NOR - Z5 - 4x6' / 2'",
+            "NOR - Z5 - 6x6' / 2'",
+            "NOR - Z5 - 5-6x1000 / 90\"",
+            "NOR - Z5 - 25x400 / 45\"",
+            "NOR - Z5 - 25-30x45\"/15\" progresivo"
+          ]
+        },
+        {
+          "carpeta": "NOR - Z6 - VO2máx",
+          "nota": "7-11 mmol · 95-100% FCmáx · 100% vVO2 = RITMO DEL TEST DE 5' del atleta · 0-1/sem · NO en base. Buscar TIEMPO en zona, no clavar ritmo.",
+          "sesiones": [
+            "NOR - Z6 - 4x3' / 2'",
+            "NOR - Z6 - 5x3' / 2'",
+            "NOR - Z6 - 6x3' / 2'",
+            "NOR - Z6 - 10x60-70\" / 60-75\"",
+            "NOR - Z6 - 15x60-70\" / 60-75\"",
+            "NOR - Z6 - 2x(6-8x30\"/30\") (sesión X)"
+          ]
+        },
+        {
+          "carpeta": "NOR - Z7 - Glucolítico",
+          "nota": ">11 mmol (cuestas ~8). Velocidad/anaeróbico corto, economía y fuerza (cuestas). Pausa larga/completa (calidad, no fatiga). Si hay molestia osteo-tendinosa, NO hacer el bloque.",
+          "sesiones": [
+            "NOR - Z7 - 5x35-40\" / 3-5'",
+            "NOR - Z7 - 10-12x25-30\" / 30-60\"",
+            "NOR - Z7 - Cuestas 8-10x60-75\" / bajada trote (X 5K)",
+            "NOR - Z7 - Cuestas 12-20x200m / trote ~70\" (base @~8 mmol)"
+          ]
+        },
+        {
+          "carpeta": "NOR - Z8 - Neuromuscular",
+          "nota": "Velocidad pura/economía. También va como bloque de calentamiento/vuelta a la calma (normaliza el tono muscular). Suelto, sin acidez.",
+          "sesiones": [
+            "NOR - Z8 - 6-8x100m rectas / 60\"",
+            "NOR - Z8 - 10x15-20\" aceleraciones / trote"
+          ]
+        },
+        {
+          "carpeta": "NOR - 5K - Específico",
+          "nota": "A RITMO 5K (Z5-Z6). Período competitivo. Pesan los 400m y el ritmo 3K-5K. El dato = ¿sostuvo el ritmo meta sin desmoronarse?",
+          "sesiones": [
+            "NOR - 5K - 8-10x400 / 100m trote",
+            "NOR - 5K - 12-16x400 / 30-45\" (densa)",
+            "NOR - 5K - 2x(5-6x400) / 100m · 3' series",
+            "NOR - 5K - 4-6x1000 / 2'",
+            "NOR - 5K - 3x1600 / 2'"
+          ]
+        },
+        {
+          "carpeta": "NOR - 10K - Específico",
+          "nota": "A RITMO 10K (Z5, parte alta de umbral/supra). Pesan los 1000-2000m. Formato élite = 4-6x2000 / 2'.",
+          "sesiones": [
+            "NOR - 10K - 25x400 / 30\" (densa, estilo PM)",
+            "NOR - 10K - 6-8x1000 / 1:30",
+            "NOR - 10K - 2x(3x1000) / 1' · 3' series",
+            "NOR - 10K - 5x1200 / 90\"",
+            "NOR - 10K - 4-6x2000 / 2'"
+          ]
+        },
+        {
+          "carpeta": "NOR - 21K - Específico",
+          "nota": "A RITMO MEDIO (Z4). Bloques a ritmo de media que se estiran; en amateurs el ritmo de media suele caer sub-umbral.",
+          "sesiones": [
+            "NOR - 21K - 6x1600 / 60-75\"",
+            "NOR - 21K - 4-5x2000 / 90\"",
+            "NOR - 21K - 3x3000 / 2-3'",
+            "NOR - 21K - 2x5km / 3'",
+            "NOR - 21K - 15-18km continuo progresivo"
+          ]
+        },
+        {
+          "carpeta": "NOR - 42K - Específico",
+          "nota": "A RITMO MARATÓN (Z3, parte baja del umbral 2-3.5 mmol). Más continuo; la tirada larga con contenido es sesión clave. Formato élite = 4x5000.",
+          "sesiones": [
+            "NOR - 42K - 20-25x1000 / 1'",
+            "NOR - 42K - 6-8x2000 / 90\"",
+            "NOR - 42K - 4x5000 / 3'",
+            "NOR - 42K - 2x8-10km / 3-5'",
+            "NOR - 42K - Largo con bloques 25-32km @maratón"
+          ]
+        }
+      ]
+    }
+  },
+  "roadmap_autores": [
+    {"autor": "CAN", "que": "Canova — específicos por % del ritmo de objetivo (ej. alternancias 400/400, bloques % MP).", "ejemplo_carpeta": "CAN - 10K - Específico umb", "ejemplo_sesion": "CAN - Z5/Z4 - 8x400/400 (por confirmar dosis)", "estado": "por decidir"},
+    {"autor": "JDC", "que": "Juan del Campo — race pace / VAM por distancia.", "ejemplo_carpeta": "JDC - 21K - Específico RP", "ejemplo_sesion": "JDC - 21K - 4x2000 / 2' race pace (por confirmar)", "estado": "por decidir"},
+    {"autor": "JD", "que": "Jack Daniels — I/T/R-pace, progresión por volumen semanal.", "ejemplo_carpeta": "JD - Z5 - Supraumbral", "ejemplo_sesion": "JD - Z5 - 7x2' / 1' (por confirmar)", "estado": "por decidir"},
+    {"autor": "PF", "que": "Pfitzinger — umbral (LT) por volumen semanal (<64K, 63-113K).", "ejemplo_carpeta": "PF - Z4 - Umbral", "ejemplo_sesion": "PF - Z4 - 4x10' / 90\" (por confirmar)", "estado": "por decidir"},
+    {"autor": "EO", "que": "Entrenamiento Óptimo — progresión propia del coach por zona.", "ejemplo_carpeta": "EO - Z4 - Umbral", "ejemplo_sesion": "EO - Z4 - 2x15' (por confirmar)", "estado": "por decidir"}
+  ],
+  "fuera_de_libreria_por_autor": {
+    "_nota": "Carpetas que quedan propias, no entran al esquema por-autor-metodológico (no son sesiones de un autor de resistencia).",
+    "carpetas": ["CaCo - Caminar-Correr (iniciantes)", "Tests / Valoraciones", "Fuerza", "Trail"]
+  }
+}
