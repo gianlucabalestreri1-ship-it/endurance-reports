@@ -1,0 +1,85 @@
+{
+  "id": "ciclismo-rio-pinto-xcm-plan",
+  "titulo": "Plan de Entrenamiento Río Pinto 2027 (XCM / maratón MTB)",
+  "disciplina": "Ciclismo de montaña — XCM (cross-country marathon). Río Pinto es una maratón MTB de larga distancia (Córdoba, AR).",
+  "objetivo": "Preparar la competencia Río Pinto, objetivo del 2 de mayo de 2027.",
+  "autor": "Gianluca (coach) — propuesta de trabajo",
+  "tipo": "PROPUESTA DE TRABAJO / PLANTILLA DE MACROCICLO del coach para ciclismo (NO una fuente de evidencia). Estructura de periodización por fases para un XCM. Zonas en POTENCIA (vatios), no en el modelo de carrera Z1-Z8. 'Umbral 1 y 2' = umbral aeróbico (VT1/LT1) y umbral funcional/anaeróbico (VT2/FTP).",
+  "fecha_guardado": "2026-11-20",
+  "nota_cuenta": "Los ciclistas viven en la OTRA cuenta de coach (env ET_EMAIL2/ET_PASSWORD2). Este plan es la referencia metodológica para armar/renovar planes de MTB de larga distancia.",
+  "macrociclo": {
+    "duracion_semanas": 23,
+    "desde": "2026-11-23",
+    "hasta": "2027-05-02",
+    "fases": [
+      {
+        "fase": "Base",
+        "semanas": "1-9",
+        "fechas": "23 nov – 24 ene",
+        "color": "azul",
+        "foco": "Entrenamiento de baja intensidad (Z2), tempo, umbrales 1 y 2.",
+        "rol": "Construir base aeróbica y capacidad de umbral antes de la intensidad."
+      },
+      {
+        "fase": "HIT (corto a largo)",
+        "semanas": "10-16",
+        "fechas": "25 ene – 28 feb",
+        "color": "rojo",
+        "foco": "Alta intensidad progresando de formatos cortos a largos: 30/15, 60/60, intervalos de 2-5'.",
+        "rol": "Desarrollar VO2máx / potencia aeróbica máxima; progresión de la duración del intervalo."
+      },
+      {
+        "fase": "Umbral y ajustes (personalización)",
+        "semanas": "16-21",
+        "fechas": "1 mar – 18 abr",
+        "color": "amarillo",
+        "foco": "Elegir el trabajo final según PERFIL del ciclista y RESPUESTA al entrenamiento.",
+        "rol": "Bloque específico individualizado hacia la demanda de Río Pinto (XCM largo)."
+      },
+      {
+        "fase": "Taper",
+        "semanas": "22-23",
+        "fechas": "19 abr – 2 may",
+        "color": "azul",
+        "foco": "Reducir carga y CONSERVAR estímulos de intensidad.",
+        "rol": "Llegar fresco manteniendo la frecuencia/intensidad (bajar volumen, no estímulo)."
+      }
+    ],
+    "controles": [
+      {
+        "control": "Evaluación inicial",
+        "semanas": "1-3",
+        "fechas": "23 nov – 13 dic",
+        "acciones": [
+          "Perfil de potencia + test en laboratorio.",
+          "Analítica sanguínea.",
+          "Biomecánica para ajustar posición y detalles."
+        ]
+      },
+      {
+        "control": "Control ~semana 12",
+        "semanas": "~12",
+        "fechas": "8-14 feb (a ~12 semanas de Pinto)",
+        "acciones": [
+          "Revisar perfil y respuesta al entrenamiento.",
+          "Ajustar el bloque final según resultados y objetivo de carrera."
+        ]
+      }
+    ],
+    "entrenamiento_del_intestino": "Empezar en las salidas largas y practicar PROGRESIVAMENTE la ingesta objetivo (hidratos/hidratación de carrera) en sesiones específicas. Clave en XCM largo por duración y demanda digestiva.",
+    "flexibilidad": "La BASE puede variar entre 8 y 10 semanas; el bloque de UMBRAL / personalización se ajusta a 6-8 semanas, y lo mismo las progresiones de HIT. El plan es un marco, no una grilla rígida."
+  },
+  "estimulos_clave": {
+    "base": "Z2 largo, tempo, umbral 1 y 2 (potencia).",
+    "HIT": "30/15, 60/60, intervalos 2-5' (progresión corto→largo).",
+    "especifico": "trabajo final individualizado por perfil + demanda de XCM.",
+    "nutricion": "gut training integrado desde las largas."
+  },
+  "pendiente_para_completar": [
+    "Volumen (horas/sem o TSS) por fase.",
+    "Nº de sesiones de intensidad por semana y días clave.",
+    "Zonas de potencia concretas del ciclista (del perfil/test de la evaluación inicial).",
+    "Semana de descarga / patrón de carga-descarga.",
+    "Detalle de las sesiones de HIT (nº series, recuperaciones, potencia objetivo)."
+  ]
+}
