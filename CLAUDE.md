@@ -345,6 +345,18 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
   - **Formulario conciso** (pedido del coach: "lo clave de cada respuesta sin ensuciar con texto"): Molestia (rojo si
     reporta dolor) · Estado (Sueño·Estrés·Energía/10·Motivación/10) · Carreras · Cambios · Peso · Sensación · Nota;
     cada campo truncado, se omiten los triviales (no/nada/ninguno). Lee `report/form-responses.json`.
+  - **VALIDAR EL FORMULARIO EN CADA INFORME (OBLIGATORIO — instrucción coach 2026-11-23):** ANTES de generar cualquier
+    informe de renovación, **re-bajar las respuestas del Formulario de renovación y reconstruir `report/form-responses.json`**
+    (los atletas responden sobre la marcha; si no se refresca, salen con `conForm 0` aunque hayan respondido — bug detectado
+    2026-11-23: faltaban 9 respondedores). Paso a paso: (1) `download_file_content` del Sheet
+    `1TYqDW6rM0BP8a_YnHhdf5o61M5FLYNhZphy5wEW_LIg` (`exportMimeType: text/csv`); (2) **`node build-form-responses.js <csv>`**
+    (ventana por defecto 14 días; última respuesta por persona; aplica `ALIASES` de apodos) → reescribe `report/form-responses.json`;
+    (3) recién ahí `node renewal.js <ids>` + `node renewal-html.js`. El log de `build-form-responses.js` dice cuántas respuestas
+    entraron; verificar que los que sabés que respondieron aparezcan (`conForm` en el log de renewal-html).
+  - **Apodos (ALIASES en `build-form-responses.js`):** el matcher de `renewal-html.js` empareja atleta↔form por tokens (≥2,
+    con prefijos). Si el atleta llena el form con un APODO que no comparte 2 tokens/prefijos con su nombre de ET (ej. **"Ely Reba"
+    ≠ "Eliana Rebagliatti"**: "ely" no es prefijo de "eliana"), no matchea → agregar el apodo al mapa `ALIASES` del builder
+    (`<nombre_norm_del_form>`: `"Nombre Real como en ET"`). Ahí se canoniza antes de escribir el JSON.
   - **Altas / nuevos ingresos** (opcional): si existe `report/altas.json` (`[{n,s,warn,acc,dat},…]`, gitignored, datos
     de intake), agrega al final una sección con la acción por atleta. Se arma leyendo el **formulario de inicio** (intake,
     Sheet `1etcgQ_o77y7yyEb40cBO9Y2dpNopi9nyxBeEKfz1OOw`) de cada ingreso nuevo.
