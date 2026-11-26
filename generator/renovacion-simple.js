@@ -33,9 +33,9 @@ function cellSessions(list){
         let ex="";
         if((b.exec||[]).length){anyExec=true; ex=" = "+esc(b.exec.join(" "));}
         else if(b.noExec&&!s.hasFit) ex=" = —";
-        return `${esc(b.label||"")}${z}${obj}${ex}`;
-      }).join(" · ");
-      if(!anyExec&&s.realPace) det+=` = ${esc(s.realPace)} <span class="mut">(medio)</span>`;
+        return `<div class="bl">${esc(b.label||"")}${z}${obj}${ex}</div>`;
+      }).join("");
+      if(!anyExec&&s.realPace) det+=`<div class="bl">= ${esc(s.realPace)} <span class="mut">(medio)</span></div>`;
     } else if(s.realPace) det=`${s.targetPace?"("+esc(s.targetPace)+") ":""}= ${esc(s.realPace)}`;
     const sr=s.sRPE!=null?` <span class="mut">sRPE ${esc(s.sRPE)}</span>`:"";
     const pain=s.painClass==="active"?` <span class="pain">dolor</span>`:"";
@@ -104,7 +104,7 @@ table.ex{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed}
 table.ex th,table.ex td{border:1px solid #ccc;padding:5px 6px;vertical-align:top;text-align:left}
 table.ex thead th{background:#f2f2f2;font-weight:700;text-align:center}
 th.wk{width:58px;background:#f8f8f8;font-weight:700;color:#333;text-align:center;font-size:12px}
-.sx{margin:0 0 6px}.sx:last-child{margin:0}.st{font-weight:600}.dt{color:#222}
+.sx{margin:0 0 6px}.sx:last-child{margin:0}.st{font-weight:600}.dt{color:#222}.bl{margin:1px 0}
 .ar{display:flex;gap:10px;margin:0 0 7px}.al{flex:0 0 150px;font-weight:700;color:#333;font-size:12px}.av{flex:1}
 @media(max-width:640px){.ar{flex-direction:column;gap:1px}.al{flex-basis:auto}table.ex{font-size:11px}}`;
 
