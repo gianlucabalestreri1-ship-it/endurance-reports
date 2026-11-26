@@ -231,8 +231,27 @@ TAMBIÉN la cuenta de ciclismo (misma lógica que el reporte). Correr: `ET_EMAIL
 - `node renewal.js --names "Nombre Apellido" ...` | `--file lista.txt` | `--dry` (previsualiza el match) | `<plan_id>`.
   Resuelve nombre→atleta→plan vigente con `athlete_list` (fuzzy: acentos + tokens + Levenshtein; match flojo se
   marca "⚠ revisar", nombre-de-pila solo en consulta multi-palabra NO matchea). → `report/renewal-<plan>-data.json`.
-- **ENTREGABLE OFICIAL = HTML (decisión coach 2026-11-05: se reemplazó el Excel por el HTML).**
-  `node renewal-html.js ["etiqueta del lote"]` → **`report/Informe-Renovacion.html`** (una ficha por atleta).
+- **★ ENTREGABLE OFICIAL (decisión coach 2026-11-26) = DISEÑO RUDIMENTARIO `generator/renovacion-simple.js`** →
+  **`report/Renovacion-Simple.html`**. Reemplaza al `renewal-html.js` (que queda **LEGACY**: era "cachibachero", demasiados
+  chips/pills/barras/alertas de colores). El nuevo es **simple y claro**, por atleta SOLO 4 bloques:
+  1. **Nombre y apellido** (plano).
+  2. **Formulario** (respuestas clave en líneas `Campo: valor`, sin tarjetas).
+  3. **Ejecución del mes = TABLA semanas×días:** columnas = los días con sesión (Lu/Mi/Vi…, se omiten los días sin), filas =
+     microciclos (S1, S2… con fecha). Cada celda: `Título Zx (objetivo) = ritmos ejecutados` (reusa el mismo `blocks`
+     obj→ejec; si hay FIT sin alinear cae al ritmo medio; la fuerza se excluye de las columnas).
+  4. **Análisis y próximo paso** = lo **ESCRIBE EL ASISTENTE** (NO un motor de reglas), razonado y **CONTRASTADO contra `data/`**
+     (periodización noruega). Campos: objetivo/carreras (del form) · volumen histórico vs actual · el mes (correlacionado) ·
+     **próximo paso** (decidir subir **volumen** / **estabilizar** / **peak**) · estímulos · **microciclo típico** (si rota umbral
+     una sem y supra/específico otra, detallarlo) · qué comunicarle al atleta. **La idea del coach:** la base de datos que va
+     alimentando sirve para sugerencias cada vez más finas y precisas, para que ÉL decida rápido qué asignar y qué comunicar.
+  - **Dónde va el análisis:** `report/renovacion-analisis.json` (gitignored, datos de atletas) = `{ <nombre_norm>: {objetivo,
+    km, mes, paso, estimulos, micro, comunicar} }`. El generador lo inyecta por match de tokens (≥2); sin entrada → "Análisis
+    pendiente". **Correr renovacion-simple.js DESPUÉS de escribir ese JSON.** Adaptar SIEMPRE por caso (NO repetir fórmulas; p.ej.
+    la regla Magness 45-60' NO va a un iniciante ni a quien entrena 2-3 días → respetar etapa Y frecuencia).
+- **Flujo completo:** (1) refrescar formulario (`build-form-responses.js`, ver arriba) → (2) `node renewal.js <ids|--names>` →
+  (3) escribir `report/renovacion-analisis.json` con el análisis fino de cada atleta → (4) `node generator/renovacion-simple.js`.
+- **Legacy:** `node renewal-html.js ["etiqueta"]` → `report/Informe-Renovacion.html` (ficha con dashboard/sugerencia automática).
+  Se mantiene pero NO es el entregable; el oficial es el rudimentario.
   - **Agrupado por TIPO DE CORREDOR** (batching de contexto, Newport): Iniciantes (caminar-correr, detectado por títulos
     de sesión CaCo) · Consolidando 15-30 · Desarrollo 30-50 · Fondo 50-70 · Alto volumen +70 km/sem. **Dentro de cada tier,
     los que respondieron el formulario van PRIMERO** (luego por adherencia asc.). Los tiers vacíos no se muestran.
