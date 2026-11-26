@@ -242,6 +242,7 @@ const PAIN_G = /(dolor|molest|duele|duelen|lesi[oó]n|pinchazo|contractur|sobrec
 // body parts + progression words → context that makes a negated pain mention a "good news" signal
 const PAIN_CTX = /(pie|rodilla|tobillo|cadera|gemelo|isquio|cu[aá]driceps|cuadriceps|espalda|tend[oó]n|planta|tal[oó]n|talon|pantorrilla|aductor|psoas|lumbar|r[oó]tula|rotula|fascia|fascitis|empeine|tibial|mejor|recuper|progres|cada vez|menos|molest[oó] menos)/i;
 const NEG_W = /\b(sin|no|ni|ning\w*|cero|nunca|tampoco|niego|niega)\b/;
+const ZERO_AFTER = /^[\s,.;:()¡!¿?–—-]*\b(cero|0+|ning\w+|nada|nul[ao]s?)\b/; // negación POSTERIOR a la palabra de dolor ("dolores, cero")
 function _painNegated(c, idx) {
   const before = c.slice(Math.max(0, idx - 40), idx);
   const clause = before.split(/[.;,:!?/]|\bpero\b|\baunque\b|\bsalvo\b/).pop(); // última cláusula antes de la palabra
@@ -258,6 +259,8 @@ function classifyPain(comment) {
     let e = m.index; while (e < c.length && /[a-záéíóúñü]/.test(c[e])) e++;
     let k = e; while (k < c.length && c[k] === ' ') k++;
     if (c[k] === ':') continue;
+    // negación POSTERIOR ("dolores, cero" / "dolor 0" / "molestias ninguna") → NO hubo dolor
+    if (ZERO_AFTER.test(c.slice(e))) continue;
     if (!_painNegated(c, m.index)) {
       const clauseAfter = c.slice(m.index, m.index + 50).split(/[.;:!?/]|\bpero\b|\baunque\b/)[0];
       if (/\bmenos\b|cada vez menos|va cediendo|\bcediendo\b|aflojand|disminu/.test(clauseAfter)) { improving = true; continue; }
