@@ -131,12 +131,18 @@ function isSessDone(s){return !s.future&&!s.strength&&(s.executed||s.sRPE!=null|
 function blocksInline(s){
   const ws=(s.blocks||[]).filter(b=>b.kind==="work");
   if(!ws.length){ if(s.realPace)return `<b>${fmtPaceV(s.realPace)}</b>`; return s.targetPace?`<span class="bil">obj ${esc(s.targetPace)}</span>`:`<span class="dash">—</span>`; }
-  return ws.map(b=>{
+  let anyExec=false;
+  const parts=ws.map(b=>{
     const z=b.zone!=null?` Z${b.zone}`:"";
     const obj=b.range?` <span class="bil">(${fmtRangeV(b.range)})</span>`:"";
-    const ex=b.noExec?`<span class="no">no ejec.</span>`:((b.exec||[]).length?(`<b>${b.exec.map(v=>b.bike?esc(v):fmtPaceV(v)).join(" ")}</b>`+(b.hr?` <span class="fc">FC${b.hr}</span>`:"")):"");
+    let ex="";
+    if((b.exec||[]).length){ anyExec=true; ex=`<b>${b.exec.map(v=>b.bike?esc(v):fmtPaceV(v)).join(" ")}</b>`+(b.hr?` <span class="fc">FC${b.hr}</span>`:""); }
+    else if(b.noExec && !s.hasFit){ ex=`<span class="no">no ejec.</span>`; } // "no ejec." SOLO si no hay FIT (si hay FIT, un bloque sin alinear es ruido de alineación, no un bloque saltado)
     return `<span class="bi">${esc(b.label)}${z}${obj}${ex?` → ${ex}`:""}</span>`;
   }).join(" · ");
+  // FIT presente pero ningún bloque quedó alineado (continuo/por tiempo, o cross-day) → mostrar el ritmo medio real del dispositivo
+  if(!anyExec && s.realPace) return parts+` · <b>${fmtPaceV(s.realPace)}</b> <span class="bil">(ritmo medio FIT)</span>`;
+  return parts;
 }
 const metersOf=v=>{const m=String(v||"").match(/([\d.]+)\s*m/);return m?parseFloat(m[1]):0;};
 const km1=m=>Math.round(m/100)/10;
