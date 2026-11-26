@@ -12,7 +12,9 @@
 // (≥2 tokens, prefijos) no resuelve solo. Clave = nombre normalizado DEL FORM → valor = nombre real.
 // Agregar acá cada apodo nuevo que detectemos (el nombre real debe matchear el de ET).
 const ALIASES = {
-  "ely reba": "Eliana Rebagliatti"
+  "ely reba": "Eliana Rebagliatti",
+  "jazmin games": "Jazmin RGames",
+  "facundo diblasi": "Facu Di blasi"
 };
 
 const fs = require("fs");
